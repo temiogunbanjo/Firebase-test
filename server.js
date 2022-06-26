@@ -6,5 +6,5 @@ app.use(express.static("public"))
 
 const server = require('http').createServer(app);
 server.listen(PORT, () => {
-    console.log('Serving...')
+    console.log(`Serving html files. Navigate to http://localhost:${PORT}`)
 });
