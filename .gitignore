@@ -1,1 +1,4 @@
-config.txt
+public/config.txt
+package-*.json
+node_modules
+.vscode

@@ -1,5 +1,5 @@
 const globals = {
-  apiBaseUrl: "http://localhost:3000/api/v1",
+  apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
   socketUrl: "http://localhost:3001/push_notifier_space",
   apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
   token: localStorage.getItem("token") || null,
@@ -51,10 +51,9 @@ function showTabContent(tabId) {
 }
 
 const updateResponsePane = (responseElement, dataResponse, status) => {
-  responseElement.textContent =
-    typeof dataResponse !== "object"
-      ? dataResponse
-      : JSON.stringify(dataResponse, null, 2);
+  responseElement.textContent = typeof dataResponse !== "object"
+    ? dataResponse
+    : JSON.stringify(dataResponse, null, 2);
 };
 
 async function subscribeToNotification(deviceId) {

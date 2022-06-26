@@ -47,7 +47,6 @@ limitations under the License.
             <li id="token-management-tab">Token Management</li>
             <li id="withdraw-tab">Withdrawals</li>
             <li id="transfer-tab">Transfers</li>
-            
           </ul>
         </section>
 
@@ -168,8 +167,7 @@ limitations under the License.
               style="margin-top: 1rem"
             >
               <div class="d-flex cols" style="width: 50%; max-width: 500px">
-                <h2>Transfer 
-                  Form</h2>
+                <h2>Transfer Form</h2>
 
                 <div class="d-flex cols">
                   <input
@@ -223,6 +221,8 @@ limitations under the License.
 
       // Your web app's Firebase configuration
       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+      //TODO: Change VAPIDKEY and firebaseConfig value to values in config.txt
       const VAPIDKEY = VAPIDKEY;
       const firebaseConfig = firebaseConfig;
 
@@ -230,7 +230,7 @@ limitations under the License.
       const app = initializeApp(firebaseConfig);
       const analytics = getAnalytics(app);
       const messaging = getMessaging(app);
-      console.log(messaging);
+      // console.log(messaging);
 
       const tokenDivId = "token_div";
       const permissionDivId = "permission_div";
