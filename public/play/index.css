@@ -1,0 +1,47 @@
+
+section#navigation {
+  max-width: unset;
+  width: 100%;
+}
+
+.option-select {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    color: #555;
+    background-color: #eee;
+    margin: 5px;
+    min-width: 200px;
+}
+
+#ball-container {
+  flex-wrap: wrap;
+  padding: 10px;
+  padding-left: 0;
+  border-right: 2px solid black;
+}
+
+.ball {
+  cursor: pointer;
+  margin: 2px;
+  width: 45px;
+  height: 45px;
+  background-image: radial-gradient(
+    rgba(0, 0, 0, 0.05) 30%,
+    rgba(0, 0, 0, 0.2)
+  );
+  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
+}
+
+.ball:hover {
+  background-color: red;
+}
+
+.ball.selected {
+    background-color: maroon;
+}
+
+#selection-area {
+    min-height: 53px;
+}

@@ -47,10 +47,12 @@ limitations under the License.
             <li id="token-management-tab">Token Management</li>
             <li id="withdraw-tab">Withdrawals</li>
             <li id="transfer-tab">Transfers</li>
+            <li id="view-tickets-tab">View Tickets</li>
+            <li id="view-games-tab">Games</li>
           </ul>
         </section>
 
-        <section id="navigation-content" class="w-70">
+        <section id="navigation-content" style="flex-grow: 1">
           <div id="auth-tab-content" class="navigation-content">
             <!-- div to display the login form -->
             <form
@@ -80,12 +82,19 @@ limitations under the License.
             <div id="token_div" style="display: none">
               <h4>Registration Token</h4>
               <p id="token" style="word-break: break-all"></p>
-              <button id="delete-token" class="custom-button danger">
-                Delete Token
-              </button>
-              <button id="unsubscribe-token" class="custom-button">
-                Unsubscribe From Notifications
-              </button>
+
+              <details>
+                <summary>Click to view buttons +</summary>
+                <div>
+                  <button id="delete-token" class="custom-button danger">
+                    Delete Token
+                  </button>
+
+                  <button id="unsubscribe-token" class="custom-button">
+                    Unsubscribe From Notifications
+                  </button>
+                </div>
+              </details>
             </div>
             <!-- div to display the UI to allow the request for permission to
            notify the user. This is shown if the app has not yet been
@@ -199,6 +208,122 @@ limitations under the License.
               ></pre>
             </form>
           </div>
+
+          <div id="view-tickets-tab-content" class="navigation-content hide">
+            <!-- div to display the tickets played -->
+            <div
+              id="ticket-container"
+              class="d-flex rows w-100"
+              style="margin-top: 1rem; flex-wrap: wrap"
+            >
+              <p class="loading">loading...</p>
+              <!-- <div class="ticket-card">
+                <div class="ticket-header">
+                  <h3>Ticket</h3>
+                </div>
+                <div class="d-flex cols ticket-body">
+                  <div class="ticket-body-row">
+                    <p>
+                      <span class="ticket-label">Ticket ID:</span>
+                      <span class="ticket-value">${ticket.ticketId}</span>
+                    </p>
+                    <p>
+                      <span class="ticket-label">Game:</span>
+                      <span class="ticket-value" style="text-transform: capitalize;">${ticket.Game?.name} (${
+                        ticket.Game?.lotteryName.toLowerCase().endsWith('lottery')
+                        ? ticket.Game?.lotteryName
+                        : ticket.Game?.lotteryName + ' lottery'
+                      })</span>
+                    </p>
+                    <p>
+                      <span class="ticket-label">Category:</span>
+                      <span class="ticket-value">${ticket.Game?.Lottery?.category}</span>
+                    </p>
+                    <p>
+                      <span class="ticket-label">Created On:</span>
+                      <span class="ticket-value">${new Date(ticket.createdAt).toDateString()}</span>
+                    </p>
+                    <p>
+                      <div class="ticket-label">Bet Slips:</div>
+                      <span class="ticket-value">${
+                        JSON.parse(ticket.betSlips).map((slip) => {
+                          return `
+                            <div class="ticket-slip">
+                              ${slip.betType}
+                            </div>
+                          `;
+                        }).join('')
+                      }</span>
+                    </p>
+                  </div>
+
+                  <div class="ticket-body-row">
+                    <p>
+                      <span class="ticket-label">Ticket status:</span>
+                      <span class="ticket-value">
+                        <span class="status-indicator" data-status=${ticket.status}>${ticket.status}</span>
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+
+          <div id="view-games-tab-content" class="navigation-content hide">
+            <!-- div to display the games available played -->
+            <div
+              id="games-container"
+              class="d-flex cols w-100"
+              style="margin-top: 1rem; flex-wrap: wrap"
+            >
+              <p class="loading">loading...</p>
+
+              <!-- <div class="game-category-container border">
+                <h3 class="game-category-head">5/90</h3>
+                <div class="game-category-body">
+                  <div class="game-card">
+                    <div
+                      class="d-flex rows align-items-center ticket-header"
+                      style="margin-bottom: 1em"
+                    >
+                      <h3 style="margin-bottom: 0.5em">Game</h3>
+                      <span
+                        class="status-indicator"
+                        data-status="${
+                        ticket.status
+                        }"
+                        >${ticket.status}</span
+                      >
+                    </div>
+                    <div class="d-flex cols ticket-body">
+                      <div class="ticket-body-row">
+                        <p>
+                          <span class="ticket-label">Game ID:</span>
+                          <span class="ticket-value">${game.gameId}</span>
+                        </p>
+                        <p>
+                          <span class="ticket-label">Game:</span>
+                          <span
+                            class="ticket-value"
+                            style="text-transform: capitalize"
+                            >${ticket.Game?.name} (${
+                            ticket.Game?.lotteryName.toLowerCase().endsWith('lottery')
+                            ? ticket.Game?.lotteryName :
+                            ticket.Game?.lotteryName + ' lottery' })</span
+                          >
+                        </p>
+                      </div>
+
+                      <div class="d-flex rows ticket-body-row align-items-center">
+                          <button>Play Game</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
         </section>
       </main>
     </div>
@@ -223,8 +348,17 @@ limitations under the License.
       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
       //TODO: Change VAPIDKEY and firebaseConfig value to values in config.txt
-      const VAPIDKEY = VAPIDKEY;
-      const firebaseConfig = firebaseConfig;
+      const VAPIDKEY =
+        "BD28e_naYe1YxxH3tMEUpNS1H8vNV6nbeEHhWlDFmeaWMQEPIsmAczlDRLohEFZiZKrjgb_u9rlMGNrPYmvdRmU";
+      const firebaseConfig = {
+        apiKey: "AIzaSyD7oZG29Z0WcZR8TbSgGANvSfdaEdih9CE",
+        authDomain: "lixom-betja.firebaseapp.com",
+        projectId: "lixom-betja",
+        storageBucket: "lixom-betja.appspot.com",
+        messagingSenderId: "584589312758",
+        appId: "1:584589312758:web:413f8c268d1af0526922d7",
+        measurementId: "G-TLTQ4KK4D7",
+      };
 
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
@@ -310,11 +444,11 @@ limitations under the License.
       }
 
       function isTokenSentToServer() {
-        return window.localStorage.getItem("sentToServer") === "1";
+        return window.sessionStorage.getItem("sentToServer") === "1";
       }
 
       function setTokenSentToServer(sent) {
-        window.localStorage.setItem("sentToServer", sent ? "1" : "0");
+        window.sessionStorage.setItem("sentToServer", sent ? "1" : "0");
       }
 
       function requestPermission() {

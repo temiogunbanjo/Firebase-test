@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,800;1,400;1,600;1,800&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Roboto", "Helvetica", sans-serif;
+  font-family: Nunito, Montserrat, Roboto, "Helvetica", sans-serif;
 }
 a {
   text-decoration: none;
@@ -49,12 +56,16 @@ code {
   white-space: pre-wrap;
   word-break: break-all;
 }
-h3 {
+header h3 {
   background: url("./firebase-logo.png") no-repeat;
   background-size: 40px;
   padding-left: 50px;
   display: inline-block;
   /* color: white; */
+}
+
+.input-error {
+  border: 1px solid red !important;
 }
 
 .d-flex {
@@ -73,6 +84,35 @@ h3 {
   align-items: center;
 }
 
+.align-items-start{
+  align-items: flex-start;
+}
+
+.flex-grow{
+  flex-grow: 1;
+}
+
+.circle {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.bg-orange {
+  background-color: orange;
+}
+
+.bg-red {
+  background-color: red;
+}
+
+.bg-blue {
+  background-color: dodgerblue;
+}
+
 .w-5{
   width: 5%;
 }
@@ -85,6 +125,9 @@ h3 {
 .w-30 {
   width: 30%;
 }
+.w-35 {
+  width: 35%;
+}
 .w-40 {
   width: 40%;
 }
@@ -94,8 +137,20 @@ h3 {
 .w-60 {
   width: 60%;
 }
+.w-65 {
+  width: 65%;
+}
+
 .w-70 {
   width: 70%;
+}
+
+.w-95 {
+  width: 95%;
+}
+
+.w-100, .w-full {
+  width: 100%;
 }
 
 header {
@@ -108,13 +163,19 @@ button {
   cursor: pointer;
 }
 
+section#navigation {
+  max-width: 400px;
+  width: 20%;
+  min-width: 250px;
+}
+
 section#navigation ul{
   padding: 0;
-  /* border: 1px solid red; */
 }
 
 section#navigation ul li{
   padding: 10px;
+  font-weight: 600;
 }
 
 section#navigation ul li:hover{
@@ -124,10 +185,19 @@ section#navigation ul li:hover{
 
 #navigation-content {
  padding: 0 2rem 0 1rem;
+ min-width: 70%;
+ background-color: #fafafa;
+ min-height: 100vh;
 }
 
 .hide{
   display: none !important;
+}
+
+summary{
+  background-color: dodgerblue;
+  color: white;
+  padding: 0.5rem;
 }
 
 form input {
@@ -167,6 +237,100 @@ form input[type="radio"] + label {
   color: yellow;
   box-sizing: border-box;
   margin-left: 20px;
-  width: 50%;
+  min-width: 50%;
   max-width: 500px;
+}
+
+.border {
+  border: 1px solid;
+}
+
+.ticket-card,
+.ticket-card > *,
+.game-card,
+.game-card > *{
+  box-sizing: border-box;
+}
+
+.game-category-head {
+  text-transform: capitalize;
+  margin: 10px 10px;
+  font-size: 28px;
+}
+
+.ticket-card, .game-card{
+  font-weight: 400;
+  color: #111;
+  background-color: #fefeff;
+  box-shadow: 1px 3px 20px rgba(150, 150, 150,0.2);
+  border-radius: 5px;
+  padding: 20px;
+  margin: 10px;
+  width: calc(33.33% - 20px);
+  min-width: 250px;
+  min-height: 200px;
+  flex-grow: 1;
+  max-width: 500px;
+}
+
+.game-card{
+  max-width: 400px;
+}
+
+.ticket-card .ticket-body{
+  height: calc(100% - 57px);
+}
+
+.ticket-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-indicator {
+  text-align: center;
+  padding: 5px 10px;
+  border-radius: 5vh;
+  font-size: 12px;
+  letter-spacing: 1px;
+  font-weight: 500;
+  color: white;
+  background-color: #223;
+}
+
+.status-indicator[data-status="won"] {
+  background-color: rgb(80, 237, 109);
+}
+
+.status-indicator[data-status="ongoing"] {
+  background-color: dodgerblue;
+}
+
+.status-indicator[data-status="lost"] {
+  background-color: red;
+}
+
+.ticket-card .ticket-body{
+  justify-content: space-between;
+}
+
+.ticket-card .ticket-body-row:first-child p{
+  margin-top: 10px;
+  margin-bottom: 1px;
+}
+
+.ticket-card .ticket-slip-container{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  margin-top: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.ticket-card .ticket-slip{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 14px;
 }

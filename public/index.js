@@ -1,6 +1,6 @@
 const globals = {
-  apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
-  socketUrl: "http://localhost:3001/push_notifier_space",
+  apiBaseUrl: "http://localhost:3000/api/v1",
+  // socketUrl: "http://localhost:3001/push_notifier_space",
   apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
   token: localStorage.getItem("token") || null,
   notificationOptions: {
@@ -40,7 +40,7 @@ function clearMessages() {
   }
 }
 
-function showTabContent(tabId) {
+function showTabContent(tabId, cb = () => {}) {
   document.querySelectorAll(".navigation-content").forEach((content) => {
     if (content.id && content.id.includes(tabId)) {
       content.classList.toggle("hide", false);
@@ -48,12 +48,15 @@ function showTabContent(tabId) {
       content.classList.toggle("hide", true);
     }
   });
+
+  cb();
 }
 
 const updateResponsePane = (responseElement, dataResponse, status) => {
-  responseElement.textContent = typeof dataResponse !== "object"
-    ? dataResponse
-    : JSON.stringify(dataResponse, null, 2);
+  responseElement.textContent =
+    typeof dataResponse !== "object"
+      ? dataResponse
+      : JSON.stringify(dataResponse, null, 2);
 };
 
 async function subscribeToNotification(deviceId) {
@@ -128,6 +131,80 @@ async function unsubscribeToNotification(deviceId) {
   }
 }
 
+async function createInstantResult(ticketId) {
+  const apiUrl = `${globals.apiBaseUrl}/game/create-instant-result`;
+  try {
+    const response = await fetch(apiUrl, {
+      method: "post",
+      body: JSON.stringify({
+        ticketId
+      }),
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+        authorization: `Bearer ${globals.token}`,
+        mode: "no-cors",
+        "x-api-key": globals.apiKey,
+      },
+    });
+
+    const result = await response.json();
+    const { status } = result;
+
+    if (result && result.data) {
+      // const { data } = result;
+      const data = result?.data?.data;
+      console.log(data);
+      viewTicketsHandler(data);
+    }
+  } catch (error) {
+    console.log(error);
+    const { status } = error;
+    console.log(status);
+  }
+}
+
+function saveUser(token) {
+  const responseElement = document.querySelector("#login-form .response");
+  responseElement.innerHTML = responseElement.innerHTML + "<br>Saving user...";
+
+  const apiUrl = `${globals.apiBaseUrl}/auth/validate-token?token=${token}`;
+  fetch(apiUrl, {
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+      "x-api-key": globals.apiKey,
+    },
+  })
+    .then(async (response) => {
+      try {
+        const result = await response.json();
+        const { status } = result;
+
+        if (result && result.data) {
+          const { data } = result;
+          const user = data?.data;
+          console.log(user);
+          globals.user = user;
+          // localStorage.setItem("token", token);
+          responseElement.innerHTML =
+            responseElement.innerHTML + "<br>User saved successfully!";
+        } else {
+          responseElement.innerHTML =
+            responseElement.innerHTML + "<br>User saving failed!";
+        }
+      } catch (error) {
+        console.log(error);
+        const { status } = error;
+        responseElement.innerHTML =
+          responseElement.innerHTML + `<br>User saving failed:${status}!`;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      responseElement.innerHTML =
+        responseElement.innerHTML + "<br>User saving failed!";
+    });
+}
+
 function loginHandler(ev) {
   ev.preventDefault();
   const responseElement = document.querySelector("#login-form .response");
@@ -165,6 +242,7 @@ function loginHandler(ev) {
           localStorage.setItem("token", token);
 
           updateResponsePane(responseElement, data, status);
+          saveUser(token);
         } else {
           updateResponsePane(responseElement, result, status);
         }
@@ -285,6 +363,240 @@ function transferHandler(ev) {
     });
 }
 
+function viewTicketsHandler(ev) {
+  // ev.preventDefault();
+  const containerElement = document.querySelector("#ticket-container");
+
+  // containerElement.innerHTML = "Fetching tickets...";
+
+  const apiUrl = `${globals.apiBaseUrl}/game/fetch-tickets/${globals.user?.userId}?page=1&limit=100`;
+  fetch(apiUrl, {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+      authorization: `Bearer ${globals.token}`,
+      mode: "no-cors",
+      "x-api-key": globals.apiKey,
+    },
+  })
+    .then(async (response) => {
+      try {
+        const result = await response.json();
+        const { status } = result;
+
+        if (result && result.data) {
+          const { data } = result?.data;
+          console.log(data);
+          containerElement.innerHTML = data
+            .map((ticket) => {
+              return `
+              <div class="ticket-card">
+                <div class="d-flex rows align-items-center ticket-header" style="margin-bottom:1em">
+                  <h3 style="margin-bottom:0.5em">Ticket</h3>
+                  <span style="font-size:11px;">
+                    <i class="ticket-label">Created On:</i>
+                    <i class="ticket-value">${new Date(
+                      ticket.createdAt
+                    ).toDateString()}</i>
+                  </span>
+                </div>
+                <div class="d-flex cols ticket-body">
+                  <div class="ticket-body-row">
+                    <p>
+                      <span class="ticket-label">ID:</span>
+                      <span class="ticket-value">${ticket.ticketId}</span>
+                    </p>
+                    <p>
+                      <span class="ticket-label">Game:</span>
+                      <span class="ticket-value" style="text-transform: capitalize;">${
+                        ticket.Game?.name
+                      } (${
+                ticket.Game?.lotteryName.toLowerCase().endsWith("lottery")
+                  ? ticket.Game?.lotteryName
+                  : ticket.Game?.lotteryName + " lottery"
+              })</span>
+                    </p>
+                    <p>
+                      <span class="ticket-label">Category:</span>
+                      <span class="ticket-value">${
+                        ticket.Game?.Lottery?.category
+                      }</span>
+                    </p>
+                    <p style="margin-top: 1.5em">
+                      <div class="ticket-label" style="font-weight:600">Bet Slips:</div>
+                      <div class="ticket-slip-container">${JSON.parse(
+                        ticket.betSlips
+                      )
+                        .map((slip) => {
+                          return `
+                            <div class="ticket-slip">
+                              ${slip.betType} / ${slip.booster} / ${
+                            slip.resultType
+                          } – N${slip.amount}
+                              <br/>
+                              ${
+                                slip.selections
+                                  ? slip.selections
+                                      ?.split("-")
+                                      .map((e) => parseInt(e, 10))
+                                      .join(", ")
+                                  : "N/A"
+                              } => (${slip.lineCount} lines)
+                            </div>
+                          `;
+                        })
+                        .join("")}</div>
+                    </p>
+                  </div>
+
+                  <div class="ticket-body-row">
+                    <p class="d-flex rows align-items-center" style="justify-content:space-between">
+                      <span class="ticket-label">Total Win Amount:</span>
+                      <span class="ticket-value">${
+                        ticket.totalWinAmount || "–"
+                      }</span>
+                    </p>
+                    <p class="d-flex rows align-items-center" style="justify-content:space-between">
+                      <span class="ticket-label">Status:</span>
+                      <span class="ticket-value">
+                        <span class="status-indicator" data-status=${
+                          ticket.status
+                        }>${ticket.status}</span>
+                      </span>
+                    </p>
+                    
+                  </div>
+                  
+                  ${
+                    ticket.status === "ongoing"
+                      ? `<div class="ticket-body-row">
+                          <button
+                            class="w-full" onclick="createInstantResult(${ticket.ticketId})"
+                            style="background-color: dodgerblue; color: white; border: none;padding: 10px;border-radius: 5px">
+                            Create Instant Result
+                          </button>
+                        </div>`
+                      : ""
+                  }
+                </div>
+              </div>
+            `;
+            })
+            .join("");
+        }
+      } catch (error) {
+        console.log(error);
+        const { responsemessage, status } = error;
+        updateResponsePane(containerElement, responsemessage, status);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      updateResponsePane(containerElement, error, "error");
+    });
+}
+
+function viewGamesHandler(ev) {
+  // ev.preventDefault();
+  const containerElement = document.querySelector("#games-container");
+
+  // containerElement.innerHTML = "Fetching tickets...";
+  const d = new Date();
+  const currentTime = d.toLocaleTimeString();
+  const currentWeekDay = d.getDay();
+  const apiUrl = `${globals.apiBaseUrl}/game/fetch-current-game?page=1&limit=100&currentWeekDay=${currentWeekDay}`;
+  fetch(apiUrl, {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+      authorization: `Bearer ${globals.token}`,
+      mode: "no-cors",
+      "x-api-key": globals.apiKey,
+    },
+  })
+    .then(async (response) => {
+      try {
+        const result = await response.json();
+        const { status } = result;
+
+        if (result && result.data) {
+          const categoryObject = {};
+
+          const { data } = result?.data;
+
+          data.forEach((game) => {
+            if (!categoryObject[game.Lottery.category]) {
+              categoryObject[game.Lottery.category] = [game];
+            } else {
+              categoryObject[game.Lottery.category].push(game);
+            }
+          });
+
+          console.log(categoryObject);
+
+          containerElement.innerHTML = Object.keys(categoryObject)
+            .map((category) => {
+              return `<div class="game-category-container">
+              <h3 class="game-category-head">${category}</h3>
+              <div class="game-category-body d-flex rows">
+                ${categoryObject[category]
+                  .map((game) => {
+                    return `
+                    <div class="game-card">
+                    <div
+                      class="d-flex rows align-items-center ticket-header"
+                    >
+                      <h3 style="margin-bottom: 0.5em">Game</h3>
+                      <span
+                        class="status-indicator"
+                        data-status="${game.status === true ? "won" : "lost"}"
+                      >o</span>
+                    </div>
+                    <small class="status-indicator" style="margin-bottom: 1em">
+                      ${game.startTime} - ${game.endTime}
+                    </small
+                    
+                    <div class="d-flex cols ticket-body">
+                      <div class="ticket-body-row">
+                        <p>
+                          <span class="ticket-label">Game ID:</span>
+                          <span class="ticket-value">${game.gameId}</span>
+                        </p>
+                        <p>
+                          <span class="ticket-label">Game:</span>
+                          <span
+                            class="ticket-value"
+                            style="text-transform: capitalize"
+                            >${game.name}</span
+                          >
+                        </p>
+                      </div>
+  
+                      <div class="d-flex rows ticket-body-row align-items-center">
+                          <a href="/play?gameId=${game.gameId}">Play Game</a>
+                      </div>
+                    </div>
+                  </div>
+                    `;
+                  })
+                  .join("")}
+              </div>
+            </div>`;
+            })
+            .join("");
+        }
+      } catch (error) {
+        console.log(error);
+        const { responsemessage, status } = error;
+        updateResponsePane(containerElement, responsemessage, status);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      updateResponsePane(containerElement, error, "error");
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const navTabs = document.querySelectorAll("#navigation ul li");
   const loginForm = document.querySelector("#login-form");
@@ -295,7 +607,21 @@ document.addEventListener("DOMContentLoaded", () => {
   navTabs.forEach((tab) => {
     console.log(tab);
     tab.addEventListener("click", (ev) => {
-      showTabContent(ev.currentTarget.id);
+      let cb = () => {};
+      switch (true) {
+        case ev.target.id === "view-tickets-tab":
+          cb = viewTicketsHandler;
+          break;
+
+        case ev.target.id === "view-games-tab":
+          cb = viewGamesHandler;
+          break;
+
+        default:
+          break;
+      }
+
+      showTabContent(ev.currentTarget.id, cb);
     });
   });
 
