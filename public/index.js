@@ -1,11 +1,17 @@
 const globals = {
-  apiBaseUrl: "http://localhost:3000/api/v1",
-  // socketUrl: "http://localhost:3001/push_notifier_space",
-  apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
+  environment: "western",
   token: localStorage.getItem("token") || null,
   notificationOptions: {
     dir: "auto",
   },
+  bet9ja: {
+    apiBaseUrl: "http://localhost:3000/api/v1",
+    apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
+  },
+  western: {
+    apiBaseUrl: "http://localhost:3000/api/v1",
+    apiKey: "USR.Ngu4rC-VMenpv-m251tw-rYC8Om-ryx89j-c4",
+  }
 };
 
 function showHideDiv(divId, show) {
@@ -65,7 +71,7 @@ async function subscribeToNotification(deviceId) {
     // console.log(globals);
     const generalHeaders = {
       "Content-Type": "application/json;charset=utf-8",
-      "x-api-key": globals.apiKey,
+      "x-api-key": globals[globals.environment].apiKey,
       mode: "no-cors",
     };
 
@@ -73,7 +79,7 @@ async function subscribeToNotification(deviceId) {
       return false;
     }
     const subcribeResponse = await fetch(
-      `${globals.apiBaseUrl}/auth/notifications/subcribe`,
+      `${globals[globals.environment].apiBaseUrl}/auth/notifications/subcribe`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -99,7 +105,7 @@ async function unsubscribeToNotification(deviceId) {
     // console.log(globals);
     const generalHeaders = {
       "Content-Type": "application/json;charset=utf-8",
-      "x-api-key": globals.apiKey,
+      "x-api-key": globals[globals.environment].apiKey,
       mode: "no-cors",
     };
 
@@ -107,7 +113,7 @@ async function unsubscribeToNotification(deviceId) {
       return false;
     }
     const subcribeResponse = await fetch(
-      `${globals.apiBaseUrl}/auth/notifications/subcribe`,
+      `${globals[globals.environment].apiBaseUrl}/auth/notifications/subcribe`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -132,7 +138,7 @@ async function unsubscribeToNotification(deviceId) {
 }
 
 async function createInstantResult(ticketId) {
-  const apiUrl = `${globals.apiBaseUrl}/game/create-instant-result`;
+  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/create-instant-result`;
   try {
     const response = await fetch(apiUrl, {
       method: "post",
@@ -143,7 +149,7 @@ async function createInstantResult(ticketId) {
         "Content-Type": "application/json;charset=utf-8",
         authorization: `Bearer ${globals.token}`,
         mode: "no-cors",
-        "x-api-key": globals.apiKey,
+        "x-api-key": globals[globals.environment].apiKey,
       },
     });
 
@@ -164,14 +170,15 @@ async function createInstantResult(ticketId) {
 }
 
 function saveUser(token) {
+  console.log(globals[globals.environment]);
   const responseElement = document.querySelector("#login-form .response");
   responseElement.innerHTML = responseElement.innerHTML + "<br>Saving user...";
 
-  const apiUrl = `${globals.apiBaseUrl}/auth/validate-token?token=${token}`;
+  const apiUrl = `${globals[globals.environment].apiBaseUrl}/auth/validate-token?token=${token}`;
   fetch(apiUrl, {
     headers: {
       "Content-Type": "application/json;charset=utf-8",
-      "x-api-key": globals.apiKey,
+      "x-api-key": globals[globals.environment].apiKey,
     },
   })
     .then(async (response) => {
@@ -220,7 +227,7 @@ function loginHandler(ev) {
     password: passwordField.value,
   };
 
-  const apiUrl = `${globals.apiBaseUrl}/auth/login`;
+  const apiUrl = `${globals[globals.environment].apiBaseUrl}/auth/login`;
   fetch(apiUrl, {
     method: "post",
     body: JSON.stringify(payload),
@@ -274,7 +281,7 @@ function withdrawalHandler(ev) {
     paymentMethod: paymentMethodInput?.value || null,
   };
 
-  const apiUrl = `${globals.apiBaseUrl}/wallet/bank-withdrawal/initialize`;
+  const apiUrl = `${globals[globals.environment].apiBaseUrl}/wallet/bank-withdrawal/initialize`;
   fetch(apiUrl, {
     method: "post",
     body: JSON.stringify(payload),
@@ -282,7 +289,7 @@ function withdrawalHandler(ev) {
       "Content-Type": "application/json;charset=utf-8",
       authorization: `Bearer ${globals.token}`,
       mode: "no-cors",
-      "x-api-key": globals.apiKey,
+      "x-api-key": globals[globals.environment].apiKey,
     },
   })
     .then(async (response) => {
@@ -329,7 +336,7 @@ function transferHandler(ev) {
     receipientId: receipientInput?.value || "",
   };
 
-  const apiUrl = `${globals.apiBaseUrl}/wallet/transfer-fund-to-user`;
+  const apiUrl = `${globals[globals.environment].apiBaseUrl}/wallet/transfer-fund-to-user`;
   fetch(apiUrl, {
     method: "post",
     body: JSON.stringify(payload),
@@ -337,7 +344,7 @@ function transferHandler(ev) {
       "Content-Type": "application/json;charset=utf-8",
       authorization: `Bearer ${globals.token}`,
       mode: "no-cors",
-      "x-api-key": globals.apiKey,
+      "x-api-key": globals[globals.environment].apiKey,
     },
   })
     .then(async (response) => {
@@ -369,14 +376,14 @@ function viewTicketsHandler(ev) {
 
   // containerElement.innerHTML = "Fetching tickets...";
 
-  const apiUrl = `${globals.apiBaseUrl}/game/fetch-tickets/${globals.user?.userId}?page=1&limit=100`;
+  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/fetch-tickets/${globals.user?.userId}?page=1&limit=100`;
   fetch(apiUrl, {
     method: "get",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
       authorization: `Bearer ${globals.token}`,
       mode: "no-cors",
-      "x-api-key": globals.apiKey,
+      "x-api-key": globals[globals.environment].apiKey,
     },
   })
     .then(async (response) => {
@@ -504,14 +511,14 @@ function viewGamesHandler(ev) {
   const d = new Date();
   const currentTime = d.toLocaleTimeString();
   const currentWeekDay = d.getDay();
-  const apiUrl = `${globals.apiBaseUrl}/game/fetch-current-game?page=1&limit=100&currentWeekDay=${currentWeekDay}`;
+  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/fetch-current-game?page=1&limit=100&currentWeekDay=${currentWeekDay}`;
   fetch(apiUrl, {
     method: "get",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
       authorization: `Bearer ${globals.token}`,
       mode: "no-cors",
-      "x-api-key": globals.apiKey,
+      "x-api-key": globals[globals.environment].apiKey,
     },
   })
     .then(async (response) => {
