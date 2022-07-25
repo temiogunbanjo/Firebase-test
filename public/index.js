@@ -1,14 +1,16 @@
 const globals = {
-  environment: "western",
+  environment: "bet9ja",
   token: localStorage.getItem("token") || null,
   notificationOptions: {
     dir: "auto",
   },
   bet9ja: {
+    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
     apiBaseUrl: "http://localhost:3000/api/v1",
     apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
   },
   western: {
+    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
     apiBaseUrl: "http://localhost:3000/api/v1",
     apiKey: "USR.Ngu4rC-VMenpv-m251tw-rYC8Om-ryx89j-c4",
   }
@@ -231,9 +233,10 @@ function loginHandler(ev) {
   fetch(apiUrl, {
     method: "post",
     body: JSON.stringify(payload),
+    // mode: "no-cors",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
-      mode: "no-cors",
+      // mode: "no-cors",
     },
   })
     .then(async (response) => {

@@ -2,10 +2,12 @@ const globals = {
   environment: "western",
   token: localStorage.getItem("token") || null,
   bet9ja: {
+    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
     apiBaseUrl: "http://localhost:3000/api/v1",
     apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
   },
   western: {
+    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
     apiBaseUrl: "http://localhost:3000/api/v1",
     apiKey: "USR.Ngu4rC-VMenpv-m251tw-rYC8Om-ryx89j-c4",
   },
@@ -16,11 +18,11 @@ const globals = {
 };
 
 const errorHandler = (error = {}) => {
-  console.log('Errrrr');
+  console.log("Errrrr");
   console.log(error);
   const message = error.responsemessage || error.message;
   alert(message);
-}
+};
 
 function showTabContent(tabId, cb = () => {}) {
   document.querySelectorAll(".navigation-content").forEach((content) => {
@@ -57,7 +59,9 @@ const validateInputs = (inputs) => {
 };
 
 function saveUser(token) {
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/auth/validate-token?token=${token}`;
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/auth/validate-token?token=${token}`;
   fetch(apiUrl, {
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -107,7 +111,7 @@ const updateSelectionArea = () => {
 
 const updateUI = () => {
   updateSelectionArea();
-}
+};
 
 function populateGameArea(game) {
   const ballContainer = document.getElementById("ball-container");
@@ -118,7 +122,11 @@ function populateGameArea(game) {
 
   const { name } = game;
   const { gameCount, resultCount, category } = game.Lottery;
-  let { betOptions = '[]', boosterOptions = '[]', resultOptions = '[]'} = game.Lottery;
+  let {
+    betOptions = "[]",
+    boosterOptions = "[]",
+    resultOptions = "[]",
+  } = game.Lottery;
 
   betOptions = JSON.parse(betOptions);
   boosterOptions = JSON.parse(boosterOptions);
@@ -199,7 +207,9 @@ function viewGamesHandler(ev) {
   const d = new Date();
   const currentTime = d.toLocaleTimeString();
   const currentWeekDay = d.getDay();
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/fetch-current-game?page=1&limit=100&endTime=${currentTime}&currentWeekDay=${currentWeekDay}`;
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/fetch-current-game?page=1&limit=100&endTime=${currentTime}&currentWeekDay=${currentWeekDay}`;
   fetch(apiUrl, {
     method: "get",
     headers: {
@@ -291,7 +301,9 @@ function viewGamesHandler(ev) {
 }
 
 function fetchGameData(gameId) {
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/fetch-game/${gameId}`;
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/fetch-game/${gameId}`;
   fetch(apiUrl, {
     method: "get",
     headers: {
@@ -325,7 +337,9 @@ function fetchGameData(gameId) {
 }
 
 function createTicket(ticket) {
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/create-ticket`;
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/create-ticket`;
   const body = JSON.stringify({
     gameId: ticket.gameId,
     totalStakedAmount: ticket.totalStakedAmount,
@@ -365,7 +379,7 @@ function createTicket(ticket) {
               betSlips: [],
             };
             updateUI();
-            alert('Ticket created succesfully');
+            alert("Ticket created succesfully");
           }
 
           // globals.ticket.gameId = data.gameId;
@@ -392,7 +406,9 @@ function fetchPotentialWinning(ticket) {
     "total-staked-amount-value"
   );
 
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/ticket/get-potential-winning`;
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/ticket/get-potential-winning`;
   const body = JSON.stringify({
     lotteryId: ticket.lotteryId,
     betSlips: JSON.stringify(ticket.betSlips),
