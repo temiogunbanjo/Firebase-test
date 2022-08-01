@@ -28,305 +28,235 @@ limitations under the License.
     />
     <link rel="stylesheet" href="./main.css" />
     <link rel="manifest" href="./manifest.json" />
+    <script src="./common.js"></script>
     <script src="./index.js"></script>
   </head>
   <body>
-    <div class="">
-      <!-- Header section containing title -->
-      <header class="d-flex rows">
-        <div class="">
-          <h3>Firebase Cloud Messaging</h3>
-        </div>
-      </header>
+    <!-- Header section containing title -->
+    <header class="d-flex rows">
+      <div class="">
+        <h3>Firebase Cloud Messaging</h3>
+      </div>
+    </header>
 
-      <main class="d-flex rows">
-        <!-- Container for the Table of content -->
-        <section id="navigation" class="w-30">
-          <ul>
-            <li id="auth-tab">Authentication</li>
-            <li id="token-management-tab">Token Management</li>
-            <li id="withdraw-tab">Withdrawals</li>
-            <li id="transfer-tab">Transfers</li>
-            <li id="view-tickets-tab">View Tickets</li>
-            <li id="view-games-tab">Games</li>
-          </ul>
-        </section>
+    <main class="d-flex rows">
+      <!-- Container for the Table of content -->
+      <section id="navigation" class="w-30">
+        <ul>
+          <li id="auth-tab">Authentication</li>
+          <li id="token-management-tab">Token Management</li>
+          <li id="withdraw-tab">Withdrawals</li>
+          <li id="transfer-tab">Transfers</li>
+          <li id="view-games-tab">Games</li>
+          <li id="view-tickets-tab">View Tickets</li>
+          <li id="view-results-tab">Game Results</li>
+        </ul>
+      </section>
 
-        <section id="navigation-content" style="flex-grow: 1">
-          <div id="auth-tab-content" class="navigation-content">
-            <!-- div to display the login form -->
-            <form
-              id="login-form"
-              class="d-flex rows w-100"
-              style="margin-top: 1rem"
-            >
-              <div class="d-flex cols" style="width: 50%; max-width: 500px">
-                <h2>Login Form</h2>
-                <input type="text" name="email" placeholder="Username" />
-                <input type="password" name="password" placeholder="Password" />
-                <button type="submit">Submit</button>
-              </div>
-
-              <pre
-                class="response response-pane"
-                style="margin-left: 20px"
-              ></pre>
-            </form>
-          </div>
-
-          <div
-            id="token-management-tab-content"
-            class="navigation-content hide"
+      <section id="navigation-content" style="flex-grow: 1">
+        <div id="auth-tab-content" class="navigation-content">
+          <!-- div to display the login form -->
+          <form
+            id="login-form"
+            class="d-flex rows w-100"
+            style="margin-top: 1rem"
           >
-            <!-- div to display the generated registration token -->
-            <div id="token_div" style="display: none">
-              <h4>Registration Token</h4>
-              <p id="token" style="word-break: break-all"></p>
-
-              <details>
-                <summary>Click to view buttons +</summary>
-                <div>
-                  <button id="delete-token" class="custom-button danger">
-                    Delete Token
-                  </button>
-
-                  <button id="unsubscribe-token" class="custom-button">
-                    Unsubscribe From Notifications
-                  </button>
-                </div>
-              </details>
+            <div class="d-flex cols" style="width: 50%; max-width: 500px">
+              <h2>Login Form</h2>
+              <input type="text" name="email" placeholder="Username" />
+              <input type="password" name="password" placeholder="Password" />
+              <button type="submit">Submit</button>
             </div>
-            <!-- div to display the UI to allow the request for permission to
-           notify the user. This is shown if the app has not yet been
-           granted permission to notify. -->
-            <div id="permission_div" style="display: none">
-              <h4>Needs Permission</h4>
-              <p id="token"></p>
-              <button class="custom-button" onclick="requestPermission()">
-                Request Permission
-              </button>
-            </div>
-            <!-- div to display messages received by this app. -->
-            <div id="messages"></div>
-          </div>
 
-          <div id="withdraw-tab-content" class="navigation-content hide">
-            <!-- div to display the withdrawals made -->
-            <form
-              id="withdrawal-form"
-              class="d-flex rows w-100"
-              style="margin-top: 1rem"
-            >
-              <div class="d-flex cols" style="width: 50%; max-width: 500px">
-                <h2>Withdraw Form</h2>
+            <pre class="response response-pane" style="margin-left: 20px"></pre>
+          </form>
+        </div>
 
-                <div class="d-flex cols">
-                  <div class="d-flex rows align-items-center">
-                    <input
-                      id="source-source"
-                      type="radio"
-                      name="paymentMethod"
-                      value="source"
-                      checked
-                    />
-                    <label for="source-source">Source</label>
+        <div id="token-management-tab-content" class="navigation-content hide">
+          <!-- div to display the generated registration token -->
+          <div id="token_div" style="display: none">
+            <h4>Registration Token</h4>
+            <p id="token" style="word-break: break-all"></p>
 
-                    <input
-                      id="paystack-source"
-                      type="radio"
-                      name="paymentMethod"
-                      value="paystack"
-                    />
-                    <label for="paystack-source">Paystack</label>
+            <details>
+              <summary>Click to view buttons +</summary>
+              <div>
+                <button id="delete-token" class="custom-button danger">
+                  Delete Token
+                </button>
 
-                    <input
-                      id="interswitch-source"
-                      type="radio"
-                      name="paymentMethod"
-                      value="interswitch"
-                    />
-                    <label for="interswitch-source">interswitch</label>
-                  </div>
-
-                  <div class="d-flex rows align-items-center">
-                    <input
-                      type="number"
-                      name="amount"
-                      placeholder="amount to withdraw"
-                      min="1"
-                      value="1"
-                    />
-                    <button type="submit">Make Withdrawal</button>
-                  </div>
-                </div>
+                <button id="unsubscribe-token" class="custom-button">
+                  Unsubscribe From Notifications
+                </button>
               </div>
-
-              <pre
-                class="response response-pane"
-                style="margin-left: 20px"
-              ></pre>
-            </form>
+            </details>
           </div>
+          <!-- div to display the UI to allow the request for permission to
+         notify the user. This is shown if the app has not yet been
+         granted permission to notify. -->
+          <div id="permission_div" style="display: none">
+            <h4>Needs Permission</h4>
+            <p id="token"></p>
+            <button class="custom-button" onclick="requestPermission()">
+              Request Permission
+            </button>
+          </div>
+          <!-- div to display messages received by this app. -->
+          <div id="messages"></div>
+        </div>
 
-          <div id="transfer-tab-content" class="navigation-content hide">
-            <!-- div to display the withdrawals made -->
-            <form
-              id="transfer-form"
-              class="d-flex rows w-100"
-              style="margin-top: 1rem"
-            >
-              <div class="d-flex cols" style="width: 50%; max-width: 500px">
-                <h2>Transfer Form</h2>
+        <div id="withdraw-tab-content" class="navigation-content hide">
+          <!-- div to display the withdrawals made -->
+          <form
+            id="withdrawal-form"
+            class="d-flex rows w-100"
+            style="margin-top: 1rem"
+          >
+            <div class="d-flex cols" style="width: 50%; max-width: 500px">
+              <h2>Withdraw Form</h2>
 
-                <div class="d-flex cols">
+              <div class="d-flex cols">
+                <div class="d-flex rows align-items-center">
                   <input
-                    type="text"
-                    name="receipientId"
-                    placeholder="Receipient ID"
+                    id="source-source"
+                    type="radio"
+                    name="paymentMethod"
+                    value="source"
+                    checked
                   />
+                  <label for="source-source">Source</label>
 
                   <input
-                    type="text"
-                    name="transactionPin"
-                    placeholder="Transaction Pin"
+                    id="paystack-source"
+                    type="radio"
+                    name="paymentMethod"
+                    value="paystack"
                   />
+                  <label for="paystack-source">Paystack</label>
 
+                  <input
+                    id="interswitch-source"
+                    type="radio"
+                    name="paymentMethod"
+                    value="interswitch"
+                  />
+                  <label for="interswitch-source">interswitch</label>
+                </div>
+
+                <div class="d-flex rows align-items-center">
                   <input
                     type="number"
                     name="amount"
-                    placeholder="Amount to transfer"
+                    placeholder="amount to withdraw"
                     min="1"
                     value="1"
                   />
-                  <button type="submit">Do Transfer</button>
+                  <button type="submit">Make Withdrawal</button>
                 </div>
               </div>
-
-              <pre
-                class="response response-pane"
-                style="margin-left: 20px"
-              ></pre>
-            </form>
-          </div>
-
-          <div id="view-tickets-tab-content" class="navigation-content hide">
-            <!-- div to display the tickets played -->
-            <div
-              id="ticket-container"
-              class="d-flex rows w-100"
-              style="margin-top: 1rem; flex-wrap: wrap"
-            >
-              <p class="loading">loading...</p>
-              <!-- <div class="ticket-card">
-                <div class="ticket-header">
-                  <h3>Ticket</h3>
-                </div>
-                <div class="d-flex cols ticket-body">
-                  <div class="ticket-body-row">
-                    <p>
-                      <span class="ticket-label">Ticket ID:</span>
-                      <span class="ticket-value">${ticket.ticketId}</span>
-                    </p>
-                    <p>
-                      <span class="ticket-label">Game:</span>
-                      <span class="ticket-value" style="text-transform: capitalize;">${ticket.Game?.name} (${
-                        ticket.Game?.lotteryName.toLowerCase().endsWith('lottery')
-                        ? ticket.Game?.lotteryName
-                        : ticket.Game?.lotteryName + ' lottery'
-                      })</span>
-                    </p>
-                    <p>
-                      <span class="ticket-label">Category:</span>
-                      <span class="ticket-value">${ticket.Game?.Lottery?.category}</span>
-                    </p>
-                    <p>
-                      <span class="ticket-label">Created On:</span>
-                      <span class="ticket-value">${new Date(ticket.createdAt).toDateString()}</span>
-                    </p>
-                    <p>
-                      <div class="ticket-label">Bet Slips:</div>
-                      <span class="ticket-value">${
-                        JSON.parse(ticket.betSlips).map((slip) => {
-                          return `
-                            <div class="ticket-slip">
-                              ${slip.betType}
-                            </div>
-                          `;
-                        }).join('')
-                      }</span>
-                    </p>
-                  </div>
-
-                  <div class="ticket-body-row">
-                    <p>
-                      <span class="ticket-label">Ticket status:</span>
-                      <span class="ticket-value">
-                        <span class="status-indicator" data-status=${ticket.status}>${ticket.status}</span>
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div> -->
             </div>
-          </div>
 
-          <div id="view-games-tab-content" class="navigation-content hide">
-            <!-- div to display the games available played -->
-            <div
-              id="games-container"
-              class="d-flex cols w-100"
-              style="margin-top: 1rem; flex-wrap: wrap"
-            >
-              <p class="loading">loading...</p>
+            <pre class="response response-pane" style="margin-left: 20px"></pre>
+          </form>
+        </div>
 
-              <!-- <div class="game-category-container border">
-                <h3 class="game-category-head">5/90</h3>
-                <div class="game-category-body">
-                  <div class="game-card">
-                    <div
-                      class="d-flex rows align-items-center ticket-header"
-                      style="margin-bottom: 1em"
-                    >
-                      <h3 style="margin-bottom: 0.5em">Game</h3>
-                      <span
-                        class="status-indicator"
-                        data-status="${
-                        ticket.status
-                        }"
-                        >${ticket.status}</span
-                      >
-                    </div>
-                    <div class="d-flex cols ticket-body">
-                      <div class="ticket-body-row">
-                        <p>
-                          <span class="ticket-label">Game ID:</span>
-                          <span class="ticket-value">${game.gameId}</span>
-                        </p>
-                        <p>
-                          <span class="ticket-label">Game:</span>
-                          <span
-                            class="ticket-value"
-                            style="text-transform: capitalize"
-                            >${ticket.Game?.name} (${
-                            ticket.Game?.lotteryName.toLowerCase().endsWith('lottery')
-                            ? ticket.Game?.lotteryName :
-                            ticket.Game?.lotteryName + ' lottery' })</span
-                          >
-                        </p>
-                      </div>
+        <div id="transfer-tab-content" class="navigation-content hide">
+          <!-- div to display the withdrawals made -->
+          <form
+            id="transfer-form"
+            class="d-flex rows w-100"
+            style="margin-top: 1rem"
+          >
+            <div class="d-flex cols" style="width: 50%; max-width: 500px">
+              <h2>Transfer Form</h2>
 
-                      <div class="d-flex rows ticket-body-row align-items-center">
-                          <button>Play Game</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
+              <div class="d-flex cols">
+                <input
+                  type="text"
+                  name="receipientId"
+                  placeholder="Receipient ID"
+                />
+
+                <input
+                  type="text"
+                  name="transactionPin"
+                  placeholder="Transaction Pin"
+                />
+
+                <input
+                  type="number"
+                  name="amount"
+                  placeholder="Amount to transfer"
+                  min="1"
+                  value="1"
+                />
+                <button type="submit">Do Transfer</button>
+              </div>
             </div>
+
+            <pre class="response response-pane" style="margin-left: 20px"></pre>
+          </form>
+        </div>
+
+        <div id="view-tickets-tab-content" class="navigation-content hide">
+          <!-- div to display the tickets played -->
+          <div
+            id="ticket-container"
+            class="d-flex rows w-100"
+            style="margin-top: 1rem; flex-wrap: wrap"
+          >
+            <p class="loading">loading...</p>
           </div>
-        </section>
-      </main>
-    </div>
+
+          <div id="ticket-pagination" class="d-flex rows w-100 align-items-center" style="justify-content: flex-end;">
+            <button id="prev-ticket-page" class="custom-button">
+              Previous Page
+            </button>
+            <div class="pagination-count-wrapper">
+              <span id="ticket-page-count">1</span> / <span id="total-ticket-pages">1</span>
+            </div>
+            <button id="next-ticket-page" class="custom-button">
+              Next Page
+            </button>
+          </div>
+        </div>
+
+        <div id="view-games-tab-content" class="navigation-content hide">
+          <!-- div to display the games available played -->
+          <div
+            id="games-container"
+            class="d-flex cols w-100"
+            style="margin-top: 1rem; flex-wrap: wrap"
+          >
+            <p class="loading">loading...</p>
+
+          </div>
+        </div>
+
+        <div id="view-results-tab-content" class="navigation-content hide">
+          <!-- div to display the games available played -->
+          <div
+            id="results-container"
+            class="d-flex cols w-100"
+            style="margin-top: 1rem; flex-wrap: wrap"
+          >
+            <p class="loading">loading results...</p>
+          </div>
+
+          <div id="results-pagination" class="d-flex rows w-100 align-items-center" style="justify-content: flex-end;">
+            <button id="prev-results-page" class="custom-button">
+              Previous Page
+            </button>
+            <div class="pagination-count-wrapper">
+              <span id="page-count">1</span> / <span id="total-pages">1</span>
+            </div>
+            <button id="next-results-page" class="custom-button">
+              Next Page
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <!-- Import and configure the Firebase SDK -->
     <!-- These scripts are made available when the app is served or deployed on Firebase Hosting -->

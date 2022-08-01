@@ -29,90 +29,137 @@ limitations under the License.
     <link rel="stylesheet" href="../main.css" />
     <link rel="stylesheet" href="./index.css" />
     <link rel="manifest" href="../manifest.json" />
+    <script src="../common.js"></script>
     <script src="./index.js"></script>
   </head>
   <body>
-    <div class="">
-      <!-- Header section containing title -->
-      <header class="d-flex rows">
-        <div class="">
-          <h3>Firebase Cloud Messaging</h3>
-        </div>
-      </header>
+    <!-- Header section containing title -->
+    <header class="d-flex rows">
+      <div>
+        <h3>Firebase Cloud Messaging</h3>
+      </div>
+    </header>
 
-      <main class="d-flex cols">
-        <!-- Container for the Table of content -->
-        <section
-          id="navigation"
-          class="d-flex rows align-items-center"
-          style="justify-content: space-between"
+    <main class="d-flex cols">
+      <!-- Container for the Table of content -->
+      <section id="navigation" class="d-flex rows align-items-center">
+        <a href="/" class="custom-button" style="margin-left: 5px">Back</a>
+        <div
+          class="d-flex rows"
+          style="
+            width: 97%;
+            margin-left: 5px;
+            padding: 10px;
+            justify-content: space-between;
+          "
         >
-          <a href="/">&lt;</a>
-          <ul class="d-flex rows" style="width: 97%">
-            <li id="play-tab">Playing</li>
-          </ul>
-        </section>
+          <span id="play-tab">Playing</span>
+          <span id="time-tab" data-status="lost" class="status-indicator"
+            >1:20:20</span
+          >
+        </div>
+      </section>
 
-        <section id="navigation-content" style="flex-grow: 1">
-          <div id="play-tab-content" class="navigation-content">
-            <div class="d-flex rows align-items-center" style="justify-content: space-between;">
-              <h2 id="game-name"></h2>
-              <div class="d-flex rows">
-                <span id="slip-counter" class="status-indicator">0 Slip</span>
-                <button id="create-ticket-button" disabled="true">Create Ticket</button>
-              </div>
-            </div>
-
+      <section id="navigation-content" style="flex-grow: 1">
+        <div id="play-tab-content" class="navigation-content">
+          <div
+            class="d-flex rows align-items-center"
+            style="justify-content: space-between"
+          >
+            <h2 id="game-name"></h2>
             <div class="d-flex rows">
-              <div
-                id="ball-container"
-                class="d-flex rows w-65"
-              ></div>
-              <aside class="d-flex cols w-35" >
-                <!-- SuMMARY -->
-                <div class="d-flex cols" style="margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #ccc;">
-                  <p class="d-flex rows" style="justify-content: space-between;">
-                    <small>Total Staked Amount:</small>
-                    <span id="total-staked-amount-value">0.00</span>
-                  </p>
-
-                  <p class="d-flex rows" style="justify-content: space-between;">
-                    <small>Total Potential Winning:</small>
-                    <span id="total-potential-value">0.00</span>
-                  </p>
-                </div>
-
-                <div class="d-flex rows w-100 align-items-start" style="flex-wrap: wrap;">
-                  <select id="bet-type-selector" class="option-select flex-grow">
-                   <option value="">Select BetType</option>
-                  </select>
-  
-                  <select id="booster-selector" class="option-select flex-grow">
-                    <option value="">Select Booster</option>
-                  </select>
-  
-                  <select id="result-selector" class="option-select flex-grow">
-                    <option value="">Select Result Type</option>
-                  </select>
-                </div>
-                
-                <input type="number" id="amount-input" class="option-select flex-grow border" placeholder="Amount">
-                
-              </aside>
+              <span id="slip-counter" class="status-indicator">0 Slip</span>
+              <button id="create-ticket-button" disabled="true">
+                Create Ticket
+              </button>
             </div>
+          </div>
 
-            <div class="d-flex rows w-100" style="margin-top: 10px;">
-              <div id="selection-area" class="d-flex rows flex-grow border" style="flex-wrap: wrap">
-                <!-- <span class="ball circle bg-orange" style="color: white">1</span>
-                <span class="ball circle bg-orange" style="color: white">1</span> -->
+          <div class="d-flex rows" style="align-items: flex-start;">
+            <div id="ball-container" class="d-flex rows w-65">
+              <!-- Container of Balls -->
+            </div>
+            <aside class="d-flex cols w-35">
+              <!-- SuMMARY -->
+              <div
+                class="d-flex cols"
+                style="padding: 10px; border-bottom: 1px solid #ccc"
+              >
+                <p class="d-flex rows" style="justify-content: space-between">
+                  <small>Total Staked Amount:</small>
+                  <span id="total-staked-amount-value">0.00</span>
+                </p>
+
+                <p class="d-flex rows" style="justify-content: space-between">
+                  <small>Total Potential Winning:</small>
+                  <span id="total-potential-value">0.00</span>
+                </p>
               </div>
 
-              <button id="add-slip">Add To Slip</button>
-            </div>
-            
+              <div
+                class="d-flex rows w-100 align-items-start"
+                style="
+                  flex-wrap: wrap;
+                  border-bottom: 1px solid #ccc;
+                  padding: 10px 0;
+                "
+              >
+                <select id="bet-type-selector" class="option-select flex-grow">
+                  <option value="">Select BetType</option>
+                </select>
+
+                <select id="booster-selector" class="option-select flex-grow">
+                  <option value="">Select Booster</option>
+                </select>
+
+                <select id="result-selector" class="option-select flex-grow">
+                  <option value="">Select Result Type</option>
+                </select>
+              </div>
+
+              <div
+                class="d-flex rows w-100 align-items-start"
+                style="
+                  flex-wrap: wrap;
+                  border-bottom: 1px solid #ccc;
+                  padding: 10px 0;
+                  margin-bottom: 20px;
+                "
+              >
+                <select id="over-type-selector" class="option-select flex-grow">
+                  <option value="">Select Over</option>
+                </select>
+
+                <select
+                  id="under-type-selector"
+                  class="option-select flex-grow"
+                >
+                  <option value="">Select Under</option>
+                </select>
+              </div>
+
+              <input
+                type="number"
+                id="amount-input"
+                class="option-select flex-grow border"
+                placeholder="Amount"
+              />
+            </aside>
           </div>
-        </section>
-      </main>
-    </div>
+
+          <div class="d-flex rows w-100" style="margin-top: 10px">
+            <div
+              id="selection-area"
+              class="d-flex rows flex-grow border"
+              style="flex-wrap: wrap; border-color: #aaa"
+            ></div>
+
+            <button id="add-slip" class="custom-button" style="margin: 0">
+              Add To Slip
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
   </body>
 </html>

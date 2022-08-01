@@ -18,7 +18,10 @@ section#navigation {
   flex-wrap: wrap;
   padding: 10px;
   padding-left: 0;
-  border-right: 2px solid black;
+}
+
+#ball-container + aside {
+  border-left: 2px solid black;
 }
 
 .ball {
@@ -32,6 +35,10 @@ section#navigation {
   );
   box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.2);
   transition: background-color 0.2s ease;
+}
+
+#ball-container .ball {
+  margin: 4px;
 }
 
 .ball:hover {

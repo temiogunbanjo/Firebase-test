@@ -1,22 +1,3 @@
-const globals = {
-  environment: "western",
-  token: localStorage.getItem("token") || null,
-  bet9ja: {
-    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
-    apiBaseUrl: "http://localhost:3000/api/v1",
-    apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
-  },
-  western: {
-    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
-    apiBaseUrl: "http://localhost:3000/api/v1",
-    apiKey: "USR.Ngu4rC-VMenpv-m251tw-rYC8Om-ryx89j-c4",
-  },
-  ticket: {
-    betSlips: [],
-  },
-  currentSelections: {},
-};
-
 const errorHandler = (error = {}) => {
   console.log("Errrrr");
   console.log(error);
@@ -119,18 +100,24 @@ function populateGameArea(game) {
   const betTypeSelectionMenu = document.getElementById("bet-type-selector");
   const boosterSelectionMenu = document.getElementById("booster-selector");
   const resultTypeSelectionMenu = document.getElementById("result-selector");
+  const overSelectionMenu = document.getElementById("over-type-selector");
+  const underSelectionMenu = document.getElementById("under-type-selector");
 
   const { name } = game;
-  const { gameCount, resultCount, category } = game.Lottery;
+  const { gameCount, category } = game.Lottery;
   let {
     betOptions = "[]",
     boosterOptions = "[]",
     resultOptions = "[]",
+    overOptions = "[]",
+    underOptions = "[]",
   } = game.Lottery;
 
   betOptions = JSON.parse(betOptions);
   boosterOptions = JSON.parse(boosterOptions);
   resultOptions = JSON.parse(resultOptions);
+  overOptions = JSON.parse(overOptions);
+  underOptions = JSON.parse(underOptions);
 
   gameTitle.innerHTML = `<span>Game: ${name}</span> <span class="status-indicator">${category}</span>`;
 
@@ -196,6 +183,22 @@ function populateGameArea(game) {
     option.textContent = each;
 
     resultTypeSelectionMenu.appendChild(option);
+  });
+
+  overOptions.forEach((each) => {
+    const option = document.createElement("option");
+    option.setAttribute("value", each);
+    option.textContent = each;
+
+    overSelectionMenu.appendChild(option);
+  });
+
+  underOptions.forEach((each) => {
+    const option = document.createElement("option");
+    option.setAttribute("value", each);
+    option.textContent = each;
+
+    underSelectionMenu.appendChild(option);
   });
 }
 
@@ -304,6 +307,7 @@ function fetchGameData(gameId) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
   }/game/fetch-game/${gameId}`;
+
   fetch(apiUrl, {
     method: "get",
     headers: {
@@ -409,6 +413,7 @@ function fetchPotentialWinning(ticket) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
   }/game/ticket/get-potential-winning`;
+
   const body = JSON.stringify({
     lotteryId: ticket.lotteryId,
     betSlips: JSON.stringify(ticket.betSlips),
@@ -461,24 +466,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const betTypeSelectionMenu = document.getElementById("bet-type-selector");
   const boosterSelectionMenu = document.getElementById("booster-selector");
   const resultTypeSelectionMenu = document.getElementById("result-selector");
+  const overSelectionMenu = document.getElementById("over-type-selector");
+  const underSelectionMenu = document.getElementById("under-type-selector");
   const amountInput = document.getElementById("amount-input");
 
   addSlipButton.addEventListener("click", (ev) => {
     if (
-      validateInputs([
-        betTypeSelectionMenu,
-        // boosterSelectionMenu,
-        // resultTypeSelectionMenu,
-        amountInput,
-      ]) &&
-      Object.keys(globals.currentSelections).length > 0
+      (validateInputs([betTypeSelectionMenu, amountInput]) &&
+        Object.keys(globals.currentSelections).length > 0) ||
+      validateInputs([overSelectionMenu, amountInput]) ||
+      validateInputs([underSelectionMenu, amountInput])
     ) {
       const slip = {
         amount: amountInput.value,
         selections: Object.keys(globals.currentSelections).join("-"),
-        betType: betTypeSelectionMenu.value,
+        betType:
+          overSelectionMenu.value !== "" || underSelectionMenu.value !== ""
+            ? ""
+            : betTypeSelectionMenu.value,
         booster: boosterSelectionMenu.value,
         resultType: resultTypeSelectionMenu.value,
+        overUnder: (() => {
+          if (overSelectionMenu.value !== "") {
+            return {
+              over: overSelectionMenu.value
+            }
+          } else if (underSelectionMenu.value !== "") {
+            return {
+              under: underSelectionMenu.value
+            }
+          } else {
+            return null;
+          }
+        })()
       };
 
       globals.ticket.betSlips.push(slip);

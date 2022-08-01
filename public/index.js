@@ -1,21 +1,3 @@
-const globals = {
-  environment: "bet9ja",
-  token: localStorage.getItem("token") || null,
-  notificationOptions: {
-    dir: "auto",
-  },
-  bet9ja: {
-    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
-    apiBaseUrl: "http://localhost:3000/api/v1",
-    apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
-  },
-  western: {
-    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
-    apiBaseUrl: "http://localhost:3000/api/v1",
-    apiKey: "USR.Ngu4rC-VMenpv-m251tw-rYC8Om-ryx89j-c4",
-  }
-};
-
 function showHideDiv(divId, show) {
   const div = document.querySelector("#" + divId);
   if (show) {
@@ -140,12 +122,14 @@ async function unsubscribeToNotification(deviceId) {
 }
 
 async function createInstantResult(ticketId) {
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/create-instant-result`;
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/create-instant-result`;
   try {
     const response = await fetch(apiUrl, {
       method: "post",
       body: JSON.stringify({
-        ticketId
+        ticketId,
       }),
       headers: {
         "Content-Type": "application/json;charset=utf-8",
@@ -162,7 +146,7 @@ async function createInstantResult(ticketId) {
       // const { data } = result;
       const data = result?.data?.data;
       console.log(data);
-      viewTicketsHandler(data);
+      viewTicketsHandler();
     }
   } catch (error) {
     console.log(error);
@@ -176,7 +160,9 @@ function saveUser(token) {
   const responseElement = document.querySelector("#login-form .response");
   responseElement.innerHTML = responseElement.innerHTML + "<br>Saving user...";
 
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/auth/validate-token?token=${token}`;
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/auth/validate-token?token=${token}`;
   fetch(apiUrl, {
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -193,7 +179,7 @@ function saveUser(token) {
           const user = data?.data;
           console.log(user);
           globals.user = user;
-          // localStorage.setItem("token", token);
+          sessionStorage.setItem("user", JSON.stringify(user));
           responseElement.innerHTML =
             responseElement.innerHTML + "<br>User saved successfully!";
         } else {
@@ -284,7 +270,9 @@ function withdrawalHandler(ev) {
     paymentMethod: paymentMethodInput?.value || null,
   };
 
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/wallet/bank-withdrawal/initialize`;
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/wallet/bank-withdrawal/initialize`;
   fetch(apiUrl, {
     method: "post",
     body: JSON.stringify(payload),
@@ -339,7 +327,9 @@ function transferHandler(ev) {
     receipientId: receipientInput?.value || "",
   };
 
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/wallet/transfer-fund-to-user`;
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/wallet/transfer-fund-to-user`;
   fetch(apiUrl, {
     method: "post",
     body: JSON.stringify(payload),
@@ -373,13 +363,26 @@ function transferHandler(ev) {
     });
 }
 
-function viewTicketsHandler(ev) {
+function viewTicketsHandler(options = { page: 1, limit: 50 }) {
   // ev.preventDefault();
   const containerElement = document.querySelector("#ticket-container");
-
+  const nextBtn = document.querySelector("#ticket-pagination #next-ticket-page");
+  const prevBtn = document.querySelector("#ticket-pagination #prev-ticket-page");
+  const pageCount = document.querySelector("#ticket-pagination #ticket-page-count");
+  const pageTotal = document.querySelector("#ticket-pagination #total-ticket-pages");
   // containerElement.innerHTML = "Fetching tickets...";
 
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/fetch-tickets/${globals.user?.userId}?page=1&limit=100`;
+  if (!options) {
+    options = {
+      page: parseInt(nextBtn.getAttribute("data-page"), 10) - 1 || 1,
+      limit: 50
+    };
+  }
+
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/fetch-tickets/${globals.user?.userId}?page=${options.page}&limit=${options.limit}`;
+
   fetch(apiUrl, {
     method: "get",
     headers: {
@@ -397,6 +400,18 @@ function viewTicketsHandler(ev) {
         if (result && result.data) {
           const { data } = result?.data;
           console.log(data);
+
+          pageCount.innerHTML = options.page;
+          pageTotal.innerHTML = Math.ceil(result.data.totalCount / options.limit);
+          if (options.page === 1) {
+            prevBtn.setAttribute("disabled", true);
+          } else {
+            prevBtn.removeAttribute("disabled");
+          }
+
+          nextBtn.setAttribute("data-page", options.page + 1);
+          prevBtn.setAttribute("data-page", options.page - 1);
+
           containerElement.innerHTML = data
             .map((ticket) => {
               return `
@@ -474,9 +489,7 @@ function viewTicketsHandler(ev) {
                         }>${ticket.status}</span>
                       </span>
                     </p>
-                    
                   </div>
-                  
                   ${
                     ticket.status === "ongoing"
                       ? `<div class="ticket-body-row">
@@ -514,7 +527,10 @@ function viewGamesHandler(ev) {
   const d = new Date();
   const currentTime = d.toLocaleTimeString();
   const currentWeekDay = d.getDay();
-  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/fetch-current-game?page=1&limit=100&currentWeekDay=${currentWeekDay}`;
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/fetch-current-game?page=1&limit=100&currentWeekDay=${currentWeekDay}`;
+
   fetch(apiUrl, {
     method: "get",
     headers: {
@@ -553,43 +569,114 @@ function viewGamesHandler(ev) {
                   .map((game) => {
                     return `
                     <div class="game-card">
-                    <div
-                      class="d-flex rows align-items-center ticket-header"
-                    >
-                      <h3 style="margin-bottom: 0.5em">Game</h3>
-                      <span
-                        class="status-indicator"
-                        data-status="${game.status === true ? "won" : "lost"}"
-                      >o</span>
-                    </div>
-                    <small class="status-indicator" style="margin-bottom: 1em">
-                      ${game.startTime} - ${game.endTime}
-                    </small
-                    
-                    <div class="d-flex cols ticket-body">
-                      <div class="ticket-body-row">
-                        <p>
-                          <span class="ticket-label">Game ID:</span>
-                          <span class="ticket-value">${game.gameId}</span>
-                        </p>
-                        <p>
-                          <span class="ticket-label">Game:</span>
-                          <span
-                            class="ticket-value"
-                            style="text-transform: capitalize"
-                            >${game.name}</span
-                          >
-                        </p>
+                      <div class="d-flex rows align-items-center ticket-header">
+                        <h3 style="margin-bottom: 0.5em">Game</h3>
+                        <span
+                          class="status-indicator"
+                          data-status="${game.status === true ? 'won' : 'lost'}"
+                        >o</span>
                       </div>
-  
-                      <div class="d-flex rows ticket-body-row align-items-center">
-                          <a href="/play?gameId=${game.gameId}">Play Game</a>
+                      <small class="status-indicator" style="margin-bottom: 1em;font-weight: 600">
+                        ${game.startTime} - ${game.endTime}
+                      </small>
+
+                      <div class="d-flex cols ticket-body">
+                        <div class="ticket-body-row">
+                          <p>
+                            <span class="ticket-label">Game ID:</span>
+                            <span class="ticket-value">${game.gameId}</span>
+                          </p>
+                          <p>
+                            <span class="ticket-label">Game:</span>
+                            <span
+                              class="ticket-value"
+                              style="text-transform: capitalize"
+                            >${game.name}</span>
+                          </p>
+                        </div>
+
+                        <div class="d-flex rows ticket-body-row align-items-center">
+                          <a href="/play?gameId=${game.gameId}" class="custom-button">Play Game</a>
+                        </div>
                       </div>
                     </div>
-                  </div>
                     `;
                   })
                   .join("")}
+              </div>
+            </div>`;
+            })
+            .join("");
+        }
+      } catch (error) {
+        console.log(error);
+        const { responsemessage, status } = error;
+        updateResponsePane(containerElement, responsemessage, status);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      updateResponsePane(containerElement, error, "error");
+    });
+}
+
+function viewResultsHandler(options = { page: 1, limit: 50 }) {
+  // ev.preventDefault();
+  const containerElement = document.querySelector("#results-container");
+  const nextBtn = document.querySelector("#results-pagination #next-results-page");
+  const prevBtn = document.querySelector("#results-pagination #prev-results-page");
+  const pageCount = document.querySelector("#results-pagination #page-count");
+  const pageTotal = document.querySelector("#results-pagination #total-pages");
+
+  // containerElement.innerHTML = "Fetching results...";
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/fetch-result-history?page=${options.page}&limit=${options.limit}&order=S_N:DESC`;
+
+  fetch(apiUrl, {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+      authorization: `Bearer ${globals.token}`,
+      mode: "no-cors",
+      "x-api-key": globals[globals.environment].apiKey,
+    },
+  })
+    .then(async (response) => {
+      try {
+        const result = await response.json();
+        const { status } = result;
+
+        if (result && result.data) {
+          // const categoryObject = {};
+          pageCount.innerHTML = options.page;
+          pageTotal.innerHTML = Math.ceil(result.data.totalCount / options.limit);
+          if (options.page === 1) {
+            prevBtn.setAttribute("disabled", true);
+          } else {
+            prevBtn.removeAttribute("disabled");
+          }
+
+          nextBtn.setAttribute("data-page", options.page + 1);
+          prevBtn.setAttribute("data-page", options.page - 1);
+  
+          console.log(result.data);
+          const { data } = result?.data;
+          
+          containerElement.innerHTML = data
+            .map((result) => {
+              return `<div class="d-flex rows result-entry align-items-center">
+              <h3 class="" style="margin: 10px 20px 10px 10px;">${
+                result.S_N
+              }</h3>
+              <div class="d-flex cols">
+                <h5 class="" style="margin: 0">${result.drawName}</h5>
+                <div class="d-flex rows space-between">
+                  <span class="">${result.results.replace(/-/gi, ", ")}</span>
+                  <span class="" style="margin-left: 20px">${
+                    result.raffle
+                  }</span>
+                </div>
               </div>
             </div>`;
             })
@@ -618,17 +705,40 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(tab);
     tab.addEventListener("click", (ev) => {
       let cb = () => {};
+      let nextBtn = null;
+      let prevBtn = null;
+
       switch (true) {
         case ev.target.id === "view-tickets-tab":
           cb = viewTicketsHandler;
+          nextBtn = document.querySelector("#ticket-pagination #next-ticket-page");
+          prevBtn = document.querySelector("#ticket-pagination #prev-ticket-page");
           break;
 
         case ev.target.id === "view-games-tab":
           cb = viewGamesHandler;
           break;
 
+        case ev.target.id === "view-results-tab":
+          cb = viewResultsHandler;
+          nextBtn = document.querySelector("#results-pagination #next-results-page");
+          prevBtn = document.querySelector("#results-pagination #prev-results-page");
+          break;
+
         default:
           break;
+      }
+
+      if (nextBtn && prevBtn) {
+        nextBtn.addEventListener("click", (ev) => {
+          const page = ev.target.getAttribute("data-page");
+          cb({ page: parseInt(page, 10), limit: 50 });
+        });
+
+        prevBtn.addEventListener("click", (ev) => {
+          const page = ev.target.getAttribute("data-page");
+          cb({ page: parseInt(page, 10), limit: 50 });
+        });
       }
 
       showTabContent(ev.currentTarget.id, cb);

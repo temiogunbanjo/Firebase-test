@@ -88,6 +88,10 @@ header h3 {
   align-items: flex-start;
 }
 
+.space-between{
+  justify-content: space-between;
+}
+
 .flex-grow{
   flex-grow: 1;
 }
@@ -214,13 +218,19 @@ form button[type="submit"],
   margin-bottom: 1rem;
   background-color: dodgerblue;
   color: white;
-  padding: 1rem;
+  padding: 14px 20px;
   border-radius: 5px;
   border: none;
 }
 
 .custom-button.danger{
   background-color: red;
+}
+
+.custom-button.outlined{
+  border: 2px solid dodgerblue;
+  background-color: transparent;
+  color: dodgerblue;
 }
 
 form input[type="radio"] + label {
@@ -254,7 +264,8 @@ form input[type="radio"] + label {
 
 .game-category-head {
   text-transform: capitalize;
-  margin: 10px 10px;
+  margin: 20px 10px 10px;
+  /* border-bottom: 1px solid #ddd; */
   font-size: 28px;
 }
 
@@ -333,4 +344,19 @@ form input[type="radio"] + label {
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 14px;
+}
+
+.result-entry{
+  padding: 10px;
+  box-sizing: border-box;
+  min-height: 90px;
+  /* align-items: center; */
+}
+
+.result-entry:nth-child(2n){
+  background-color: rgba(30, 143, 255, 0.05);
+}
+
+.pagination-count-wrapper {
+  margin: 0 40px;
 }
