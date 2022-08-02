@@ -1,5 +1,5 @@
 const globals = {
-  environment: "bet9ja",
+  environment: "western",
   token: localStorage.getItem("token") || null,
   user: JSON.parse(sessionStorage.getItem("user") || "{}"),
   notificationOptions: {

@@ -200,6 +200,36 @@ function saveUser(token) {
     });
 }
 
+async function fetchUserById(userId) {
+  console.log(globals[globals.environment]);
+
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/user/fetch-user/${userId}`;
+
+  try {
+    const response = await fetch(apiUrl, {
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+        authorization: `Bearer ${globals.token}`,
+        "x-api-key": globals[globals.environment].apiKey,
+      },
+    });
+    const result = await response.json();
+
+    if (result && result.data) {
+      const { data } = result;
+      const user = data?.data;
+      console.log(user);
+      return user;
+    } else {
+      return Promise.reject(result);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function loginHandler(ev) {
   ev.preventDefault();
   const responseElement = document.querySelector("#login-form .response");
@@ -273,6 +303,7 @@ function withdrawalHandler(ev) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
   }/wallet/bank-withdrawal/initialize`;
+
   fetch(apiUrl, {
     method: "post",
     body: JSON.stringify(payload),
@@ -291,6 +322,18 @@ function withdrawalHandler(ev) {
         if (result && result.data) {
           const { data } = result;
           updateResponsePane(responseElement, data, status);
+          fetchUserById(globals?.user?.userId)
+            .then((user) => {
+              const { walletBalance } = user;
+              const walletBalanceElement = document.querySelector(
+                "#withdrawal-balance"
+              );
+              walletBalanceElement.innerHTML =
+                parseFloat(walletBalance).toFixed(2);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         } else {
           updateResponsePane(responseElement, result, status);
         }
@@ -366,22 +409,32 @@ function transferHandler(ev) {
 function viewTicketsHandler(options = { page: 1, limit: 50 }) {
   // ev.preventDefault();
   const containerElement = document.querySelector("#ticket-container");
-  const nextBtn = document.querySelector("#ticket-pagination #next-ticket-page");
-  const prevBtn = document.querySelector("#ticket-pagination #prev-ticket-page");
-  const pageCount = document.querySelector("#ticket-pagination #ticket-page-count");
-  const pageTotal = document.querySelector("#ticket-pagination #total-ticket-pages");
+  const nextBtn = document.querySelector(
+    "#ticket-pagination #next-ticket-page"
+  );
+  const prevBtn = document.querySelector(
+    "#ticket-pagination #prev-ticket-page"
+  );
+  const pageCount = document.querySelector(
+    "#ticket-pagination #ticket-page-count"
+  );
+  const pageTotal = document.querySelector(
+    "#ticket-pagination #total-ticket-pages"
+  );
   // containerElement.innerHTML = "Fetching tickets...";
 
   if (!options) {
     options = {
       page: parseInt(nextBtn.getAttribute("data-page"), 10) - 1 || 1,
-      limit: 50
+      limit: 50,
     };
   }
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-tickets/${globals.user?.userId}?page=${options.page}&limit=${options.limit}`;
+  }/game/fetch-tickets/${globals.user?.userId}?page=${options.page}&limit=${
+    options.limit
+  }`;
 
   fetch(apiUrl, {
     method: "get",
@@ -402,7 +455,9 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
           console.log(data);
 
           pageCount.innerHTML = options.page;
-          pageTotal.innerHTML = Math.ceil(result.data.totalCount / options.limit);
+          pageTotal.innerHTML = Math.ceil(
+            result.data.totalCount / options.limit
+          );
           if (options.page === 1) {
             prevBtn.setAttribute("disabled", true);
           } else {
@@ -573,7 +628,7 @@ function viewGamesHandler(ev) {
                         <h3 style="margin-bottom: 0.5em">Game</h3>
                         <span
                           class="status-indicator"
-                          data-status="${game.status === true ? 'won' : 'lost'}"
+                          data-status="${game.status === true ? "won" : "lost"}"
                         >o</span>
                       </div>
                       <small class="status-indicator" style="margin-bottom: 1em;font-weight: 600">
@@ -596,7 +651,9 @@ function viewGamesHandler(ev) {
                         </div>
 
                         <div class="d-flex rows ticket-body-row align-items-center">
-                          <a href="/play?gameId=${game.gameId}" class="custom-button">Play Game</a>
+                          <a href="/play?gameId=${
+                            game.gameId
+                          }" class="custom-button">Play Game</a>
                         </div>
                       </div>
                     </div>
@@ -623,15 +680,21 @@ function viewGamesHandler(ev) {
 function viewResultsHandler(options = { page: 1, limit: 50 }) {
   // ev.preventDefault();
   const containerElement = document.querySelector("#results-container");
-  const nextBtn = document.querySelector("#results-pagination #next-results-page");
-  const prevBtn = document.querySelector("#results-pagination #prev-results-page");
+  const nextBtn = document.querySelector(
+    "#results-pagination #next-results-page"
+  );
+  const prevBtn = document.querySelector(
+    "#results-pagination #prev-results-page"
+  );
   const pageCount = document.querySelector("#results-pagination #page-count");
   const pageTotal = document.querySelector("#results-pagination #total-pages");
 
   // containerElement.innerHTML = "Fetching results...";
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-result-history?page=${options.page}&limit=${options.limit}&order=S_N:DESC`;
+  }/game/fetch-result-history?page=${options.page}&limit=${
+    options.limit
+  }&order=S_N:DESC`;
 
   fetch(apiUrl, {
     method: "get",
@@ -650,7 +713,9 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
         if (result && result.data) {
           // const categoryObject = {};
           pageCount.innerHTML = options.page;
-          pageTotal.innerHTML = Math.ceil(result.data.totalCount / options.limit);
+          pageTotal.innerHTML = Math.ceil(
+            result.data.totalCount / options.limit
+          );
           if (options.page === 1) {
             prevBtn.setAttribute("disabled", true);
           } else {
@@ -659,10 +724,10 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
 
           nextBtn.setAttribute("data-page", options.page + 1);
           prevBtn.setAttribute("data-page", options.page - 1);
-  
+
           console.log(result.data);
           const { data } = result?.data;
-          
+
           containerElement.innerHTML = data
             .map((result) => {
               return `<div class="d-flex rows result-entry align-items-center">
@@ -709,10 +774,30 @@ document.addEventListener("DOMContentLoaded", () => {
       let prevBtn = null;
 
       switch (true) {
+        case ev.target.id === "withdraw-tab":
+          cb = (e) => {
+            fetchUserById(globals?.user?.userId)
+              .then((user) => {
+                const { walletBalance } = user;
+                const walletBalanceElement = document.querySelector(
+                  "#withdrawal-balance"
+                );
+                walletBalanceElement.innerHTML = parseFloat(walletBalance).toFixed(2);
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          };
+          break;
+
         case ev.target.id === "view-tickets-tab":
           cb = viewTicketsHandler;
-          nextBtn = document.querySelector("#ticket-pagination #next-ticket-page");
-          prevBtn = document.querySelector("#ticket-pagination #prev-ticket-page");
+          nextBtn = document.querySelector(
+            "#ticket-pagination #next-ticket-page"
+          );
+          prevBtn = document.querySelector(
+            "#ticket-pagination #prev-ticket-page"
+          );
           break;
 
         case ev.target.id === "view-games-tab":
@@ -721,8 +806,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         case ev.target.id === "view-results-tab":
           cb = viewResultsHandler;
-          nextBtn = document.querySelector("#results-pagination #next-results-page");
-          prevBtn = document.querySelector("#results-pagination #prev-results-page");
+          nextBtn = document.querySelector(
+            "#results-pagination #next-results-page"
+          );
+          prevBtn = document.querySelector(
+            "#results-pagination #prev-results-page"
+          );
           break;
 
         default:
