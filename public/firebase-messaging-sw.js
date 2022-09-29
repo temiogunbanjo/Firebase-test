@@ -41,13 +41,13 @@ importScripts(
  **/
 
 const app = firebase.initializeApp({
-  apiKey: "AIzaSyD7oZG29Z0WcZR8TbSgGANvSfdaEdih9CE",
-  authDomain: "lixom-betja.firebaseapp.com",
-  projectId: "lixom-betja",
-  storageBucket: "lixom-betja.appspot.com",
-  messagingSenderId: "584589312758",
-  appId: "1:584589312758:web:413f8c268d1af0526922d7",
-  measurementId: "G-TLTQ4KK4D7",
+  apiKey: "AIzaSyBZ_ga-M8eBpWPSGfjHFvx4D7_SrvTfQIE",
+  authDomain: "lixom-western.firebaseapp.com",
+  projectId: "lixom-western",
+  storageBucket: "lixom-western.appspot.com",
+  messagingSenderId: "1061775858753",
+  appId: "1:1061775858753:web:71078e621c6db5170bfac0",
+  measurementId: "G-2HJLVE3XYS"
 });
 
 // console.log(app);

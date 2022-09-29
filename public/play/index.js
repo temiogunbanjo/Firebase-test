@@ -95,6 +95,7 @@ const updateUI = () => {
 };
 
 function populateGameArea(game) {
+  // debugger;
   const ballContainer = document.getElementById("ball-container");
   const gameTitle = document.getElementById("game-name");
   const betTypeSelectionMenu = document.getElementById("bet-type-selector");
@@ -161,26 +162,35 @@ function populateGameArea(game) {
   //   resultOptions,
   // });
 
-  betOptions.forEach((each) => {
+  betOptions.forEach((each, index) => {
     const option = document.createElement("option");
     option.setAttribute("value", each.name);
     option.textContent = each.name;
+    if (index === 0) {
+      option.setAttribute("selected", true);
+    }
 
     betTypeSelectionMenu.appendChild(option);
   });
 
-  boosterOptions.forEach((each) => {
+  boosterOptions.forEach((each, index) => {
     const option = document.createElement("option");
     option.setAttribute("value", each);
     option.textContent = each;
+    if (index === 0) {
+      option.setAttribute("selected", true);
+    }
 
     boosterSelectionMenu.appendChild(option);
   });
 
-  resultOptions.forEach((each) => {
+  resultOptions.forEach((each, index) => {
     const option = document.createElement("option");
     option.setAttribute("value", each);
     option.textContent = each;
+    if (index === 0) {
+      option.setAttribute("selected", true);
+    }
 
     resultTypeSelectionMenu.appendChild(option);
   });
@@ -344,11 +354,12 @@ function createTicket(ticket) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
   }/game/create-ticket`;
+
   const body = JSON.stringify({
     gameId: ticket.gameId,
     totalStakedAmount: ticket.totalStakedAmount,
     winningRedemptionMethod: "wallet",
-    sourceWallet: "mainWallet",
+    sourceWallet: ticket.sourceWallet,
     betSlips: JSON.stringify(ticket.betSlips),
   });
 
@@ -380,6 +391,8 @@ function createTicket(ticket) {
           console.log({ createTicketResponse: data, ticket: globals.ticket });
           if (data?.ticketId) {
             globals.ticket = {
+              gameId: globals.ticket.gameId,
+              lotteryId: globals.ticket.lotteryId,
               betSlips: [],
             };
             updateUI();
@@ -461,8 +474,10 @@ function fetchPotentialWinning(ticket) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // debugger;
   const addSlipButton = document.getElementById("add-slip");
   const createTicketButton = document.getElementById("create-ticket-button");
+
   const betTypeSelectionMenu = document.getElementById("bet-type-selector");
   const boosterSelectionMenu = document.getElementById("booster-selector");
   const resultTypeSelectionMenu = document.getElementById("result-selector");
@@ -516,6 +531,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   createTicketButton.addEventListener("click", (ev) => {
+    const walletSelector = document.querySelector("#play-tab-content input[name='sourceWallet']:checked");
+    globals.ticket.sourceWallet = walletSelector.value;
     createTicket(globals.ticket);
   });
 

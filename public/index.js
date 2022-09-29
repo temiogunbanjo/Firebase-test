@@ -14,10 +14,13 @@ function appendMessage(payload) {
   console.log(messagesElement);
   const dataHeaderElement = document.createElement("h5");
   const dataElement = document.createElement("pre");
+
   dataElement.style = "margin-left: 0; max-width: unset; width: 100%";
   dataElement.classList.add("response-pane");
+
   dataHeaderElement.textContent = "Received message:";
   dataElement.textContent = JSON.stringify(payload, null, 2);
+
   messagesElement.appendChild(dataHeaderElement);
   messagesElement.appendChild(dataElement);
 }
@@ -155,6 +158,37 @@ async function createInstantResult(ticketId) {
   }
 }
 
+async function deleteTicket(ticketId) {
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/delete-ticket/${ticketId}`;
+  try {
+    const response = await fetch(apiUrl, {
+      method: "delete",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+        authorization: `Bearer ${globals.token}`,
+        mode: "no-cors",
+        "x-api-key": globals[globals.environment].apiKey,
+      },
+    });
+
+    const result = await response.json();
+    const { status } = result;
+
+    if (result && result.data) {
+      // const { data } = result;
+      const data = result?.data?.data;
+      console.log(data);
+      viewTicketsHandler();
+    }
+  } catch (error) {
+    console.log(error);
+    const { status } = error;
+    console.log(status);
+  }
+}
+
 function saveUser(token) {
   console.log(globals[globals.environment]);
   const responseElement = document.querySelector("#login-form .response");
@@ -163,6 +197,7 @@ function saveUser(token) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
   }/auth/validate-token?token=${token}`;
+
   fetch(apiUrl, {
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -544,18 +579,24 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
                         }>${ticket.status}</span>
                       </span>
                     </p>
+                    ${
+                      ticket.status === "ongoing"
+                        ? `<div class="d-flex" style="flex-direction: row;">
+                            <button
+                              class="w-auto flex-grow" onclick="createInstantResult(${ticket.ticketId})"
+                              style="background-color: dodgerblue; color: white; border: none;padding: 14px;border-radius: 5px; margin-right: 1px">
+                              Create Instant Result
+                            </button>
+                            <button
+                              class="w-auto flex-grow" onclick="deleteTicket(${ticket.ticketId})"
+                              style="background-color: red; color: white; border: none;padding: 14px;border-radius: 5px; margin-left: 1px">
+                              Delete TIcket
+                            </button>
+                          </div>`
+                        : ""
+                    }
                   </div>
-                  ${
-                    ticket.status === "ongoing"
-                      ? `<div class="ticket-body-row">
-                          <button
-                            class="w-full" onclick="createInstantResult(${ticket.ticketId})"
-                            style="background-color: dodgerblue; color: white; border: none;padding: 10px;border-radius: 5px">
-                            Create Instant Result
-                          </button>
-                        </div>`
-                      : ""
-                  }
+                  
                 </div>
               </div>
             `;
@@ -617,11 +658,16 @@ function viewGamesHandler(ev) {
 
           containerElement.innerHTML = Object.keys(categoryObject)
             .map((category) => {
-              return `<div class="game-category-container">
+              return `<div class="game-category-container" style="width: 100%">
               <h3 class="game-category-head">${category}</h3>
-              <div class="game-category-body d-flex rows">
+              <div class="game-category-body d-flex rows" style="flex-wrap: wrap">
                 ${categoryObject[category]
                   .map((game) => {
+                    const poolProgressPercent = game.totalFundPool
+                      ? Math.floor(
+                          game.currentPoolAmount / game.totalFundPool
+                        ) * 100
+                      : null;
                     return `
                     <div class="game-card">
                       <div class="d-flex rows align-items-center ticket-header">
@@ -641,6 +687,7 @@ function viewGamesHandler(ev) {
                             <span class="ticket-label">Game ID:</span>
                             <span class="ticket-value">${game.gameId}</span>
                           </p>
+
                           <p>
                             <span class="ticket-label">Game:</span>
                             <span
@@ -648,6 +695,16 @@ function viewGamesHandler(ev) {
                               style="text-transform: capitalize"
                             >${game.name}</span>
                           </p>
+
+                          ${
+                            poolProgressPercent
+                              ? `<p>
+                                  <progress value='${poolProgressPercent}'>
+                                    ${poolProgressPercent}%
+                                  </progress>
+                                </p>`
+                              : ""
+                          }
                         </div>
 
                         <div class="d-flex rows ticket-body-row align-items-center">
@@ -782,7 +839,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const walletBalanceElement = document.querySelector(
                   "#withdrawal-balance"
                 );
-                walletBalanceElement.innerHTML = parseFloat(walletBalance).toFixed(2);
+                walletBalanceElement.innerHTML =
+                  parseFloat(walletBalance).toFixed(2);
               })
               .catch((error) => {
                 console.log(error);

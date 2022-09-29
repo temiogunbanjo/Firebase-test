@@ -363,7 +363,7 @@ limitations under the License.
           // TODO(developer): Send the current token to your server.
           subscribeToNotification(currentToken)
             .then((response) => {
-              // console.log(response?.data);
+              console.log(response);
               console.log("Subscription response received");
               if (!!response && response?.status === "success") {
                 setTokenSentToServer(true);
