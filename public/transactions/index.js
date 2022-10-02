@@ -1,4 +1,4 @@
-function viewResultsHandler(options = { page: 1, limit: 50 }) {
+function viewTransactionsHandler(options = { page: 1, limit: 50 }) {
   // ev.preventDefault();
   const containerElement = document.querySelector("#results-container");
   const nextBtn = document.querySelector(
@@ -13,9 +13,9 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
   // containerElement.innerHTML = "Fetching results...";
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-result-history?page=${options.page}&limit=${
+  }/wallet/fetch-history?page=${options.page}&limit=${
     options.limit
-  }&order=S_N:DESC`;
+  }&order=createdAt:DESC`;
 
   fetch(apiUrl, {
     method: "get",
@@ -50,18 +50,53 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
           const { data } = result?.data;
 
           containerElement.innerHTML = data
-            .map((result) => {
-              return `<div class="d-flex rows result-entry align-items-center">
+            .map((result, index) => {
+              return `<div class="d-flex rows result-entry">
               <h3 class="" style="margin: 10px 20px 10px 10px;">${
-                result.S_N
-              }</h3>
-              <div class="d-flex cols">
-                <h5 class="" style="margin: 0">${result.drawName}</h5>
+                index + 1
+              }.</h3>
+
+              <div class="d-flex cols flex-grow">
+                <div class="d-flex rows space-between align-items-center">
+                  <h3 style="margin: 10px 20px 0 0;">${
+                    result.narration.length > 35
+                      ? `${result.narration.slice(0, 35)}...`
+                      : result.narration
+                  }</h3>
+                  <span class="status-indicator" data-status=${(() => {
+                    switch (result.status) {
+                      case "success":
+                        return "won";
+
+                      case "failed":
+                        return "lost";
+
+                      default:
+                        return "";
+                    }
+                  })()}>${result.status}</span>
+                </div>  
+
                 <div class="d-flex rows space-between">
-                  <span class="">${result.results.replace(/-/gi, ", ")}</span>
-                  <span class="" style="margin-left: 20px">${
-                    result.raffle
-                  }</span>
+                  <h5 style="margin-bottom: 10px; margin-top: 5px; color: #444444; text-transform: uppercase">${
+                    result.transactionId
+                  }</h5>
+                </div>
+
+                <div class="d-flex rows space-between">
+                  <span>Ref: ${result.referenceId}</span>
+                  <span class="fw-600" style="margin-left: 20px; margin-bottom: 3px">${
+                    result.transactionType
+                  } / ${result.provider} / ${result.transactionSource}</span>
+                </div>
+
+                <div class="d-flex rows space-between">
+                  <span>Amount: <b style="color: #444444">${
+                    result.amount
+                  }</b></span>
+                  <span class="fw-400" style="margin-left: 20px; font-size: 13px">${new Date(
+                    result.createdAt
+                  ).toUTCString()}</span>
                 </div>
               </div>
             </div>`;
@@ -81,22 +116,22 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(7);
+  setPageIndex(4);
 
-  let nextBtn = null;
-  let prevBtn = null;
+  let nextBtn = document.querySelector("#results-pagination #next-results-page");
+  let prevBtn = document.querySelector("#results-pagination #prev-results-page");
 
   if (nextBtn && prevBtn) {
     nextBtn.addEventListener("click", (ev) => {
       const page = ev.target.getAttribute("data-page");
-      viewResultsHandler({ page: parseInt(page, 10), limit: 50 });
+      viewTransactionsHandler({ page: parseInt(page, 10), limit: 50 });
     });
 
     prevBtn.addEventListener("click", (ev) => {
       const page = ev.target.getAttribute("data-page");
-      viewResultsHandler({ page: parseInt(page, 10), limit: 50 });
+      viewTransactionsHandler({ page: parseInt(page, 10), limit: 50 });
     });
   }
 
-  viewResultsHandler({ page: 1, limit: 50 });
+  viewTransactionsHandler({ page: 1, limit: 50 });
 });

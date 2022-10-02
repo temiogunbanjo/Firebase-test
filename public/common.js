@@ -58,6 +58,11 @@ const createMenu = (drawerElement) => {
       id: "transfer-tab",
     },
     {
+      link: "/transactions",
+      name: "Transactions",
+      id: "transaction-tab",
+    },
+    {
       link: "/games",
       name: "Games",
       id: "view-games-tab",
