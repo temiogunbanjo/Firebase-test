@@ -195,8 +195,12 @@ section#navigation ul li a{
   font-weight: 600;
 }
 
-section#navigation ul li a:hover,
 section#navigation ul li a.active {
+  background-color: dodgerblue;
+  color: white;
+}
+
+section#navigation ul li a:hover{
   background-color: red;
   color: white;
 }
