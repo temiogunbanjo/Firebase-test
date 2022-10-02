@@ -26,9 +26,9 @@ limitations under the License.
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
-    <link rel="stylesheet" href="./main.css" />
-    <link rel="manifest" href="./manifest.json" />
-    <script src="./common.js"></script>
+    <link rel="stylesheet" href="../main.css" />
+    <link rel="manifest" href="../manifest.json" />
+    <script src="../common.js"></script>
     <script src="./index.js"></script>
   </head>
   <body>
@@ -43,10 +43,10 @@ limitations under the License.
       <!-- Container for the Table of content -->
       <section id="navigation" class="w-30">
         <ul>
-          <li id="auth-tab"><a class="active" href="/">Authentication</a></li>
+          <li id="auth-tab"><a href="/">Authentication</a></li>
           <li id="token-management-tab"><a href="/token">Token Management</a></li>
           <li id="withdraw-tab"><a href="/withdrawal">Withdrawals</a></li>
-          <li id="transfer-tab"><a href="/transfer-funds">Transfers</a></li>
+          <li id="transfer-tab"><a class="active" href="/transfer-funds">Transfers</a></li>
           <li id="view-games-tab"><a href="/games">Games</a></li>
           <li id="view-tickets-tab"><a href="/tickets">View Tickets</a></li>
           <li id="view-results-tab"><a href="/results">Game Results</a></li>
@@ -54,18 +54,42 @@ limitations under the License.
       </section>
 
       <section id="navigation-content" style="flex-grow: 1">
-        <div id="auth-tab-content" class="navigation-content">
-          <!-- div to display the login form -->
+        <div id="transfer-tab-content" class="navigation-content">
+          <!-- div to display the withdrawals made -->
           <form
-            id="login-form"
+            id="transfer-form"
             class="d-flex rows w-100"
             style="margin-top: 1rem"
           >
             <div class="d-flex cols" style="width: 50%; max-width: 500px">
-              <h2>Login Form</h2>
-              <input type="text" name="email" placeholder="Username" />
-              <input type="password" name="password" placeholder="Password" />
-              <button type="submit">Submit</button>
+              <h2 style="margin-bottom: 3px;">Transfer Form</h2>
+              <h5 style="margin-top: 3px; align-items: center;" class="d-flex rows">
+                <span style="margin-right: 6px;">Main Balance: </span>
+                <span id="transfer-balance" class="status-indicator">0.00</span>
+              </h5>
+
+              <div class="d-flex cols">
+                <input
+                  type="text"
+                  name="receipientId"
+                  placeholder="Receipient ID"
+                />
+
+                <input
+                  type="text"
+                  name="transactionPin"
+                  placeholder="Transaction Pin"
+                />
+
+                <input
+                  type="number"
+                  name="amount"
+                  placeholder="Amount to transfer"
+                  min="1"
+                  value="1"
+                />
+                <button type="submit">Do Transfer</button>
+              </div>
             </div>
 
             <pre class="response response-pane" style="margin-left: 20px"></pre>

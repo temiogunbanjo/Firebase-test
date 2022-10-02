@@ -1,5 +1,5 @@
 const globals = {
-  environment: "white",
+  environment: "western",
   token: localStorage.getItem("token") || null,
   user: JSON.parse(sessionStorage.getItem("user") || "{}"),
   notificationOptions: {
@@ -26,3 +26,40 @@ const globals = {
   },
   currentSelections: {},
 };
+
+const updateResponsePane = (responseElement, dataResponse, status) => {
+  responseElement.textContent =
+    typeof dataResponse !== "object"
+      ? dataResponse
+      : JSON.stringify(dataResponse, null, 2);
+};
+
+async function fetchUserById(userId) {
+  console.log(globals[globals.environment]);
+
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/user/fetch-user/${userId}`;
+
+  try {
+    const response = await fetch(apiUrl, {
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+        authorization: `Bearer ${globals.token}`,
+        "x-api-key": globals[globals.environment].apiKey,
+      },
+    });
+    const result = await response.json();
+
+    if (result && result.data) {
+      const { data } = result;
+      const user = data?.data;
+      console.log(user);
+      return user;
+    } else {
+      return Promise.reject(result);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,800;1,400;1,600;1,800&display=swap");
 
 * {
@@ -80,19 +80,19 @@ header h3 {
   flex-direction: column;
 }
 
-.align-items-center{
+.align-items-center {
   align-items: center;
 }
 
-.align-items-start{
+.align-items-start {
   align-items: flex-start;
 }
 
-.space-between{
+.space-between {
   justify-content: space-between;
 }
 
-.flex-grow{
+.flex-grow {
   flex-grow: 1;
 }
 
@@ -117,7 +117,7 @@ header h3 {
   background-color: dodgerblue;
 }
 
-.w-5{
+.w-5 {
   width: 5%;
 }
 .w-10 {
@@ -153,7 +153,8 @@ header h3 {
   width: 95%;
 }
 
-.w-100, .w-full {
+.w-100,
+.w-full {
   width: 100%;
 }
 
@@ -177,32 +178,41 @@ section#navigation {
   min-width: 250px;
 }
 
-section#navigation ul{
+section#navigation ul {
   padding: 0;
 }
 
-section#navigation ul li{
+/* section#navigation ul li {
+  padding: 10px;
+  font-weight: 600;
+} */
+
+section#navigation ul li a{
+  text-decoration: none;
+  color: black;
+  display: block;
   padding: 10px;
   font-weight: 600;
 }
 
-section#navigation ul li:hover{
+section#navigation ul li a:hover,
+section#navigation ul li a.active {
   background-color: red;
   color: white;
 }
 
 #navigation-content {
- padding: 0 2rem 0 1rem;
- min-width: 70%;
- background-color: #fafafa;
- min-height: 100vh;
+  padding: 0 2rem 0 1rem;
+  min-width: 70%;
+  background-color: #fafafa;
+  min-height: 100vh;
 }
 
-.hide{
+.hide {
   display: none !important;
 }
 
-summary{
+summary {
   background-color: dodgerblue;
   color: white;
   padding: 0.5rem;
@@ -217,7 +227,7 @@ form input {
 }
 
 form button[type="submit"],
-.custom-button{
+.custom-button {
   margin-top: 1rem;
   margin-bottom: 1rem;
   background-color: dodgerblue;
@@ -227,11 +237,11 @@ form button[type="submit"],
   border: none;
 }
 
-.custom-button.danger{
+.custom-button.danger {
   background-color: red;
 }
 
-.custom-button.outlined{
+.custom-button.outlined {
   border: 2px solid dodgerblue;
   background-color: transparent;
   color: dodgerblue;
@@ -242,7 +252,7 @@ form input[type="radio"] + label {
   margin-right: 10px;
 }
 
-.response-pane{
+.response-pane {
   min-height: 100px;
   max-height: 400px;
   padding: 20px;
@@ -262,7 +272,7 @@ form input[type="radio"] + label {
 .ticket-card,
 .ticket-card > *,
 .game-card,
-.game-card > *{
+.game-card > * {
   box-sizing: border-box;
 }
 
@@ -273,11 +283,12 @@ form input[type="radio"] + label {
   font-size: 28px;
 }
 
-.ticket-card, .game-card{
+.ticket-card,
+.game-card {
   font-weight: 400;
   color: #111;
   background-color: #fefeff;
-  box-shadow: 1px 3px 20px rgba(150, 150, 150,0.2);
+  box-shadow: 1px 3px 20px rgba(150, 150, 150, 0.2);
   border-radius: 5px;
   padding: 20px;
   margin: 10px;
@@ -288,15 +299,15 @@ form input[type="radio"] + label {
   max-width: 500px;
 }
 
-.game-card{
+.game-card {
   max-width: 400px;
 }
 
-.ticket-card .ticket-body{
+.ticket-card .ticket-body {
   height: calc(100% - 57px);
 }
 
-.ticket-header{
+.ticket-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -325,16 +336,16 @@ form input[type="radio"] + label {
   background-color: red;
 }
 
-.ticket-card .ticket-body{
+.ticket-card .ticket-body {
   justify-content: space-between;
 }
 
-.ticket-card .ticket-body-row:first-child p{
+.ticket-card .ticket-body-row:first-child p {
   margin-top: 10px;
   margin-bottom: 1px;
 }
 
-.ticket-card .ticket-slip-container{
+.ticket-card .ticket-slip-container {
   padding-top: 5px;
   padding-bottom: 5px;
   border-top: 1px solid #ccc;
@@ -344,20 +355,20 @@ form input[type="radio"] + label {
   overflow-y: auto;
 }
 
-.ticket-card .ticket-slip{
+.ticket-card .ticket-slip {
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 14px;
 }
 
-.result-entry{
+.result-entry {
   padding: 10px;
   box-sizing: border-box;
   min-height: 90px;
   /* align-items: center; */
 }
 
-.result-entry:nth-child(2n){
+.result-entry:nth-child(2n) {
   background-color: rgba(30, 143, 255, 0.05);
 }
 

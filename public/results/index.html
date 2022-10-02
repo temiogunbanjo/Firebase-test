@@ -26,9 +26,9 @@ limitations under the License.
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
-    <link rel="stylesheet" href="./main.css" />
-    <link rel="manifest" href="./manifest.json" />
-    <script src="./common.js"></script>
+    <link rel="stylesheet" href="../main.css" />
+    <link rel="manifest" href="../manifest.json" />
+    <script src="../common.js"></script>
     <script src="./index.js"></script>
   </head>
   <body>
@@ -43,33 +43,42 @@ limitations under the License.
       <!-- Container for the Table of content -->
       <section id="navigation" class="w-30">
         <ul>
-          <li id="auth-tab"><a class="active" href="/">Authentication</a></li>
+          <li id="auth-tab"><a href="/">Authentication</a></li>
           <li id="token-management-tab"><a href="/token">Token Management</a></li>
           <li id="withdraw-tab"><a href="/withdrawal">Withdrawals</a></li>
           <li id="transfer-tab"><a href="/transfer-funds">Transfers</a></li>
           <li id="view-games-tab"><a href="/games">Games</a></li>
           <li id="view-tickets-tab"><a href="/tickets">View Tickets</a></li>
-          <li id="view-results-tab"><a href="/results">Game Results</a></li>
+          <li id="view-results-tab"><a class="active" href="/results">Game Results</a></li>
         </ul>
       </section>
 
       <section id="navigation-content" style="flex-grow: 1">
-        <div id="auth-tab-content" class="navigation-content">
-          <!-- div to display the login form -->
-          <form
-            id="login-form"
-            class="d-flex rows w-100"
-            style="margin-top: 1rem"
+        <div id="view-results-tab-content" class="navigation-content">
+          <!-- div to display the games available played -->
+          <div
+            id="results-container"
+            class="d-flex cols w-100"
+            style="margin-top: 1rem; flex-wrap: wrap"
           >
-            <div class="d-flex cols" style="width: 50%; max-width: 500px">
-              <h2>Login Form</h2>
-              <input type="text" name="email" placeholder="Username" />
-              <input type="password" name="password" placeholder="Password" />
-              <button type="submit">Submit</button>
-            </div>
+            <p class="loading">loading results...</p>
+          </div>
 
-            <pre class="response response-pane" style="margin-left: 20px"></pre>
-          </form>
+          <div
+            id="results-pagination"
+            class="d-flex rows w-100 align-items-center"
+            style="justify-content: flex-end"
+          >
+            <button id="prev-results-page" class="custom-button">
+              Previous Page
+            </button>
+            <div class="pagination-count-wrapper">
+              <span id="page-count">1</span> / <span id="total-pages">1</span>
+            </div>
+            <button id="next-results-page" class="custom-button">
+              Next Page
+            </button>
+          </div>
         </div>
       </section>
     </main>

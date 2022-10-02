@@ -17,13 +17,6 @@ function showTabContent(tabId, cb = () => {}) {
   cb();
 }
 
-const updateResponsePane = (responseElement, dataResponse, status) => {
-  responseElement.textContent =
-    typeof dataResponse !== "object"
-      ? dataResponse
-      : JSON.stringify(dataResponse, null, 2);
-};
-
 const validateInputs = (inputs) => {
   let result = true;
   inputs.forEach((input) => {
