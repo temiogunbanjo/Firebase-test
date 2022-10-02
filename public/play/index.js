@@ -351,7 +351,7 @@ function createTicket(ticket) {
   const body = JSON.stringify({
     gameId: ticket.gameId,
     totalStakedAmount: ticket.totalStakedAmount,
-    winningRedemptionMethod: "wallet",
+    winningRedemptionMethod: ticket.winningRedemptionMethod || "wallet",
     sourceWallet: ticket.sourceWallet,
     betSlips: JSON.stringify(ticket.betSlips),
   });
@@ -525,7 +525,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   createTicketButton.addEventListener("click", (ev) => {
     const walletSelector = document.querySelector("#play-tab-content input[name='sourceWallet']:checked");
+    const wrmSelector = document.querySelector("#play-tab-content input[name='winningRedemptionMethod']:checked");
     globals.ticket.sourceWallet = walletSelector.value;
+    globals.ticket.winningRedemptionMethod = wrmSelector.value;
+
     createTicket(globals.ticket);
   });
 

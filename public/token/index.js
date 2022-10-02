@@ -106,6 +106,7 @@ async function unsubscribeToNotification(deviceId) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  setPageIndex(1);
   const unsubscribeButton = document.querySelector("#unsubscribe-token");
   unsubscribeButton.addEventListener("click", () => {
     console.log("Unsubscribing...");

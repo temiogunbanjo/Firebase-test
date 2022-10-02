@@ -238,6 +238,8 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  setPageIndex(5);
+
   let nextBtn = null;
   let prevBtn = null;
 

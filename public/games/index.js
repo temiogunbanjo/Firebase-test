@@ -118,6 +118,8 @@ function viewGamesHandler(ev) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  setPageIndex(4);
+  
   let nextBtn = null;
   let prevBtn = null;
 

@@ -64,6 +64,7 @@ function withdrawalHandler(ev) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  setPageIndex(2);
   let nextBtn = null;
   let prevBtn = null;
 

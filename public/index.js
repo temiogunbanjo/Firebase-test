@@ -129,6 +129,7 @@ function loginHandler(ev) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  setPageIndex(0);
   const loginForm = document.querySelector("#login-form");
   loginForm.addEventListener("submit", loginHandler);
 });
