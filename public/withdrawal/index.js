@@ -1,3 +1,46 @@
+function fetchUserBalance() {
+  // ev.preventDefault();
+  const containerElement = document.querySelector("#withdrawal-form #withdrawal-balance");
+
+  // containerElement.innerHTML = "Fetching results...";
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/user/fetch-authenticated-user`;
+
+  fetch(apiUrl, {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+      authorization: `Bearer ${globals.token}`,
+      mode: "no-cors",
+      "x-api-key": globals[globals.environment].apiKey,
+    },
+  })
+    .then(async (response) => {
+      try {
+        const result = await response.json();
+        const { status } = result;
+
+        if (result && result.data) {
+          // const categoryObject = {};
+      
+          console.log(result.data);
+          const { data } = result?.data;
+
+          containerElement.innerHTML = data.walletBalance;
+        }
+      } catch (error) {
+        console.log(error);
+        const { responsemessage, status } = error;
+        updateResponsePane(containerElement, responsemessage, status);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      updateResponsePane(containerElement, error, "error");
+    });
+}
+
 function withdrawalHandler(ev) {
   ev.preventDefault();
   const responseElement = document.querySelector("#withdrawal-form .response");
@@ -67,6 +110,7 @@ function withdrawalHandler(ev) {
 
 function viewWithdrawalRequestHandler(options = { page: 1, limit: 10 }) {
   // ev.preventDefault();
+  fetchUserBalance();
   const containerElement = document.querySelector("#results-container");
   const nextBtn = document.querySelector(
     "#results-pagination #next-results-page"

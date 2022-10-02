@@ -55,9 +55,9 @@ limitations under the License.
             style="margin-top: 1rem"
           >
             <div class="d-flex cols" style="width: 50%; max-width: 500px">
-              <h2 style="margin-bottom: 3px;">Withdraw Form</h2>
+              <h2 style="margin-bottom: 10px;">Withdraw Form</h2>
               <h5 style="margin-top: 3px; align-items: center;" class="d-flex rows">
-                <span style="margin-right: 6px;">Main Balance: </span>
+                <span style="margin-right: 10px;">Main Balance: </span>
                 <span id="withdrawal-balance" class="status-indicator">0.00</span>
               </h5>
 
@@ -89,8 +89,9 @@ limitations under the License.
                   <label for="interswitch-source">interswitch</label>
                 </div>
 
-                <div class="d-flex rows align-items-center">
+                <div class="d-flex cols">
                   <input
+                    class="flex-grow"
                     type="number"
                     name="amount"
                     placeholder="amount to withdraw"
@@ -106,9 +107,9 @@ limitations under the License.
           </form>
         </div>
 
-        <div id="withdraw-transaction-tab-content" class="navigation-content" style="margin-top: 6rem;">
+        <div id="withdraw-transaction-tab-content" class="navigation-content" style="margin-top: 5rem;">
           <!-- div to display the games available played -->
-          <h2 style="margin-bottom: 3px;">Withdrawal Requests</h2>
+          <h2 style="margin-bottom: 3px;">My Withdrawals</h2>
 
           <div
             id="results-container"
