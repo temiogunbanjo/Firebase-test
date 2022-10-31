@@ -5,12 +5,13 @@ function saveUser(token) {
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/auth/validate-token?token=${token}`;
+  }/user/fetch-authenticated-user`;
 
   fetch(apiUrl, {
     headers: {
       "Content-Type": "application/json;charset=utf-8",
       "x-api-key": globals[globals.environment].apiKey,
+      authorization: `Bearer ${globals.token}`,
     },
   })
     .then(async (response) => {

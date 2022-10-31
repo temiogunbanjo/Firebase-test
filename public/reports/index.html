@@ -27,6 +27,7 @@ limitations under the License.
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
     <link rel="stylesheet" href="../main.css" />
+    <link rel="stylesheet" href="./index.css" />
     <link rel="manifest" href="../manifest.json" />
     <script src="../common.js"></script>
     <script src="./index.js"></script>
@@ -42,33 +43,14 @@ limitations under the License.
     <main class="d-flex rows">
       <!-- Container for the Table of content -->
       <section id="navigation" class="w-30">
-        <ul>
-        </ul>
+        <ul></ul>
       </section>
 
       <section id="navigation-content" style="flex-grow: 1">
         <div id="notice" class="hide"></div>
-        <div id="view-tickets-tab-content" class="navigation-content">
-          <!-- div to display the tickets played -->
-          <div
-            id="ticket-container"
-            class="d-flex rows w-100"
-            style="margin-top: 1rem; flex-wrap: wrap"
-          >
-            <p class="loading">loading...</p>
-          </div>
-
-          <div id="ticket-pagination" class="d-flex rows w-100 align-items-center" style="justify-content: flex-end;">
-            <button id="prev-ticket-page" class="custom-button">
-              Previous Page
-            </button>
-            <div class="pagination-count-wrapper">
-              <span id="ticket-page-count">1</span> / <span id="total-ticket-pages">1</span>
-            </div>
-            <button id="next-ticket-page" class="custom-button">
-              Next Page
-            </button>
-          </div>
+        <div id="report-tab-content" class="navigation-content">
+          <!-- div to display the reports made -->
+          <pre class="response response-pane" style="margin-left: 20px"></pre>
         </div>
       </section>
     </main>

@@ -81,8 +81,8 @@ function viewGamesHandler(ev) {
 
                           ${
                             poolProgressPercent
-                              ? `<p>
-                                  <progress value='${poolProgressPercent}'>
+                              ? `<p style="width: 100%">
+                                  <progress value='${poolProgressPercent}' max="100" style="width: 100%;">
                                     ${poolProgressPercent}%
                                   </progress>
                                 </p>`

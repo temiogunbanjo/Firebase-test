@@ -40,6 +40,7 @@ function transferHandler(ev) {
         if (result && result.data) {
           const { data } = result;
           updateResponsePane(responseElement, data, status);
+          
         } else {
           updateResponsePane(responseElement, result, status);
         }
@@ -47,6 +48,8 @@ function transferHandler(ev) {
         console.log(error);
         const { responsemessage, status } = error;
         updateResponsePane(responseElement, responsemessage, status);
+      } finally {
+        fetchUserBalance(document.querySelector("#transfer-form #transfer-balance"));
       }
     })
     .catch((error) => {
@@ -59,4 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setPageIndex(3);
   const transferForm = document.querySelector("#transfer-form");
   transferForm.addEventListener("submit", transferHandler);
+
+  fetchUserBalance(document.querySelector("#transfer-form #transfer-balance"));
 });

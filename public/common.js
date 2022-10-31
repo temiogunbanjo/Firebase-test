@@ -41,45 +41,67 @@ const createMenu = (drawerElement) => {
       link: "/",
       name: "Authentication",
       id: "auth-tab",
+      visible: true
     },
     {
       link: "/token",
       name: "Token Management",
       id: "token-management-tab",
+      visible: true
     },
     {
       link: "/withdrawal",
       name: "Withdrawals",
       id: "withdraw-tab",
+      visible: true
     },
     {
       link: "/transfer-funds",
       name: "Transfers",
       id: "transfer-tab",
+      visible: true
     },
     {
       link: "/transactions",
       name: "Transactions",
       id: "transaction-tab",
+      visible: true
     },
     {
       link: "/games",
       name: "Games",
       id: "view-games-tab",
+      visible: true
     },
     {
       link: "/tickets",
       name: "Tickets",
       id: "view-tickets-tab",
+      visible: true
     },
     {
       link: "/results",
       name: "Game Results",
       id: "view-results-tab",
+      visible: true
+    },
+    {
+      link: "/reports",
+      name: "My Reports",
+      id: "view-reports-tab",
+      visible: globals.user.isAgent === true || globals.user.adminId
+    },
+    {
+      link: "/overdraft",
+      name: "Manage Overdrafts",
+      id: "overdraft-tab",
+      visible: globals.user.isAgent === true || globals.user.adminId
     },
   ];
 
-  const content = menus.map((eachMenu, index) => {
+  const content = menus.filter((eachMenu) => {
+    return !!eachMenu.visible;
+  }).map((eachMenu, index) => {
     return `<li id=${eachMenu.id}><a ${
       globals.currentPageIndex === index ? "class='active'" : ""
     } href=${eachMenu.link}>${eachMenu.name}</a></li>`;
@@ -135,9 +157,58 @@ const setPageIndex = (newIndex) => {
   if (drawerElement) {
     createMenu(drawerElement);
   }
+
+  if (!globals.user.status) {
+    const notice = document.querySelector("#notice");
+    if (notice) {
+      notice.classList.toggle("hide", false);
+      notice.textContent = 'Account has been suspended';
+    }
+  }
+}
+
+function fetchUserBalance(containerElement) {
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/user/fetch-authenticated-user`;
+
+  fetch(apiUrl, {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+      authorization: `Bearer ${globals.token}`,
+      mode: "no-cors",
+      "x-api-key": globals[globals.environment].apiKey,
+    },
+  })
+    .then(async (response) => {
+      try {
+        const result = await response.json();
+        const { status } = result;
+
+        if (result && result.data) {
+          // const categoryObject = {};
+      
+          console.log(result.data);
+          const { data } = result?.data;
+
+          containerElement.innerHTML = data.walletBalance;
+        }
+      } catch (error) {
+        console.log(error);
+        const { responsemessage, status } = error;
+        updateResponsePane(containerElement, responsemessage, status);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      updateResponsePane(containerElement, error, "error");
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  globals.user = JSON.parse(sessionStorage.getItem("user"));
+  console.log(globals.user);
   const drawerElement = document.querySelector("#navigation ul");
 
   if (drawerElement) {

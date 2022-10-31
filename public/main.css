@@ -68,6 +68,20 @@ header h3 {
   border: 1px solid red !important;
 }
 
+#notice{
+  /* margin-top: 5px; */
+  /* margin-bottom: 5px; */
+  border-radius: 5px;
+  padding: 10px 20px;
+  text-align: center;
+  background-color: #ff00005a;
+  color: rgb(182, 0, 0);
+}
+
+#notice.hide {
+  display: none;
+}
+
 .d-flex {
   display: flex;
 }
@@ -230,7 +244,7 @@ summary {
   padding: 0.5rem;
 }
 
-form input {
+form input, form select {
   background-color: #f3f3f5;
   border: none;
   padding: 1rem;

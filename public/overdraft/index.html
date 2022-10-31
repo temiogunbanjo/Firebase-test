@@ -42,13 +42,11 @@ limitations under the License.
     <main class="d-flex rows">
       <!-- Container for the Table of content -->
       <section id="navigation" class="w-30">
-        <ul>
-        </ul>
+        <ul></ul>
       </section>
 
       <section id="navigation-content" style="flex-grow: 1">
-        <div id="notice" class="hide"></div>
-        <div id="transfer-tab-content" class="navigation-content">
+        <div id="overdraft-content" class="navigation-content">
           <!-- div to display the withdrawals made -->
           <form
             id="transfer-form"
@@ -56,18 +54,21 @@ limitations under the License.
             style="margin-top: 1rem"
           >
             <div class="d-flex cols" style="width: 50%; max-width: 500px">
-              <h2 style="margin-bottom: 3px;">Transfer Form</h2>
-              <h5 style="margin-top: 3px; align-items: center;" class="d-flex rows">
-                <span style="margin-right: 6px;">Main Balance: </span>
+              <h2 style="margin-bottom: 3px">Send Overdraft</h2>
+              <h5
+                style="margin-top: 3px; align-items: center"
+                class="d-flex rows"
+              >
+                <span style="margin-right: 6px">Main Balance: </span>
                 <span id="transfer-balance" class="status-indicator">0.00</span>
               </h5>
 
               <div class="d-flex cols">
-                <input
+                <select
                   type="text"
                   name="receipientId"
                   placeholder="Receipient ID"
-                />
+                ></select>
 
                 <input
                   type="text"
@@ -82,12 +83,38 @@ limitations under the License.
                   min="1"
                   value="1"
                 />
+
+                <input type="date" name="expiresAt" placeholder="Expiry date" />
                 <button type="submit">Do Transfer</button>
               </div>
             </div>
 
             <pre class="response response-pane" style="margin-left: 20px"></pre>
           </form>
+
+          <div class="d-flex rows" style="margin-top: 2rem;">
+            <div class="d-flex cols w-100" style="margin-right: 3px;">
+              <b>Sent Overdraft</b>
+              <div
+                id="sent-container"
+                class="d-flex cols w-100"
+                style="margin-top: 1rem; flex-wrap: wrap"
+              >
+                <p class="loading">loading transactions...</p>
+              </div>
+            </div>
+
+            <div class="d-flex cols w-100" style="margin-left: 3px;">
+              <b>Received Overdraft</b>
+              <div
+                id="received-container"
+                class="d-flex cols w-100"
+                style="margin-top: 1rem; flex-wrap: wrap"
+              >
+                <p class="loading">loading transactions...</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>

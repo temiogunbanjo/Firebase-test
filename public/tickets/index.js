@@ -178,7 +178,7 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
                                       .map((e) => parseInt(e, 10))
                                       .join(", ")
                                   : "N/A"
-                              } => (${slip.lineCount} lines)
+                              } => (${slip.linesCount} lines)
                             </div>
                           `;
                         })

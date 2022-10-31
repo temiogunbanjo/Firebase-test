@@ -1,0 +1,7 @@
+.response-pane {
+  width: 100%;
+  height: auto;
+  min-height: 400px;
+  max-height: unset;
+  max-width: unset;
+}
