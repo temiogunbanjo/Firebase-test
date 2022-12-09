@@ -47,10 +47,19 @@ function viewGamesHandler(ev) {
                 ${categoryObject[category]
                   .map((game) => {
                     const poolProgressPercent = game.totalFundPool
-                      ? Math.floor(
-                          game.currentPoolAmount / game.totalFundPool
-                        ) * 100
+                      ? (Number(game.currentPoolAmount) /
+                          Number(game.totalFundPool)) *
+                        100
                       : null;
+                    console.log({
+                      poolProgressPercent,
+                      poolProgressPercentRaw:
+                        (Number(game.currentPoolAmount) /
+                          Number(game.totalFundPool)) *
+                        100,
+                      currentPoolAmount: game.currentPoolAmount,
+                      totalFundPool: game.totalFundPool,
+                    });
                     return `
                     <div class="game-card">
                       <div class="d-flex rows align-items-center ticket-header">
@@ -80,7 +89,7 @@ function viewGamesHandler(ev) {
                           </p>
 
                           ${
-                            poolProgressPercent
+                            poolProgressPercent !== null && poolProgressPercent >= 0
                               ? `<p style="width: 100%">
                                   <progress value='${poolProgressPercent}' max="100" style="width: 100%;">
                                     ${poolProgressPercent}%
@@ -118,22 +127,31 @@ function viewGamesHandler(ev) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(5);
+  setPageIndex(6);
 
   let nextBtn = null;
   let prevBtn = null;
 
+  let cPage = 1;
+
   if (nextBtn && prevBtn) {
     nextBtn.addEventListener("click", (ev) => {
       const page = ev.target.getAttribute("data-page");
-      viewGamesHandler({ page: parseInt(page, 10), limit: 50 });
+      cPage = parseInt(page, 10);
+      viewGamesHandler({ page: cPage, limit: 50 });
     });
 
     prevBtn.addEventListener("click", (ev) => {
       const page = ev.target.getAttribute("data-page");
-      viewGamesHandler({ page: parseInt(page, 10), limit: 50 });
+      cPage = parseInt(page, 10);
+      viewGamesHandler({ page: cPage, limit: 50 });
     });
   }
 
-  viewGamesHandler({ page: 1, limit: 50 });
+  viewGamesHandler({ page: cPage, limit: 50 });
+
+  setInterval(() => {
+    // alert('hey');
+    viewGamesHandler({ page: cPage, limit: 50 });
+  }, (0.2 * 60 * 1000))
 });

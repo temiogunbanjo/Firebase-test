@@ -1,3 +1,10 @@
+.advertisement {
+  background-image: url(./istockphoto-1411399462-612x612.jpeg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: left;
+  flex-wrap: wrap;
+}
 
 section#navigation {
   max-width: unset;
@@ -34,7 +41,7 @@ section#navigation {
     rgba(0, 0, 0, 0.2)
   );
   box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 #ball-container .ball {
@@ -42,7 +49,9 @@ section#navigation {
 }
 
 .ball:hover {
-  background-color: red;
+  background-color: rgb(22, 78, 176);
+  transform: scale(1.1);
+  box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.2);
 }
 
 .ball.selected {
@@ -51,4 +60,70 @@ section#navigation {
 
 #selection-area {
     min-height: 53px;
+}
+
+#play-tab {
+  --user-color: #4ec34e;
+  max-width: 600px;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+#play-tab .user {
+  flex: none;
+  position: relative;
+  font-size: 10px;
+  font-weight: 600;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgb(167, 172, 177);
+  color: #333;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 0 8px;
+  transition: all 0.4s ease;
+}
+
+#play-tab .user.active {
+  background-color: var(--user-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+#play-tab .user.active::after {
+  /* font-size: 12px; */
+  content: '';
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 1px solid var(--user-color);
+  color: white;
+  animation: fading-waves 1.5s ease-in 0s infinite both normal;
+}
+
+@media screen and (max-width: 900px){
+  #game-options-area {
+    flex-direction: column;
+  }
+
+  #game-options-area > *{
+    width: 100% !important;
+  }
+}
+
+@keyframes fading-waves {
+  from {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.3);
+    opacity: 0;
+  }
 }

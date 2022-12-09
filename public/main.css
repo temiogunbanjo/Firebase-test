@@ -82,6 +82,41 @@ header h3 {
   display: none;
 }
 
+.toggle-switch {
+  appearance: none;
+  width: 40px;
+  height: 12px;
+  background-color: white;
+  border-radius: 5vh;
+  position: relative;
+
+}
+
+.toggle-switch::after{
+  content: '';
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  top: 50%;
+  left: 0%;
+  transform: translateY(-50%);
+  background-color: #4ec34e;
+  border-radius: 51%;
+  background-image: radial-gradient(rgba(0, 0, 0, 0) 65%, rgba(0, 0, 0, 0.2));
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+  transition: left 0.2s ease;
+}
+
+.toggle-switch:checked {
+  background-color: rgba(78, 195, 78, 0.9);
+}
+
+.toggle-switch:checked::after{
+  left: calc(100% - 21px);
+  /* background-image: radial-gradient(rgba(0, 0, 0, 0) 65%, rgba(0, 0, 0, 0.2)); */
+  box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.15);
+}
+
 .d-flex {
   display: flex;
 }
@@ -292,7 +327,7 @@ form input[type="radio"] + label {
 }
 
 .border {
-  border: 1px solid;
+  border: 1px solid #ccc;
 }
 
 .ticket-card,
@@ -323,10 +358,15 @@ form input[type="radio"] + label {
   min-height: 200px;
   flex-grow: 1;
   max-width: 500px;
+  position: relative;
 }
 
 .game-card {
   max-width: 400px;
+}
+
+.ticket-card.bonus {
+  min-width: 450px;
 }
 
 .ticket-card .ticket-body {
@@ -348,6 +388,16 @@ form input[type="radio"] + label {
   font-weight: 500;
   color: white;
   background-color: #223;
+}
+
+.status-indicator.round {
+  padding: 5px;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .status-indicator[data-status="won"] {

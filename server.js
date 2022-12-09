@@ -10,6 +10,6 @@ app.use((req, res, next) => {
 });
 
 const server = require("http").createServer(app);
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Serving html files. Navigate to http://localhost:${PORT}`);
 });

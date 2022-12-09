@@ -42,22 +42,62 @@ limitations under the License.
 
     <main class="d-flex cols">
       <!-- Container for the Table of content -->
+      <section
+        class="d-flex rows align-items-center advertisement"
+        style="justify-content: space-between; background-color: #222; padding: 2rem 3rem 2rem 2rem; color: white; position: relative;"
+      >
+        <span style="position: absolute; top: 0; right: 0; color: dodgerblue; font-size: 12px; padding: 3px 5px; background-color: rgba(255, 255, 255, 0.1)">Advertisement</span>
+        <div class="d-flex cols">
+          <h2 style="margin-top: 0.5rem; margin-bottom: 0.5rem; letter-spacing: 2px;">PLAY GAMES AUTOMATICALLY!!</h2>
+          <span style="color: crimson; font-size: 12px">A new feature for your experience blah blah blah...</span>
+        </div>
+
+        <div class="d-flex rows align-items-center" style="margin: 1.5rem 0;">
+          <label
+            for="autoplay-switch"
+            style="font-size: 13px; margin-right: 5px"
+          >
+            Turn on Auto-Play?
+          </label>
+          <input type="checkbox" class="toggle-switch" id="autoplay-switch" />
+        </div>
+      </section>
+
       <section id="navigation" class="d-flex rows align-items-center">
-        <a href="/games" class="custom-button" style="margin-left: 5px">Back</a>
+        <a href="/games" class="custom-button" style="margin-left: 15px; background-color: red;">Back</a>
         <div
           class="d-flex rows"
           style="
             width: 97%;
             margin-left: 5px;
             padding: 10px;
+            align-items: center;
             justify-content: space-between;
           "
         >
-          <span id="play-tab">Playing</span>
-          <span id="time-tab" data-status="lost" class="status-indicator"
-            >1:20:20</span
+          <div id="play-tab" class="d-flex rows">
+            
+          </div>
+          <div
+            class="d-flex cols"
+            style="
+              justify-content: flex-end;
+              text-align: right;
+              padding: 0 15px;
+            "
           >
+            <h5 style="margin-bottom: 0.5rem">Main Balance</h5>
+            <span id="wallet-balance" style="font-size: 1rem"></span>
+          </div>
         </div>
+      </section>
+
+      <section
+        id="pool-bar-section"
+        class="d-flex rows align-items-center"
+        style="justify-content: space-between;"
+      >
+        
       </section>
 
       <section id="navigation-content" style="flex-grow: 1">
@@ -75,11 +115,12 @@ limitations under the License.
             </div>
           </div>
 
-          <div class="d-flex rows" style="align-items: flex-start">
-            <div id="ball-container" class="d-flex rows w-65">
+          <div class="d-flex rows" id="game-options-area" style="align-items: flex-start">
+            <section id="ball-container" class="d-flex rows w-65">
               <!-- Container of Balls -->
-            </div>
-            <aside class="d-flex cols w-35">
+            </section>
+
+            <section class="d-flex cols w-35">
               <!-- SuMMARY -->
               <div
                 class="d-flex cols"
@@ -152,12 +193,17 @@ limitations under the License.
                   flex-wrap: wrap;
                   padding: 10px 0;
                   margin-top: 20px;
-                  border-color: #EEE;
+                  border-color: #eee;
                   background-color: rgba(30, 143, 255, 0.05);
                 "
               >
-                <legend style="text-align: center; font-size: 13px;">Select Wallet</legend>
-                <div class="d-flex rows" style="margin-right:5px;align-items: center">
+                <legend style="text-align: center; font-size: 13px">
+                  Select Wallet
+                </legend>
+                <div
+                  class="d-flex rows"
+                  style="margin-right: 5px; align-items: center"
+                >
                   <input
                     type="radio"
                     name="sourceWallet"
@@ -168,7 +214,10 @@ limitations under the License.
                   <label for="main-wallet">Main Wallet</label>
                 </div>
 
-                <div class="d-flex rows" style="margin-right:5px; align-items: center">
+                <div
+                  class="d-flex rows"
+                  style="margin-right: 5px; align-items: center"
+                >
                   <input
                     type="radio"
                     name="sourceWallet"
@@ -178,7 +227,10 @@ limitations under the License.
                   <label for="commission-wallet">Commission Wallet</label>
                 </div>
 
-                <div class="d-flex rows" style="margin-right:5px; align-items: center">
+                <div
+                  class="d-flex rows"
+                  style="margin-right: 5px; align-items: center"
+                >
                   <input
                     type="radio"
                     name="sourceWallet"
@@ -196,12 +248,17 @@ limitations under the License.
                   flex-wrap: wrap;
                   padding: 10px 0;
                   margin-top: 20px;
-                  border-color: #EEE;
+                  border-color: #eee;
                   background-color: rgba(30, 143, 255, 0.05);
                 "
               >
-                <legend style="text-align: center; font-size: 13px;">Select winning redemption method</legend>
-                <div class="d-flex rows" style="margin-right:5px;align-items: center">
+                <legend style="text-align: center; font-size: 13px">
+                  Select winning redemption method
+                </legend>
+                <div
+                  class="d-flex rows"
+                  style="margin-right: 5px; align-items: center"
+                >
                   <input
                     type="radio"
                     name="winningRedemptionMethod"
@@ -212,7 +269,10 @@ limitations under the License.
                   <label for="wrm-wallet">Wallet</label>
                 </div>
 
-                <div class="d-flex rows" style="margin-right:5px; align-items: center">
+                <div
+                  class="d-flex rows"
+                  style="margin-right: 5px; align-items: center"
+                >
                   <input
                     type="radio"
                     name="winningRedemptionMethod"
@@ -222,7 +282,10 @@ limitations under the License.
                   <label for="wrm-bank">Bank</label>
                 </div>
 
-                <div class="d-flex rows" style="margin-right:5px; align-items: center">
+                <div
+                  class="d-flex rows"
+                  style="margin-right: 5px; align-items: center"
+                >
                   <input
                     type="radio"
                     name="winningRedemptionMethod"
@@ -232,7 +295,7 @@ limitations under the License.
                   <label for="wrm-dps">Decentralized Payment Method</label>
                 </div>
               </fieldset>
-            </aside>
+            </section>
           </div>
 
           <div class="d-flex rows w-100" style="margin-top: 10px">

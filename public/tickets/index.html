@@ -27,6 +27,7 @@ limitations under the License.
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
     <link rel="stylesheet" href="../main.css" />
+    <link rel="stylesheet" href="./index.css" />
     <link rel="manifest" href="../manifest.json" />
     <script src="../common.js"></script>
     <script src="./index.js"></script>
@@ -42,13 +43,55 @@ limitations under the License.
     <main class="d-flex rows">
       <!-- Container for the Table of content -->
       <section id="navigation" class="w-30">
-        <ul>
-        </ul>
+        <ul></ul>
       </section>
 
       <section id="navigation-content" style="flex-grow: 1">
         <div id="notice" class="hide"></div>
-        <div id="view-tickets-tab-content" class="navigation-content">
+        <h3 style="margin-bottom: 0; margin-left: 5px">Search Ticket</h3>
+        <section
+          id="ticket-search-pane"
+          class="d-flex rows w-100 align-items-start"
+          style="
+            flex-wrap: wrap;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+          "
+        >
+          <input
+            type="search"
+            name=""
+            id="game-name-input"
+            class="option-select flex-grow"
+            placeholder="Enter game name or gameId"
+          />
+
+          <select id="bet-type-selector" class="option-select flex-grow">
+            <option value="">Select BetType</option>
+          </select>
+
+          <select id="booster-selector" class="option-select flex-grow">
+            <option value="">Select Booster</option>
+          </select>
+
+          <select id="result-selector" class="option-select flex-grow">
+            <option value="">Select Result Type</option>
+          </select>
+
+          <input
+            type="search"
+            name=""
+            id="selections-input"
+            class="option-select flex-grow"
+            placeholder="Enter dash separated numbers E.g. 1-2-3-4"
+          />
+
+          <button id="search-ticket-button" class="cta-search-button">
+            Search
+          </button>
+        </section>
+
+        <section id="view-tickets-tab-content" class="navigation-content">
           <!-- div to display the tickets played -->
           <div
             id="ticket-container"
@@ -58,18 +101,23 @@ limitations under the License.
             <p class="loading">loading...</p>
           </div>
 
-          <div id="ticket-pagination" class="d-flex rows w-100 align-items-center" style="justify-content: flex-end;">
+          <div
+            id="ticket-pagination"
+            class="d-flex rows w-100 align-items-center"
+            style="justify-content: flex-end"
+          >
             <button id="prev-ticket-page" class="custom-button">
               Previous Page
             </button>
             <div class="pagination-count-wrapper">
-              <span id="ticket-page-count">1</span> / <span id="total-ticket-pages">1</span>
+              <span id="ticket-page-count">1</span> /
+              <span id="total-ticket-pages">1</span>
             </div>
             <button id="next-ticket-page" class="custom-button">
               Next Page
             </button>
           </div>
-        </div>
+        </section>
       </section>
     </main>
   </body>

@@ -116,7 +116,7 @@ function viewTransactionsHandler(options = { page: 1, limit: 50 }) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(4);
+  setPageIndex(5);
 
   let nextBtn = document.querySelector("#results-pagination #next-results-page");
   let prevBtn = document.querySelector("#results-pagination #prev-results-page");

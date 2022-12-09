@@ -1,8 +1,13 @@
-const errorHandler = (error = {}) => {
+const GameOptions = {};
+
+const autoPlayBots = [];
+
+const errorHandler = (error = {}, byBot = false) => {
   console.log("Errrrr");
   console.log(error);
   const message = error.responsemessage || error.message;
-  alert(message);
+  if (!byBot) alert(message);
+  else console.log(message);
 };
 
 function showTabContent(tabId, cb = () => {}) {
@@ -19,6 +24,7 @@ function showTabContent(tabId, cb = () => {}) {
 
 const validateInputs = (inputs) => {
   let result = true;
+
   inputs.forEach((input) => {
     if (input.value === "") {
       input.classList.toggle("input-error", true);
@@ -32,10 +38,11 @@ const validateInputs = (inputs) => {
   return result;
 };
 
-function saveUser(token) {
+function fetchAndSaveUser(token) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
   }/auth/validate-token?token=${token}`;
+
   fetch(apiUrl, {
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -91,13 +98,14 @@ function populateGameArea(game) {
   // debugger;
   const ballContainer = document.getElementById("ball-container");
   const gameTitle = document.getElementById("game-name");
+  const poolBarSection = document.getElementById("pool-bar-section");
   const betTypeSelectionMenu = document.getElementById("bet-type-selector");
   const boosterSelectionMenu = document.getElementById("booster-selector");
   const resultTypeSelectionMenu = document.getElementById("result-selector");
   const overSelectionMenu = document.getElementById("over-type-selector");
   const underSelectionMenu = document.getElementById("under-type-selector");
 
-  const { name } = game;
+  const { name, lotteryId, gameId, currentPoolAmount, totalFundPool } = game;
   const { gameCount, category } = game.Lottery;
   let {
     betOptions = "[]",
@@ -113,12 +121,39 @@ function populateGameArea(game) {
   overOptions = JSON.parse(overOptions);
   underOptions = JSON.parse(underOptions);
 
+  // SAVE GAME INFO
+  GameOptions.lotteryId = lotteryId;
+  GameOptions.gameId = gameId;
+  GameOptions.betOptions = betOptions;
+  GameOptions.boosterOptions = boosterOptions;
+  GameOptions.resultOptions = resultOptions;
+  GameOptions.overOptions = overOptions;
+  GameOptions.underOptions = underOptions;
+  GameOptions.gameCount = gameCount;
+
+  const poolProgressPercent = totalFundPool
+    ? (Number(currentPoolAmount) / Number(totalFundPool)) * 100
+    : null;
+
   gameTitle.innerHTML = `<span>Game: ${name}</span> <span class="status-indicator">${category}</span>`;
+  poolBarSection.innerHTML = poolProgressPercent !== null
+    && poolProgressPercent >= 0
+      ? `<progress value='${poolProgressPercent}' max="100" style="width: 96%; margin: 0 auto; display: block">
+  ${poolProgressPercent}%
+</progress>`
+      : "";
 
   const balls = [];
   for (let i = 1; i <= gameCount; i++) {
     balls.push(i);
   }
+
+  ballContainer.innerHTML = '';
+  betTypeSelectionMenu.innerHTML = '';
+  boosterSelectionMenu.innerHTML = '';
+  resultTypeSelectionMenu.innerHTML = '';
+  overSelectionMenu.innerHTML = '';
+  underSelectionMenu.innerHTML = '';
 
   balls.forEach((each) => {
     const aBallElement = document.createElement("SPAN");
@@ -343,7 +378,7 @@ function fetchGameData(gameId) {
     });
 }
 
-function createTicket(ticket) {
+function createTicket(ticket, byBot = false) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
   }/game/create-ticket`;
@@ -389,7 +424,10 @@ function createTicket(ticket) {
               betSlips: [],
             };
             updateUI();
-            alert("Ticket created succesfully");
+            if (!byBot) alert("Ticket created succesfully");
+            else {
+              console.log("Ticket created succesfully");
+            }
           }
 
           // globals.ticket.gameId = data.gameId;
@@ -466,9 +504,188 @@ function fetchPotentialWinning(ticket) {
     });
 }
 
+function start() {
+  const mainBalanceElement = document.querySelector("#wallet-balance");
+  // const commissionBalanceElement = document.querySelector("#commission-balance");
+
+  const queryString = window.location.search.replace("?", "");
+  if (!globals.token || !queryString) {
+    window.location.replace("/");
+  } else {
+    const queryParams = {};
+    queryString.split("&").forEach((each) => {
+      const [key, value] = each.split("=");
+      queryParams[key] = value;
+    });
+
+    console.log({ query: queryParams });
+    if (queryParams.gameId) {
+      fetchGameData(queryParams.gameId);
+    } else {
+      alert("No game ID");
+    }
+  }
+
+  fetchUserBalance(mainBalanceElement, "main");
+}
+
+async function autoPlayer() {
+  const playersPane = document.querySelector("#play-tab");
+
+  const generateRandomizedTicket = async (botId, amount) => {
+    const numberOfSlips = generateRandomNumber(1, 5);
+    const betSlips = [];
+
+    for (let i = 0; i < numberOfSlips; i++) {
+      const betType =
+        GameOptions.betOptions[
+          generateRandomNumber(0, GameOptions.betOptions.length - 1)
+        ];
+      const booster =
+        GameOptions.boosterOptions[
+          generateRandomNumber(0, GameOptions.boosterOptions.length - 1)
+        ];
+      const resultType =
+        GameOptions.resultOptions[
+          generateRandomNumber(0, GameOptions.resultOptions.length - 1)
+        ];
+      let selections = new Set();
+
+      // console.log(globals.BET_TYPE_MINIMUM_SELECTION[betType?.name]);
+
+      for (
+        let j = 1;
+        j <= (globals.BET_TYPE_MINIMUM_SELECTION[betType?.name] || 0);
+        j++
+      ) {
+        selections.add(generateRandomNumber(1, Number(GameOptions.gameCount)));
+      }
+
+      betSlips.push({
+        betType: betType?.name || "",
+        booster: booster || "",
+        resultType: resultType || "",
+        amount: amount / numberOfSlips,
+        selections: Array.from(selections).join("-"),
+      });
+    }
+
+    const retTicket = {
+      gameId: GameOptions.gameId,
+      lotteryId: GameOptions.lotteryId,
+      winningRedemptionMethod: !globals.user.isAgent ? "wallet" : "dps",
+      sourceWallet: "mainWallet",
+      betSlips,
+    };
+
+    // console.log(retTicket, globals.user);
+
+    return retTicket;
+  };
+
+  const fetchPotentialWinningForBot = async (ticket) => {
+    try {
+      const apiUrl = `${
+        globals[globals.environment].apiBaseUrl
+      }/game/ticket/get-potential-winning`;
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        body: JSON.stringify(ticket),
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          authorization: `Bearer ${globals.token}`,
+          mode: "no-cors",
+          "x-api-key": globals[globals.environment].apiKey,
+        },
+      });
+
+      const result = await response.json();
+      const { status } = result;
+
+      if (result && result.data) {
+        const { data } = result?.data;
+
+        return data;
+      } else {
+        errorHandler(result, true);
+        return null;
+      }
+    } catch (error) {
+      errorHandler(error, true);
+      return null;
+    }
+  };
+
+  let numberOfPlayers = prompt("Enter number of players:");
+  let amountPerTicket = prompt("Enter amount per ticket:");
+
+  // console.log({
+  //   numberOfPlayers,
+  //   amountPerTicket,
+  //   GameOptions,
+  // });
+
+  numberOfPlayers = numberOfPlayers || 1;
+  amountPerTicket = amountPerTicket || 10;
+
+  numberOfPlayers = parseInt(numberOfPlayers);
+  amountPerTicket = parseInt(amountPerTicket);
+
+  const MIN_INTERVAL_SECONDS = 20;
+  const MAX_INTERVAL_SECONDS = 60;
+
+  playersPane.innerHTML = '';
+
+  for (let i = 1; i <= numberOfPlayers; i++) {
+    console.log(`Creating robot ${i}`);
+    // INTERVAL TO CREATE EACH TICKET
+    const botProps = {
+      ticket: globals.ticket,
+    };
+
+    const interval = generateRandomNumber(
+      MIN_INTERVAL_SECONDS,
+      MAX_INTERVAL_SECONDS
+    );
+
+    const botClock = setInterval(() => {
+      console.log(`Bot ${i} creating Ticket`);
+      document.querySelector(`#bot-${i}`).classList.toggle('active', true);
+
+      generateRandomizedTicket(i, amountPerTicket).then(async (botTicket) => {
+        botTicket.betSlips = JSON.stringify(botTicket.betSlips);
+        const data = await fetchPotentialWinningForBot(botTicket);
+        if (data) {
+          // console.log(data);
+          botTicket.betSlips = JSON.parse(data.betSlips);
+          botTicket.totalStakedAmount = data.totalStakedAmount;
+
+          createTicket(botTicket, true);
+        }
+      }).finally(() => {
+        document.querySelector(`#bot-${i}`).ontransitionend = (ev) => {
+          ev.target.classList.toggle('active', false);
+        };
+      });
+    }, interval * 1000);
+
+    botProps.clock = botClock;
+    autoPlayBots.push(botProps);
+    // <span class="user">B1</span>
+    const botElement = document.createElement('SPAN');
+    botElement.classList.add('user');
+    botElement.textContent = `B${i}`;
+    botElement.id = `bot-${i}`;
+
+    playersPane.appendChild(botElement);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // debugger;
   const addSlipButton = document.getElementById("add-slip");
+  const autoplaySwitch = document.getElementById("autoplay-switch");
   const createTicketButton = document.getElementById("create-ticket-button");
 
   const betTypeSelectionMenu = document.getElementById("bet-type-selector");
@@ -477,6 +694,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const overSelectionMenu = document.getElementById("over-type-selector");
   const underSelectionMenu = document.getElementById("under-type-selector");
   const amountInput = document.getElementById("amount-input");
+
+  autoplaySwitch.addEventListener("change", async (ev) => {
+    console.log(ev.target.checked);
+    if (ev.target.checked) await autoPlayer();
+    else {
+      autoPlayBots.forEach((bot, index) => {
+        console.log(`Stopping bot ${index + 1}`);
+        clearInterval(bot.clock);
+      });
+
+      const countToRemove = autoPlayBots.length;
+      for (i = 0; i < countToRemove; i++) {
+        console.log(`Destroying bot ${i + 1}`);
+        autoPlayBots.pop();
+      }
+    }
+  });
 
   addSlipButton.addEventListener("click", (ev) => {
     if (
@@ -497,16 +731,16 @@ document.addEventListener("DOMContentLoaded", () => {
         overUnder: (() => {
           if (overSelectionMenu.value !== "") {
             return {
-              over: overSelectionMenu.value
-            }
+              over: overSelectionMenu.value,
+            };
           } else if (underSelectionMenu.value !== "") {
             return {
-              under: underSelectionMenu.value
-            }
+              under: underSelectionMenu.value,
+            };
           } else {
             return null;
           }
-        })()
+        })(),
       };
 
       globals.ticket.betSlips.push(slip);
@@ -524,30 +758,21 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   createTicketButton.addEventListener("click", (ev) => {
-    const walletSelector = document.querySelector("#play-tab-content input[name='sourceWallet']:checked");
-    const wrmSelector = document.querySelector("#play-tab-content input[name='winningRedemptionMethod']:checked");
+    const walletSelector = document.querySelector(
+      "#play-tab-content input[name='sourceWallet']:checked"
+    );
+    const wrmSelector = document.querySelector(
+      "#play-tab-content input[name='winningRedemptionMethod']:checked"
+    );
     globals.ticket.sourceWallet = walletSelector.value;
     globals.ticket.winningRedemptionMethod = wrmSelector.value;
 
     createTicket(globals.ticket);
   });
 
-  const queryString = window.location.search.replace("?", "");
-  if (!globals.token || !queryString) {
-    window.location.replace("/");
-  } else {
-    saveUser(globals.token);
-    const queryParams = {};
-    queryString.split("&").forEach((each) => {
-      const [key, value] = each.split("=");
-      queryParams[key] = value;
-    });
+  start();
 
-    console.log({ query: queryParams });
-    if (queryParams.gameId) {
-      fetchGameData(queryParams.gameId);
-    } else {
-      alert("No game ID");
-    }
-  }
+  setInterval(() => {
+    start();
+  }, 20 * 1000);
 });

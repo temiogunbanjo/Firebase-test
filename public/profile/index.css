@@ -1,0 +1,48 @@
+img {
+  background-color: #eee;
+}
+
+.downline-card {
+  justify-content: center;
+  /* align-items: center; */
+  border: 1px solid #ccc;
+  width: calc(100% / 3);
+  margin-right: 20px;
+}
+
+.downline-card img{
+  width: 100%;
+  height: 180px;
+  display: block;
+  object-fit: cover;
+  /* border: 1px solid #ccc; */
+  overflow: hidden;
+}
+
+.downline-card .name {
+  text-transform: capitalize;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.downline-card .role {
+  margin-top: 0;
+  color: #717171;
+  font-size: 16px;
+}
+
+.more-info{
+  margin-top: 25px;
+}
+
+.more-info .more-info-item {
+  min-width: 200px;
+  width: 30%;
+  margin-bottom: 20px;
+}
+
+.more-info .more-info-item > *:first-child{
+  font-weight: 600;
+  font-size: 14px;
+  color: #717171;
+}

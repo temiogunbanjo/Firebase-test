@@ -1,7 +1,7 @@
-function saveUser(token) {
+function fetchAndSaveUser(token) {
   console.log(globals[globals.environment]);
   const responseElement = document.querySelector("#login-form .response");
-  responseElement.innerHTML = responseElement.innerHTML + "<br>Saving user...";
+  responseElement.innerHTML = responseElement.innerHTML + "<br>Fetching user...";
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
@@ -24,56 +24,25 @@ function saveUser(token) {
           const user = data?.data;
           console.log(user);
           globals.user = user;
-          sessionStorage.setItem("user", JSON.stringify(user));
-          responseElement.innerHTML =
-            responseElement.innerHTML + "<br>User saved successfully!";
+          saveUser(user, responseElement);
         } else {
           responseElement.innerHTML =
-            responseElement.innerHTML + "<br>User saving failed!";
+            responseElement.innerHTML + "<br>User fetching failed!";
         }
       } catch (error) {
         console.log(error);
         const { status } = error;
         responseElement.innerHTML =
-          responseElement.innerHTML + `<br>User saving failed:${status}!`;
+          responseElement.innerHTML + `<br>User fetching failed:${status}!`;
       }
     })
     .catch((error) => {
       console.log(error);
       responseElement.innerHTML =
-        responseElement.innerHTML + "<br>User saving failed!";
+        responseElement.innerHTML + "<br>User fetching failed!";
     });
 }
 
-// async function fetchUserById(userId) {
-//   console.log(globals[globals.environment]);
-
-//   const apiUrl = `${
-//     globals[globals.environment].apiBaseUrl
-//   }/user/fetch-user/${userId}`;
-
-//   try {
-//     const response = await fetch(apiUrl, {
-//       headers: {
-//         "Content-Type": "application/json;charset=utf-8",
-//         authorization: `Bearer ${globals.token}`,
-//         "x-api-key": globals[globals.environment].apiKey,
-//       },
-//     });
-//     const result = await response.json();
-
-//     if (result && result.data) {
-//       const { data } = result;
-//       const user = data?.data;
-//       console.log(user);
-//       return user;
-//     } else {
-//       return Promise.reject(result);
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
 
 function loginHandler(ev) {
   ev.preventDefault();
@@ -113,7 +82,7 @@ function loginHandler(ev) {
           localStorage.setItem("token", token);
 
           updateResponsePane(responseElement, data, status);
-          saveUser(token);
+          fetchAndSaveUser(token);
         } else {
           updateResponsePane(responseElement, result, status);
         }

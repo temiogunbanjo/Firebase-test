@@ -1,0 +1,19 @@
+.option-select {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  color: #555;
+  background-color: #eee;
+  margin: 5px;
+  min-width: 200px;
+}
+
+.cta-search-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  color: #fff;
+  background-color: orangered;
+  margin: 5px;
+  /* min-width: 200px; */
+}
