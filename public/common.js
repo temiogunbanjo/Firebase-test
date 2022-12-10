@@ -1,4 +1,5 @@
 const globals = {
+  autoPlayBots: [],
   currentPageIndex: 0,
   environment: "white",
   token: localStorage.getItem("token") || null,
@@ -326,6 +327,249 @@ function fetchUserBalance(containerElement, type = "main") {
       console.log(error);
       updateResponsePane(containerElement, error, "error");
     });
+}
+
+async function autoPlayer(GameOptions) {
+  const generateRandomizedTicket = async (botId, botGameOptions, amount) => {
+    const numberOfSlips = generateRandomNumber(1, 5);
+    const betSlips = [];
+
+    for (let i = 0; i < numberOfSlips; i++) {
+      const betType =
+        botGameOptions.betOptions[
+          generateRandomNumber(0, botGameOptions.betOptions.length - 1)
+        ];
+      const booster =
+        botGameOptions.boosterOptions[
+          generateRandomNumber(0, botGameOptions.boosterOptions.length - 1)
+        ];
+      const resultType =
+        botGameOptions.resultOptions[
+          generateRandomNumber(0, botGameOptions.resultOptions.length - 1)
+        ];
+      let selections = new Set();
+
+      // console.log(globals.BET_TYPE_MINIMUM_SELECTION[betType?.name]);
+
+      for (
+        let j = 1;
+        j <= (globals.BET_TYPE_MINIMUM_SELECTION[betType?.name] || 0);
+        j++
+      ) {
+        selections.add(generateRandomNumber(1, Number(botGameOptions.gameCount)));
+      }
+
+      betSlips.push({
+        betType: betType?.name || "",
+        booster: booster || "",
+        resultType: resultType || "",
+        amount: amount / numberOfSlips,
+        selections: Array.from(selections).join("-"),
+      });
+    }
+
+    const retTicket = {
+      gameId: botGameOptions.gameId,
+      lotteryId: botGameOptions.lotteryId,
+      winningRedemptionMethod: !globals.user.isAgent ? "wallet" : "dps",
+      sourceWallet: "mainWallet",
+      betSlips,
+    };
+
+    // console.log(retTicket, globals.user);
+
+    return retTicket;
+  };
+
+  const fetchPotentialWinningForBot = async (botId, ticket) => {
+    try {
+      const apiUrl = `${
+        globals[globals.environment].apiBaseUrl
+      }/game/ticket/get-potential-winning`;
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        body: JSON.stringify(ticket),
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          authorization: `Bearer ${globals.token}`,
+          mode: "no-cors",
+          "x-api-key": globals[globals.environment].apiKey,
+        },
+      });
+
+      const result = await response.json();
+      const { status } = result;
+
+      if (result && result.data) {
+        const { data } = result?.data;
+
+        return data;
+      } else {
+        errorHandler(result, true);
+        if (globals.autoPlayBots[botId]) {
+          globals.autoPlayBots[botId].analytics.failed += 1;
+        }
+        return null;
+      }
+    } catch (error) {
+      errorHandler(error, true);
+      if (globals.autoPlayBots[botId]) {
+        globals.autoPlayBots[botId].analytics.failed += 1;
+      }
+      return null;
+    }
+  };
+
+  function createTicketByBot(botId, ticket, byBot = false) {
+    const apiUrl = `${
+      globals[globals.environment].apiBaseUrl
+    }/game/create-ticket`;
+  
+    const body = JSON.stringify({
+      gameId: ticket.gameId,
+      totalStakedAmount: ticket.totalStakedAmount,
+      winningRedemptionMethod: ticket.winningRedemptionMethod || "wallet",
+      sourceWallet: ticket.sourceWallet,
+      betSlips: JSON.stringify(ticket.betSlips),
+    });
+  
+    if (globals.autoPlayBots[botId]) {
+      globals.autoPlayBots[botId].tickets.push(JSON.parse(body));
+    }
+    // console.log({ cre: JSON.parse(body) });
+  
+    fetch(apiUrl, {
+      method: "POST",
+      body,
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+        authorization: `Bearer ${globals.token}`,
+        mode: "no-cors",
+        "x-api-key": globals[globals.environment].apiKey,
+      },
+    })
+      .then(async (response) => {
+        try {
+          const result = await response.json();
+          const { status } = result;
+  
+          if (result && result.data) {
+            const { data } = result?.data;
+  
+            // console.log({ createTicketResponse: data, ticket: globals.ticket });
+            if (data?.ticketId) {
+              // updateUI();
+              if (!byBot) alert("Ticket created succesfully");
+              else {
+                console.log("Ticket created succesfully");
+              }
+
+              if (globals.autoPlayBots[botId]) {
+                globals.autoPlayBots[botId].analytics.success += 1;
+              }
+            }
+          }
+        } catch (error) {
+          if (globals.autoPlayBots[botId]) {
+            globals.autoPlayBots[botId].analytics.failed += 1;
+          }
+          errorHandler(error);
+        }
+      })
+      .catch((error) => {
+        errorHandler(error);
+        if (globals.autoPlayBots[botId]) {
+          globals.autoPlayBots[botId].analytics.failed += 1;
+        }
+      });
+  }
+
+  let numberOfPlayers = prompt("Enter number of players:");
+  let amountPerTicket = prompt("Enter amount per ticket:");
+
+  numberOfPlayers = numberOfPlayers || 1;
+  amountPerTicket = amountPerTicket || 10;
+
+  numberOfPlayers = parseInt(numberOfPlayers);
+  amountPerTicket = parseInt(amountPerTicket);
+
+  const MIN_INTERVAL_SECONDS = 25;
+  const MAX_INTERVAL_SECONDS = 60;
+
+  const playersPane = document.querySelector("#play-tab");
+  if (playersPane) playersPane.innerHTML = '';
+
+  for (let i = 1; i <= numberOfPlayers; i++) {
+    console.log(`Creating robot ${i}`);
+    // INTERVAL TO CREATE EACH TICKET
+    const botProps = {
+      botId: i,
+      tickets: [],
+      analytics: {
+        restart: 0,
+        success: 0,
+        failed: 0,
+        get successRate () {
+          return `${Number((this.success / this.restart) * 100).toFixed(2)}%`
+        },
+        get failureRate () {
+          return `${Number(((this.restart - this.success) / this.restart) * 100).toFixed(2)}%`
+        },
+      },
+      GameOptions
+    };
+
+    const interval = generateRandomNumber(
+      MIN_INTERVAL_SECONDS,
+      MAX_INTERVAL_SECONDS
+    );
+
+    const botClock = setInterval(() => {
+      const botEl = document.querySelector(`#bot-${i}`);
+
+      if (botEl) {
+        botEl.classList.toggle('active', true);
+      }
+      
+      console.log(`Bot ${i} creating Ticket`);
+      generateRandomizedTicket(i, botProps.GameOptions, amountPerTicket)
+        .then(async (botTicket) => {
+          botTicket.betSlips = JSON.stringify(botTicket.betSlips);
+          const data = await fetchPotentialWinningForBot(i, botTicket);
+          if (data) {
+            // console.log(data);
+            botTicket.betSlips = JSON.parse(data.betSlips);
+            botTicket.totalStakedAmount = data.totalStakedAmount;
+
+            createTicketByBot(i, botTicket, true);
+          }
+        }).finally(() => {
+          if (botEl) {
+            botEl.ontransitionend = (ev) => {
+              ev.target.classList.toggle('active', false);
+            };
+          }
+        });
+
+      if (globals.autoPlayBots[i]) {
+        globals.autoPlayBots[i].analytics.restart += 1;
+        console.log(globals.autoPlayBots[i]);
+      }
+    }, interval * 1000);
+
+    botProps.clock = botClock;
+    globals.autoPlayBots.push(botProps);
+
+    if (playersPane) {
+      const botElement = document.createElement('SPAN');
+      botElement.classList.add('user');
+      botElement.textContent = `B${i}`;
+      botElement.id = `bot-${i}`;
+
+      playersPane.appendChild(botElement);
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

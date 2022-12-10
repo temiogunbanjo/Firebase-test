@@ -32,6 +32,10 @@ function createTicketCard(ticket) {
             <span class="ticket-label">Category:</span>
             <span class="ticket-value">${ticket.Game?.Lottery?.category}</span>
           </p>
+          <p>
+            <span class="ticket-label">Total Staked:</span>
+            <span class="ticket-value">${ticket.totalStakedAmount}</span>
+          </p>
           <p style="margin-top: 1.5em">
             <div class="ticket-label" style="font-weight:600">Bet Slips:</div>
             <div class="ticket-slip-container">${JSON.parse(ticket.betSlips)
