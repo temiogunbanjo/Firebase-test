@@ -31,36 +31,36 @@ const globals = {
   },
   currentSelections: {},
   BET_TYPE_MINIMUM_SELECTION: {
-    'match-1': 1,
-    'match-2': 2,
-    'match-3': 3,
-    'match-4': 4,
-    'match-5': 5,
-    'match-6': 6,
-    'match-7': 7,
-    'match-8': 8,
-    'match-9': 9,
-    'match-10': 10,
-    'nap-1': 1,
-    'nap-2': 2,
-    'nap-3': 3,
-    'nap-4': 4,
-    'nap-5': 5,
-    'perm-1': 1,
-    'perm-2': 2,
-    'perm-3': 3,
-    'perm-4': 4,
-    'perm-5': 5,
-    'no-draw': 10,
-    'perfect-1': 1,
-    'perfect-2': 2,
-    'perfect-3': 3,
-    'perfect-4': 4,
-    'perfect-5': 5,
-    'perfect-6': 6,
-    'perfect-7': 7,
-    'perfect-8': 8,
-  }
+    "match-1": 1,
+    "match-2": 2,
+    "match-3": 3,
+    "match-4": 4,
+    "match-5": 5,
+    "match-6": 6,
+    "match-7": 7,
+    "match-8": 8,
+    "match-9": 9,
+    "match-10": 10,
+    "nap-1": 1,
+    "nap-2": 2,
+    "nap-3": 3,
+    "nap-4": 4,
+    "nap-5": 5,
+    "perm-1": 1,
+    "perm-2": 2,
+    "perm-3": 3,
+    "perm-4": 4,
+    "perm-5": 5,
+    "no-draw": 10,
+    "perfect-1": 1,
+    "perfect-2": 2,
+    "perfect-3": 3,
+    "perfect-4": 4,
+    "perfect-5": 5,
+    "perfect-6": 6,
+    "perfect-7": 7,
+    "perfect-8": 8,
+  },
 };
 
 const errorHandler = (error = {}, byBot = false) => {
@@ -73,7 +73,7 @@ const errorHandler = (error = {}, byBot = false) => {
 
 function generateRandomNumber(min = 0, max = 1) {
   return Math.round(Math.random() * (max - min)) + min;
-};
+}
 
 function createQuery(queryParams = {}) {
   let queryString = "";
@@ -230,7 +230,7 @@ async function fetchUserById(userId) {
 function saveUser(user, output = null) {
   console.log(globals[globals.environment]);
   const responseElement = output;
-  
+
   if (responseElement) {
     responseElement.innerHTML =
       responseElement.innerHTML + "<br>Saving user...";
@@ -338,29 +338,55 @@ function fetchUserBalance(containerElement, type = "main") {
 }
 
 const loadAutoPlayers = () => {
-  let savedBots = localStorage.getItem('bots');
+  let savedBots = localStorage.getItem("bots");
   if (savedBots) {
     savedBots = JSON.parse(savedBots);
     console.log(savedBots);
     globals.autoPlayBots = savedBots;
-    window.onload = (ev) => {
-      autoPlayer(savedBots[0].GameOptions, savedBots.length, savedBots[0].amountPerTicket);
+
+    if (savedBots.length > 0) {
+      window.onload = (ev) => {
+        autoPlayer(
+          savedBots[0].GameOptions,
+          savedBots.length,
+          savedBots[0].amountPerTicket
+        );
+      };
     }
   }
-}
+};
 
-async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket = null) {
+async function autoPlayer(
+  GameOptions = GameOptions,
+  numberOfPlayers = null,
+  amountPerTicket = null
+) {
   const getTooltipInfo = (botProps) => {
-    return `Bot ID: ${
-      botProps.botId
-    }, <br>Number of Tickets: ${
+    const totalRate = globals.autoPlayBots.reduce(
+      function(overall, nextBot){
+        // console.log(nextBot.analytics);
+        if (nextBot.analytics) {
+          return overall + nextBot.analytics.successRate;
+        }
+
+        return overall;
+      }, 0
+    );
+
+    const overallSuccessRate = totalRate / globals.autoPlayBots.length;
+
+    return `Bot ID: ${botProps.botId}, <br>Number of Tickets: ${
       botProps.tickets.length
-    }, <br/>Success: ${
-      botProps.analytics.successRate
-    }, <br/>Failure: ${
-      botProps.analytics.failureRate
-    }, <br/>Restarts: ${
+    }, <br/>Success: ${Number(botProps.analytics.successRate).toFixed(
+      2
+    )}%, <br/>Failure: ${Number(botProps.analytics.failureRate).toFixed(
+      2
+    )}%, <br/>Restarts: ${
       botProps.analytics.restart
+    }, <br>Overall Success Rate: ${
+      Number(overallSuccessRate).toFixed(2)
+    }, <br>Overall Failure Rate: ${
+      Number(100 - overallSuccessRate).toFixed(2)
     }`;
   };
 
@@ -390,7 +416,9 @@ async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket =
         j <= (globals.BET_TYPE_MINIMUM_SELECTION[betType?.name] || 0);
         j++
       ) {
-        selections.add(generateRandomNumber(1, Number(botGameOptions.gameCount)));
+        selections.add(
+          generateRandomNumber(1, Number(botGameOptions.gameCount))
+        );
       }
 
       betSlips.push({
@@ -459,7 +487,7 @@ async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket =
     const apiUrl = `${
       globals[globals.environment].apiBaseUrl
     }/game/create-ticket`;
-  
+
     const body = JSON.stringify({
       gameId: ticket.gameId,
       totalStakedAmount: ticket.totalStakedAmount,
@@ -467,12 +495,12 @@ async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket =
       sourceWallet: ticket.sourceWallet,
       betSlips: JSON.stringify(ticket.betSlips),
     });
-  
+
     if (globals.autoPlayBots[botId]) {
       globals.autoPlayBots[botId].tickets.push(JSON.parse(body));
     }
     // console.log({ cre: JSON.parse(body) });
-  
+
     fetch(apiUrl, {
       method: "POST",
       body,
@@ -487,10 +515,10 @@ async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket =
         try {
           const result = await response.json();
           const { status } = result;
-  
+
           if (result && result.data) {
             const { data } = result?.data;
-  
+
             // console.log({ createTicketResponse: data, ticket: globals.ticket });
             if (data?.ticketId) {
               // updateUI();
@@ -508,15 +536,24 @@ async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket =
           if (globals.autoPlayBots[botId]) {
             globals.autoPlayBots[botId].analytics.failed += 1;
           }
-          errorHandler(error);
+          errorHandler(error, true);
         }
       })
       .catch((error) => {
-        errorHandler(error);
+        errorHandler(error, true);
         if (globals.autoPlayBots[botId]) {
           globals.autoPlayBots[botId].analytics.failed += 1;
         }
       });
+  }
+
+  function saveBotStates() {
+    localStorage.setItem("bots", JSON.stringify(globals.autoPlayBots));
+
+    // UPDATE STORAGE EVERY 10 SECONDS
+    setInterval(() => {
+      localStorage.setItem("bots", JSON.stringify(globals.autoPlayBots));
+    }, 10000);
   }
 
   numberOfPlayers = numberOfPlayers || prompt("Enter number of players:");
@@ -532,27 +569,28 @@ async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket =
   const MAX_INTERVAL_SECONDS = 60;
 
   const playersPane = document.querySelector("#play-tab");
-  if (playersPane) playersPane.innerHTML = '';
+  if (playersPane) playersPane.innerHTML = "";
 
   for (let i = 1; i <= numberOfPlayers; i++) {
     console.log(`Creating robot ${i}`);
     // INTERVAL TO CREATE EACH TICKET
     const botProps = {
       botId: globals.autoPlayBots[i - 1]?.botId || i,
-      amountPerTicket: globals.autoPlayBots[i - 1]?.amountPerTicket || amountPerTicket,
+      amountPerTicket:
+        globals.autoPlayBots[i - 1]?.amountPerTicket || amountPerTicket,
       tickets: globals.autoPlayBots[i - 1]?.tickets || [],
       analytics: {
         restart: globals.autoPlayBots[i - 1]?.analytics?.restart || 0,
         success: globals.autoPlayBots[i - 1]?.analytics?.success || 0,
         failed: globals.autoPlayBots[i - 1]?.analytics?.failed || 0,
-        get successRate () {
-          return `${Number((this.success / this.restart) * 100).toFixed(2)}%`
+        get successRate() {
+          return (this.success / this.restart) * 100;
         },
-        get failureRate () {
-          return `${Number(((this.restart - this.success) / this.restart) * 100).toFixed(2)}%`
+        get failureRate() {
+          return ((this.restart - this.success) / this.restart) * 100;
         },
       },
-      GameOptions: globals.autoPlayBots[i - 1]?.GameOptions || GameOptions
+      GameOptions: globals.autoPlayBots[i - 1]?.GameOptions || GameOptions,
     };
 
     let botEl = document.querySelector(`#bot-${i}`);
@@ -565,9 +603,9 @@ async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket =
     const botClock = setInterval(() => {
       botEl = document.querySelector(`#bot-${i}`);
       if (botEl) {
-        botEl.classList.toggle('active', true);
+        botEl.classList.toggle("active", true);
       }
-      
+
       console.log(`Bot ${i} creating Ticket`);
       generateRandomizedTicket(i - 1, botProps.GameOptions, amountPerTicket)
         .then(async (botTicket) => {
@@ -580,10 +618,11 @@ async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket =
 
             createTicketByBot(i, botTicket, true);
           }
-        }).finally(() => {
+        })
+        .finally(() => {
           if (botEl) {
             botEl.ontransitionend = (ev) => {
-              ev.target.classList.toggle('active', false);
+              ev.target.classList.toggle("active", false);
             };
           }
         });
@@ -592,14 +631,14 @@ async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket =
         console.log(globals.autoPlayBots[i - 1]);
 
         if (botEl) {
-          botEl.style.color = 'white';
-          botEl.style.backgroundImage = `linear-gradient(to right, var(--user-color) ${
+          const gradientPosition = `${Number(
             globals.autoPlayBots[i - 1].analytics.successRate
-          }, red ${
-            globals.autoPlayBots[i - 1].analytics.successRate
-          })`;
+          ).toFixed(2)}%`;
+          botEl.style.color = "white";
+          botEl.style.backgroundImage = `linear-gradient(to right, var(--user-color) ${gradientPosition}, red ${gradientPosition})`;
 
-          document.querySelector(`#bot-${i}-tooltip`).innerHTML = getTooltipInfo(globals.autoPlayBots[i - 1]);
+          document.querySelector(`#bot-${i}-tooltip`).innerHTML =
+            getTooltipInfo(globals.autoPlayBots[i - 1]);
         }
 
         globals.autoPlayBots[i - 1].analytics.restart += 1;
@@ -609,47 +648,47 @@ async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket =
     botProps.clock = botClock;
 
     // ADD OR UPDATE BOT ARRAY
-    if (globals.autoPlayBots[i - 1] && globals.autoPlayBots[i - 1].botId === i) {
+    if (
+      globals.autoPlayBots[i - 1] &&
+      globals.autoPlayBots[i - 1].botId === i
+    ) {
       globals.autoPlayBots[i - 1] = botProps;
     } else {
       globals.autoPlayBots.push(botProps);
     }
-    
-    if (playersPane && !botEl) {
-      const botElement = document.createElement('SPAN');
-      const innerText = document.createElement('SPAN');
-      const botTooltip = document.createElement('SPAN');
 
-      botElement.classList.add('user', 'tooltip');
-      botTooltip.classList.add('tooltiptext');
-  
+    if (playersPane && !botEl) {
+      const botElement = document.createElement("SPAN");
+      const innerText = document.createElement("SPAN");
+      const botTooltip = document.createElement("SPAN");
+
+      botElement.classList.add("user", "tooltip");
+      botTooltip.classList.add("tooltiptext");
+
       botElement.id = `bot-${i}`;
       botTooltip.id = `bot-${i}-tooltip`;
 
       innerText.textContent = `B${i}`;
-      
+
       if (globals.autoPlayBots[i - 1]) {
         botTooltip.innerHTML = getTooltipInfo(globals.autoPlayBots[i - 1]);
       }
 
       botElement.appendChild(innerText);
       botElement.appendChild(botTooltip);
-  
+
       playersPane.appendChild(botElement);
     }
   }
 
-  // UPDATE STORAGE EVERY 10 SECONDS
-  setInterval(() => {
-    localStorage.setItem('bots', JSON.stringify(globals.autoPlayBots));
-  }, 10000);
+  saveBotStates();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   globals.user = JSON.parse(sessionStorage.getItem("user"));
   console.log(globals.user);
   const drawerElement = document.querySelector("#navigation ul");
-  const toggleSwitches = document.querySelectorAll('.toggle-switch');
+  const toggleSwitches = document.querySelectorAll(".toggle-switch");
 
   if (drawerElement) {
     createMenu(drawerElement);
@@ -657,7 +696,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (toggleSwitches && toggleSwitches.length > 0) {
     toggleSwitches.forEach((tSwitch) => {
-      tSwitch.addEventListener('change', (ev) => {
+      tSwitch.addEventListener("change", (ev) => {
         console.log(ev.target.checked);
       });
     });

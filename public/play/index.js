@@ -533,7 +533,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const amountInput = document.getElementById("amount-input");
 
   if (localStorage.getItem('bots')) {
-    autoplaySwitch.checked = true;
+    let savedBots = JSON.parse(localStorage.getItem('bots'));
+    if (savedBots.length > 0) {
+      autoplaySwitch.checked = true;
+    }
   }
 
   autoplaySwitch.addEventListener("change", async (ev) => {
