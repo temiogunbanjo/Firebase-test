@@ -37,7 +37,7 @@ function viewGamesHandler(ev) {
             }
           });
 
-          console.log(categoryObject);
+          // console.log(categoryObject);
 
           containerElement.innerHTML = Object.keys(categoryObject)
             .map((category) => {
@@ -51,15 +51,15 @@ function viewGamesHandler(ev) {
                           Number(game.totalFundPool)) *
                         100
                       : null;
-                    console.log({
-                      poolProgressPercent,
-                      poolProgressPercentRaw:
-                        (Number(game.currentPoolAmount) /
-                          Number(game.totalFundPool)) *
-                        100,
-                      currentPoolAmount: game.currentPoolAmount,
-                      totalFundPool: game.totalFundPool,
-                    });
+                    // console.log({
+                    //   poolProgressPercent,
+                    //   poolProgressPercentRaw:
+                    //     (Number(game.currentPoolAmount) /
+                    //       Number(game.totalFundPool)) *
+                    //     100,
+                    //   currentPoolAmount: game.currentPoolAmount,
+                    //   totalFundPool: game.totalFundPool,
+                    // });
                     return `
                     <div class="game-card">
                       <div class="d-flex rows align-items-center ticket-header">

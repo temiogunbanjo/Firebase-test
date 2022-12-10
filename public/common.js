@@ -63,6 +63,14 @@ const globals = {
   }
 };
 
+const errorHandler = (error = {}, byBot = false) => {
+  console.info("Errrrr");
+  console.error(error);
+  const message = error.responsemessage || error.message;
+  if (!byBot) alert(message);
+  else console.error(message);
+};
+
 function generateRandomNumber(min = 0, max = 1) {
   return Math.round(Math.random() * (max - min)) + min;
 };
@@ -329,7 +337,33 @@ function fetchUserBalance(containerElement, type = "main") {
     });
 }
 
-async function autoPlayer(GameOptions) {
+const loadAutoPlayers = () => {
+  let savedBots = localStorage.getItem('bots');
+  if (savedBots) {
+    savedBots = JSON.parse(savedBots);
+    console.log(savedBots);
+    globals.autoPlayBots = savedBots;
+    window.onload = (ev) => {
+      autoPlayer(savedBots[0].GameOptions, savedBots.length, savedBots[0].amountPerTicket);
+    }
+  }
+}
+
+async function autoPlayer(GameOptions, numberOfPlayers = null, amountPerTicket = null) {
+  const getTooltipInfo = (botProps) => {
+    return `Bot ID: ${
+      botProps.botId
+    }, <br>Number of Tickets: ${
+      botProps.tickets.length
+    }, <br/>Success: ${
+      botProps.analytics.successRate
+    }, <br/>Failure: ${
+      botProps.analytics.failureRate
+    }, <br/>Restarts: ${
+      botProps.analytics.restart
+    }`;
+  };
+
   const generateRandomizedTicket = async (botId, botGameOptions, amount) => {
     const numberOfSlips = generateRandomNumber(1, 5);
     const betSlips = [];
@@ -485,8 +519,8 @@ async function autoPlayer(GameOptions) {
       });
   }
 
-  let numberOfPlayers = prompt("Enter number of players:");
-  let amountPerTicket = prompt("Enter amount per ticket:");
+  numberOfPlayers = numberOfPlayers || prompt("Enter number of players:");
+  amountPerTicket = amountPerTicket || prompt("Enter amount per ticket:");
 
   numberOfPlayers = numberOfPlayers || 1;
   amountPerTicket = amountPerTicket || 10;
@@ -504,12 +538,13 @@ async function autoPlayer(GameOptions) {
     console.log(`Creating robot ${i}`);
     // INTERVAL TO CREATE EACH TICKET
     const botProps = {
-      botId: i,
-      tickets: [],
+      botId: globals.autoPlayBots[i - 1]?.botId || i,
+      amountPerTicket: globals.autoPlayBots[i - 1]?.amountPerTicket || amountPerTicket,
+      tickets: globals.autoPlayBots[i - 1]?.tickets || [],
       analytics: {
-        restart: 0,
-        success: 0,
-        failed: 0,
+        restart: globals.autoPlayBots[i - 1]?.analytics?.restart || 0,
+        success: globals.autoPlayBots[i - 1]?.analytics?.success || 0,
+        failed: globals.autoPlayBots[i - 1]?.analytics?.failed || 0,
         get successRate () {
           return `${Number((this.success / this.restart) * 100).toFixed(2)}%`
         },
@@ -517,8 +552,10 @@ async function autoPlayer(GameOptions) {
           return `${Number(((this.restart - this.success) / this.restart) * 100).toFixed(2)}%`
         },
       },
-      GameOptions
+      GameOptions: globals.autoPlayBots[i - 1]?.GameOptions || GameOptions
     };
+
+    let botEl = document.querySelector(`#bot-${i}`);
 
     const interval = generateRandomNumber(
       MIN_INTERVAL_SECONDS,
@@ -526,17 +563,16 @@ async function autoPlayer(GameOptions) {
     );
 
     const botClock = setInterval(() => {
-      const botEl = document.querySelector(`#bot-${i}`);
-
+      botEl = document.querySelector(`#bot-${i}`);
       if (botEl) {
         botEl.classList.toggle('active', true);
       }
       
       console.log(`Bot ${i} creating Ticket`);
-      generateRandomizedTicket(i, botProps.GameOptions, amountPerTicket)
+      generateRandomizedTicket(i - 1, botProps.GameOptions, amountPerTicket)
         .then(async (botTicket) => {
           botTicket.betSlips = JSON.stringify(botTicket.betSlips);
-          const data = await fetchPotentialWinningForBot(i, botTicket);
+          const data = await fetchPotentialWinningForBot(i - 1, botTicket);
           if (data) {
             // console.log(data);
             botTicket.betSlips = JSON.parse(data.betSlips);
@@ -552,24 +588,61 @@ async function autoPlayer(GameOptions) {
           }
         });
 
-      if (globals.autoPlayBots[i]) {
-        globals.autoPlayBots[i].analytics.restart += 1;
-        console.log(globals.autoPlayBots[i]);
+      if (globals.autoPlayBots[i - 1]) {
+        console.log(globals.autoPlayBots[i - 1]);
+
+        if (botEl) {
+          botEl.style.color = 'white';
+          botEl.style.backgroundImage = `linear-gradient(to right, var(--user-color) ${
+            globals.autoPlayBots[i - 1].analytics.successRate
+          }, red ${
+            globals.autoPlayBots[i - 1].analytics.successRate
+          })`;
+
+          document.querySelector(`#bot-${i}-tooltip`).innerHTML = getTooltipInfo(globals.autoPlayBots[i - 1]);
+        }
+
+        globals.autoPlayBots[i - 1].analytics.restart += 1;
       }
     }, interval * 1000);
 
     botProps.clock = botClock;
-    globals.autoPlayBots.push(botProps);
 
-    if (playersPane) {
+    // ADD OR UPDATE BOT ARRAY
+    if (globals.autoPlayBots[i - 1] && globals.autoPlayBots[i - 1].botId === i) {
+      globals.autoPlayBots[i - 1] = botProps;
+    } else {
+      globals.autoPlayBots.push(botProps);
+    }
+    
+    if (playersPane && !botEl) {
       const botElement = document.createElement('SPAN');
-      botElement.classList.add('user');
-      botElement.textContent = `B${i}`;
-      botElement.id = `bot-${i}`;
+      const innerText = document.createElement('SPAN');
+      const botTooltip = document.createElement('SPAN');
 
+      botElement.classList.add('user', 'tooltip');
+      botTooltip.classList.add('tooltiptext');
+  
+      botElement.id = `bot-${i}`;
+      botTooltip.id = `bot-${i}-tooltip`;
+
+      innerText.textContent = `B${i}`;
+      
+      if (globals.autoPlayBots[i - 1]) {
+        botTooltip.innerHTML = getTooltipInfo(globals.autoPlayBots[i - 1]);
+      }
+
+      botElement.appendChild(innerText);
+      botElement.appendChild(botTooltip);
+  
       playersPane.appendChild(botElement);
     }
   }
+
+  // UPDATE STORAGE EVERY 10 SECONDS
+  setInterval(() => {
+    localStorage.setItem('bots', JSON.stringify(globals.autoPlayBots));
+  }, 10000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -589,4 +662,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
+  loadAutoPlayers();
 });

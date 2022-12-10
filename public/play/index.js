@@ -1,13 +1,5 @@
 const GameOptions = {};
 
-const errorHandler = (error = {}, byBot = false) => {
-  console.info("Errrrr");
-  console.error(error);
-  const message = error.responsemessage || error.message;
-  if (!byBot) alert(message);
-  else console.error(message);
-};
-
 function showTabContent(tabId, cb = () => {}) {
   document.querySelectorAll(".navigation-content").forEach((content) => {
     if (content.id && content.id.includes(tabId)) {
@@ -540,6 +532,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const underSelectionMenu = document.getElementById("under-type-selector");
   const amountInput = document.getElementById("amount-input");
 
+  if (localStorage.getItem('bots')) {
+    autoplaySwitch.checked = true;
+  }
+
   autoplaySwitch.addEventListener("change", async (ev) => {
     console.log(ev.target.checked);
     if (ev.target.checked) await autoPlayer(GameOptions);
@@ -549,11 +545,8 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(bot.clock);
       });
 
-      const countToRemove = globals.autoPlayBots.length;
-      for (i = 0; i < countToRemove; i++) {
-        console.log(`Destroying bot ${i + 1}`);
-        globals.autoPlayBots.pop();
-      }
+      globals.autoPlayBots = [];
+      localStorage.removeItem('bots');
     }
   });
 

@@ -62,50 +62,6 @@ section#navigation {
     min-height: 53px;
 }
 
-#play-tab {
-  --user-color: #4ec34e;
-  max-width: 600px;
-  overflow-x: auto;
-  padding: 10px;
-}
-
-#play-tab .user {
-  flex: none;
-  position: relative;
-  font-size: 10px;
-  font-weight: 600;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgb(167, 172, 177);
-  color: #333;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin: 0 8px;
-  transition: all 0.4s ease;
-}
-
-#play-tab .user.active {
-  background-color: var(--user-color);
-  color: white;
-  transform: scale(1.1);
-}
-
-#play-tab .user.active::after {
-  /* font-size: 12px; */
-  content: '';
-  position: absolute;
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background-color: transparent;
-  border: 1px solid var(--user-color);
-  color: white;
-  animation: fading-waves 1.5s ease-in 0s infinite both normal;
-}
-
 @media screen and (max-width: 900px){
   #game-options-area {
     flex-direction: column;
@@ -113,17 +69,5 @@ section#navigation {
 
   #game-options-area > *{
     width: 100% !important;
-  }
-}
-
-@keyframes fading-waves {
-  from {
-    transform: scale(0.9);
-    opacity: 1;
-  }
-
-  to {
-    transform: scale(1.3);
-    opacity: 0;
   }
 }
