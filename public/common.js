@@ -268,6 +268,10 @@ const setPageIndex = (newIndex) => {
     createMenu(drawerElement);
   }
 
+  if (!globals.user?.userId && globals.currentPageIndex !== 0) {
+    window.location.replace('/');
+  }
+
   if (globals.user?.status === false) {
     const notice = document.querySelector("#notice");
     if (notice) {
@@ -339,7 +343,9 @@ function fetchUserBalance(containerElement, type = "main") {
 
 const loadAutoPlayers = () => {
   let savedBots = localStorage.getItem("bots");
-  if (savedBots) {
+  let botsPane = document.querySelector('#play-tab');
+
+  if (savedBots && botsPane) {
     savedBots = JSON.parse(savedBots);
     console.log(savedBots);
     globals.autoPlayBots = savedBots;
@@ -616,7 +622,7 @@ async function autoPlayer(
             botTicket.betSlips = JSON.parse(data.betSlips);
             botTicket.totalStakedAmount = data.totalStakedAmount;
 
-            createTicketByBot(i, botTicket, true);
+            createTicketByBot(i - 1, botTicket, true);
           }
         })
         .finally(() => {
