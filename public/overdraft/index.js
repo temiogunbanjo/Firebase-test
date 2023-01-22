@@ -9,18 +9,12 @@ function fetchUserBalance() {
     globals[globals.environment].apiBaseUrl
   }/user/fetch-authenticated-user`;
 
-  fetch(apiUrl, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  fetchAPI({
+    url: apiUrl, 
+    method: "GET"
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -54,18 +48,12 @@ function viewSentOverdraftHandler(options = { page: 1, limit: 50 }) {
     options.limit
   }&order=createdAt:DESC`;
 
-  fetch(apiUrl, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  fetchAPI({
+    url: apiUrl,
+    method: "GET",
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -110,15 +98,25 @@ function viewSentOverdraftHandler(options = { page: 1, limit: 50 }) {
                 </div>
 
                 <div class="d-flex rows space-between">
-                  <span>Amount: <b style="color: #444444">${
-                    result.amount
+                  <span>Initial Amount: <b style="color: #444444">${
+                    result.initialAmount
                   }</b></span>
-                  <span class="fw-400" style="margin-left: 20px; font-size: 13px">${new Date(
-                    result.createdAt
-                  ).toUTCString()}</span>
+                 
+                  <span>Rem. Amount: <b style="color: #444444">${
+                    result.remainingAmount
+                  }</b></span>
                 </div>
 
                 <div class="d-flex rows space-between" style="margin-top: 1rem">
+                  <span class="fw-400" style="font-size: 13px">Expires On: <b style="color: #444444">${new Date(
+                    result.expiresAt
+                  ).toUTCString()}</b></span>
+                </div>
+
+                <div class="d-flex rows space-between" style="margin-top: 0.5rem">
+                  <span class="fw-400" style="font-size: 13px">Created On: <b style="color: #444444">${new Date(
+                    result.createdAt
+                  ).toUTCString()}</b></span>
                 </div>
               </div>
             </div>`;
@@ -204,17 +202,29 @@ function viewReceivedOverdraftHandler(options = { page: 1, limit: 50 }) {
                 </div>
 
                 <div class="d-flex rows space-between">
-                  <span>Amount: <b style="color: #444444">${
-                    result.amount
+                  <span>Initial Amount: <b style="color: #444444">${
+                    result.initialAmount
                   }</b></span>
-                  <span class="fw-400" style="margin-left: 20px; font-size: 13px">${new Date(
+                  <span>Rem. Amount: <b style="color: #444444">${
+                    result.remainingAmount
+                  }</b></span>
+                </div>
+
+                <div class="d-flex rows space-between" style="margin-top: 1rem">
+                  <span class="fw-400" style="font-size: 13px">Expires On: <b style="color: #444444">${new Date(
+                    result.expiresAt
+                  ).toUTCString()}</b></span>
+                </div>
+
+                <div class="d-flex rows space-between" style="margin-top: 0.5rem">
+                  <span class="fw-400" style="font-size: 13px">Created On: <b style="color: #444444">${new Date(
                     result.createdAt
-                  ).toUTCString()}</span>
+                  ).toUTCString()}</b></span>
                 </div>
 
                 <div class="d-flex rows space-between" style="margin-top: 1rem">
                   <button onclick="repayOverdraft('${result.transactionId}', ${
-                result.amount
+                result.remainingAmount
               })">Return Overdraft</button>
                 </div>
               </div>
@@ -300,7 +310,9 @@ function transferHandler(ev) {
     amount: amountField?.value || 0,
     transactionPin: transactionPinInput?.value || "",
     receipientId: receipientInput?.value,
-    expiresAt: new Date((Date.now() + (1000)) || dateInput?.value || "").toISOString(),
+    expiresAt: new Date(
+      Date.now() + 1000 || dateInput?.value || ""
+    ).toISOString(),
   };
 
   console.log(payload);
@@ -345,7 +357,7 @@ function transferHandler(ev) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(9);
+  setPageIndex(10);
   const transferForm = document.querySelector("#transfer-form");
   transferForm.addEventListener("submit", transferHandler);
 

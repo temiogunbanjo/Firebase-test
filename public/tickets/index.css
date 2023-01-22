@@ -17,3 +17,21 @@
   margin: 5px;
   /* min-width: 200px; */
 }
+
+.ticket-slip {
+  margin-bottom: 2px;
+  font-weight: 400;
+}
+
+.ticket-slip.won, .ticket-slip.lost {
+  padding-left: 8px;
+  border-left: 2px solid;
+}
+
+.ticket-slip.won {
+  border-left-color: #4ec34e;
+}
+
+.ticket-slip.lost {
+  border-left-color: red;
+}

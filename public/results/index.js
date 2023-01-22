@@ -17,18 +17,12 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
     options.limit
   }&order=S_N:DESC`;
 
-  fetch(apiUrl, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  fetchAPI({
+    url: apiUrl,
+    method: "GET",
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -55,13 +49,22 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
               <h3 class="" style="margin: 10px 20px 10px 10px;">${
                 result.S_N
               }</h3>
-              <div class="d-flex cols">
-                <h5 class="" style="margin: 0">${result.drawName}</h5>
+              <div class="d-flex cols flex-grow">
+                <div class="d-flex rows space-between" style="align-items: flex-start;margin-bottom: 5px;">
+                  <div class="d-flex cols">
+                    <h5 class="" style="margin: 0">${result.drawName}</h5>
+                    <span style="font-size: 10px; font-weight: 600">Game: ${result?.Game?.name} (${result?.category})</span>
+                  </div>
+                  <span class="status-indicator" data-status="${
+                    result.status === 'active' ? 'won' : 'pending'
+                  }">${result.status}</span>
+                </div>
+                
                 <div class="d-flex rows space-between">
                   <span class="">${result.results.replace(/-/gi, ", ")}</span>
-                  <span class="" style="margin-left: 20px">${
+                  <h5 class="" style="margin: 0;margin-left: 20px;margin-right: 4px;letter-spacing: 2px">${
                     result.raffle
-                  }</span>
+                  }</h5>
                 </div>
               </div>
             </div>`;
@@ -81,7 +84,7 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(7);
+  setPageIndex(8);
 
   let nextBtn = null;
   let prevBtn = null;

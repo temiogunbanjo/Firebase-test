@@ -5,6 +5,7 @@ function viewUserProfile() {
   const roleElement = document.querySelector("#user-role");
   const statusElement = document.querySelector("#user-status");
   const mobileElement = document.querySelector("#user-mobile");
+  const userIdElement = document.querySelector("#user-id");
   const emailElement = document.querySelector("#user-email");
   const bankElement = document.querySelector("#user-bank");
   const accountNameElement = document.querySelector("#user-account-name");
@@ -43,6 +44,7 @@ function viewUserProfile() {
           roleElement.innerHTML = data?.role;
           statusElement.innerHTML = data?.status ? "Active" : "Suspended";
           statusElement.setAttribute('data-status', (data?.status ? "won" : "lost"));
+          userIdElement.innerHTML = data?.userId || '-- --';
           mobileElement.innerHTML = data?.phone || '-- --';
           bankElement.innerHTML = data?.bankName || '-- --';
           emailElement.innerHTML = data?.email || '-- --';

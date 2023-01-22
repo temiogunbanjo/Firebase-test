@@ -274,6 +274,6 @@ function applyForBonus(bonusId) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(8);
+  setPageIndex(11);
   fetchAllData();
 });

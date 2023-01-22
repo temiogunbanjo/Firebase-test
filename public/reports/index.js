@@ -5,7 +5,7 @@ function viewReports() {
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/agent/fetch-sales-report?interval=daily`;
+  }/agent/fetch-sales-report?interval=weekly`;
 
   fetch(apiUrl, {
     method: "GET",
@@ -40,6 +40,6 @@ function viewReports() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(8);
+  setPageIndex(9);
   viewReports();
 });

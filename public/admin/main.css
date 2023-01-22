@@ -23,6 +23,7 @@
 
 html,
 body {
+  --primary-color: orange;
   padding: 0;
   margin: 0;
   font-family: Nunito, Montserrat, Roboto, "Helvetica", sans-serif;
@@ -55,13 +56,6 @@ pre {
 code {
   white-space: pre-wrap;
   word-break: break-all;
-}
-header h3 {
-  background: url("./firebase-logo.png") no-repeat;
-  background-size: 40px;
-  padding-left: 50px;
-  display: inline-block;
-  /* color: white; */
 }
 
 .input-error {
@@ -272,8 +266,16 @@ header h3 {
 
 header {
   /* min-height: 300px; */
-  background-color: dodgerblue;
+  background-color: var(--primary-color);
   color: white;
+}
+
+header h3 {
+  background: url("./firebase-logo.png") no-repeat;
+  background-size: 40px;
+  padding-left: 50px;
+  display: inline-block;
+  /* color: white; */
 }
 
 button {
@@ -304,7 +306,7 @@ section#navigation ul li a{
 }
 
 section#navigation ul li a.active {
-  background-color: dodgerblue;
+  background-color: var(--primary-color);
   color: white;
 }
 
@@ -325,7 +327,7 @@ section#navigation ul li a:hover{
 }
 
 summary {
-  background-color: dodgerblue;
+  background-color: var(--primary-color);
   color: white;
   padding: 0.5rem;
 }
@@ -342,7 +344,7 @@ form button[type="submit"],
 .custom-button {
   margin-top: 1rem;
   margin-bottom: 1rem;
-  background-color: dodgerblue;
+  background-color: var(--primary-color);
   color: white;
   padding: 14px 20px;
   border-radius: 5px;
@@ -354,9 +356,9 @@ form button[type="submit"],
 }
 
 .custom-button.outlined {
-  border: 2px solid dodgerblue;
+  border: 2px solid var(--primary-color);
   background-color: transparent;
-  color: dodgerblue;
+  color: var(--primary-color);
 }
 
 form input[type="radio"] + label {
@@ -410,36 +412,10 @@ form input[type="radio"] + label {
   flex-grow: 1;
   max-width: 500px;
   position: relative;
-  /* overflow: hidden; */
 }
 
 .game-card {
   max-width: 400px;
-}
-
-.game-card .playing-status {
-  position: absolute;
-  padding: 5px 10px 5px 18px;
-  background-color: #4ec34e;
-  bottom: 5px;
-  right: -4px;
-  border-radius: 50% 5px 5px 50%;
-  /* border-top-right-radius: 20%; */
-  color: white;
-  font-size: 10px;
-  box-shadow: -3px -1px 4px #ccc;
-}
-
-.game-card .playing-status.active {
-  background-color: #4ec34e;
-}
-
-.game-card .playing-status.upcoming {
-  background-color: teal;
-}
-
-.game-card .playing-status.ended {
-  background-color: red;
 }
 
 .ticket-card.bonus {
@@ -535,8 +511,6 @@ form input[type="radio"] + label {
   /* max-width: 600px; */
   /* overflow-x: auto; */
   height: auto;
-  max-height: 200px;
-  overflow: auto;
   flex-wrap: wrap;
   padding: 10px;
   background-color: #eee;
@@ -548,8 +522,8 @@ form input[type="radio"] + label {
   position: relative;
   font-size: 10px;
   font-weight: 600;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: rgb(167, 172, 177);
   color: #333;
@@ -590,36 +564,5 @@ form input[type="radio"] + label {
   to {
     transform: scale(1.5);
     opacity: 0;
-  }
-}
-
-/* For all mobile users only */
-@media only screen and (max-width:799px){
-  main {
-    flex-direction: column !important;
-  }
-
-  section#navigation {
-    width: 100%;
-  }
-
-  section#navigation ul {
-    display: flex;
-    flex-direction: row !important;
-    list-style-type: none;
-    align-items: stretch;
-    overflow: auto;
-    padding: 0;
-    /* border: 1px solid red; */
-  }
-
-  section#navigation ul li a{
-    text-align: center;
-    background-color: #eee;
-    margin: 0 5px;
-    white-space: nowrap;
-    border-radius: 10px;
-    overflow-x: hidden;
-    height: 100%;
   }
 }

@@ -1,8 +1,7 @@
-// console.log(window.location.hostname);
 const globals = {
   autoPlayBots: [],
   currentPageIndex: 0,
-  environment: "western",
+  environment: "white",
   token: localStorage.getItem("token") || null,
   user: JSON.parse(sessionStorage.getItem("user") || "{}") || {},
   notificationOptions: {
@@ -10,27 +9,22 @@ const globals = {
   },
   bet9ja: {
     // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
-    apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
+    apiBaseUrl: "http://localhost:3000/api/v1",
     searchBaseUrl: "https://engine.gaim.tech",
     apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
   },
   white: {
-    // apiBaseUrl: "https://white-api.gaim.tech/api/v1",
-    apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
+    apiBaseUrl: "https://white-api.gaim.tech/api/v1",
+    // apiBaseUrl: "http://localhost:3000/api/v1",
     searchBaseUrl: "https://white-engine.gaim.tech",
     apiKey: "USR.cyU01p-PF1ktQ-hwhGal-2eJemM-H7Fch5-br",
+    // apiKey: "USR.cyU01p-PF1ktQ-hwhGal-2eJemM-H7Fch5-br",
   },
   western: {
     // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
-    apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
-    searchBaseUrl: "https://western.gaim.tech",
+    apiBaseUrl: "http://localhost:3000/api/v1",
+    searchBaseUrl: "https://white-engine.gaim.tech",
     apiKey: "USR.Ngu4rC-VMenpv-m251tw-rYC8Om-ryx89j-c4",
-  },
-  mbg: {
-    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
-    apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
-    searchBaseUrl: "https://western.gaim.tech",
-    apiKey: "USSD.iRDi0D--34pj54-xVRMWr-lkYFGR-NV34nu-a",
   },
   ticket: {
     sourceWallet: "mainWallet",
@@ -53,36 +47,31 @@ const globals = {
     "nap-3": 3,
     "nap-4": 4,
     "nap-5": 5,
-    "perm-1": generateRandomNumber(1, 20),
-    "perm-2": generateRandomNumber(2, 20),
-    "perm-3": generateRandomNumber(3, 20),
-    "perm-4": generateRandomNumber(4, 20),
-    "perm-5": generateRandomNumber(5, 20),
+    "perm-1": 10,
+    "perm-2": 10,
+    "perm-3": 10,
+    "perm-4": 10,
+    "perm-5": 10,
     "nap-1-t": 1,
     "nap-2-t": 2,
     "nap-3-t": 3,
     "nap-4-t": 4,
     "nap-5-t": 5,
-    "n6": 6,
-    "n7":7,
-    "n8": 8,
-    "n9": 9,
-    "n10": 10,
-    "perm-1-t": generateRandomNumber(1, 20),
-    "perm-2-t": generateRandomNumber(2, 20),
-    "perm-3-t": generateRandomNumber(3, 20),
-    "perm-4-t": generateRandomNumber(4, 20),
-    "perm-5-t": generateRandomNumber(5, 20),
+    "perm-1-t": 10,
+    "perm-2-t": 10,
+    "perm-3-t": 10,
+    "perm-4-t": 10,
+    "perm-5-t": 10,
     "nap-1-ol": 1,
     "nap-2-ol": 2,
     "nap-3-ol": 3,
     "nap-4-ol": 4,
     "nap-5-ol": 5,
-    "perm-1-ol": generateRandomNumber(1, 20),
-    "perm-2-ol": generateRandomNumber(2, 20),
-    "perm-3-ol": generateRandomNumber(3, 20),
-    "perm-4-ol": generateRandomNumber(4, 20),
-    "perm-5-ol": generateRandomNumber(5, 20),
+    "perm-1-ol": 1,
+    "perm-2-ol": 2,
+    "perm-3-ol": 3,
+    "perm-4-ol": 4,
+    "perm-5-ol": 5,
     "no-draw": 10,
     "*no-draw*": 20,
     "perfect-1": 1,
@@ -96,40 +85,32 @@ const globals = {
     "1-by-1": 2,
     "1-by-2": 3,
     "1-by-2-swap": 3,
-    "1-by-3": generateRandomNumber(4, 20),
-    "1-by-3-swap": generateRandomNumber(4, 20),
-    "1-by-4": generateRandomNumber(5, 20),
-    "1-by-4-swap": generateRandomNumber(5, 20),
-    "2-by-1": generateRandomNumber(3, 20),
-    "2-by-2": generateRandomNumber(4, 20),
-    "2-by-3": generateRandomNumber(5, 20),
-    "2-by-3-swap": generateRandomNumber(5, 20),
-    "3-by-1": generateRandomNumber(4, 20),
-    "3-by-2": generateRandomNumber(5, 20),
-    "4-by-1": generateRandomNumber(5, 20),
-    "1w-by-1m": generateRandomNumber(2, 20),
-    "1w-by-1m-swap": generateRandomNumber(2, 20),
-    "1w-by-2m": generateRandomNumber(3, 20),
-    "1w-by-2m-swap": generateRandomNumber(3, 20),
-    "2w-by-1m": generateRandomNumber(3, 20),
-    "2w-by-2m": generateRandomNumber(4, 20),
-    "2w-by-2m-swap": generateRandomNumber(4, 20),
+    "1-by-3": 4,
+    "1-by-3-swap": 4,
+    "1-by-4": 5,
+    "1-by-4-swap": 5,
+    "2-by-1": 3,
+    "2-by-2": 4,
+    "2-by-3": 5,
+    "2-by-3-swap": 5,
+    "3-by-1": 4,
+    "3-by-2": 5,
+    "4-by-1": 5,
+    "1w-by-1m": 2,
+    "1w-by-1m-swap": 2,
+    "1w-by-2m": 3,
+    "1w-by-2m-swap": 3,
+    "2w-by-1m": 3,
+    "2w-by-2m": 4,
+    "2w-by-2m-swap": 4,
     fnd: 5,
-    "1st-box": 5,
-    "2nd-box": 5,
-    "center-box": 5,
-    "last-box": 5,
-    "1st-nd": 5,
-    "1st-2nd": 5,
-    "1st-3nd": 5,
-    "1-against": generateRandomNumber(1, 20),
-    "2-against": generateRandomNumber(2, 20),
-    "3-against": generateRandomNumber(3, 20),
-    "4-against": generateRandomNumber(4, 20),
-    "1-no-draw": 1,
-    "2-no-draw": 2,
-    "3-no-draw": 3,
-    "4-no-draw": 4,
+    '1st-box': 5,
+    '2nd-box': 5,
+    'center-box': 5,
+    'last-box': 5,
+    '1st-nd': 5,
+    '1st-2nd': 5,
+    '1st-3nd': 5
   },
 };
 
@@ -162,7 +143,6 @@ function createQuery(queryParams = {}) {
 }
 
 const updateResponsePane = (responseElement, dataResponse, status) => {
-  // alert(JSON.stringify(dataResponse));
   responseElement.textContent =
     typeof dataResponse !== "object"
       ? dataResponse
@@ -176,73 +156,7 @@ const createMenu = (drawerElement) => {
       name: "Authentication",
       id: "auth-tab",
       visible: true,
-    },
-    {
-      link: "/profile",
-      name: "My Profile",
-      id: "profile-tab",
-      visible: true,
-    },
-    {
-      link: "/token",
-      name: "Token Management",
-      id: "token-management-tab",
-      visible: true,
-    },
-    {
-      link: "/withdrawal",
-      name: "Withdrawals",
-      id: "withdraw-tab",
-      visible: true,
-    },
-    {
-      link: "/transfer-funds",
-      name: "Transfers",
-      id: "transfer-tab",
-      visible: true,
-    },
-    {
-      link: "/transactions",
-      name: "Transactions",
-      id: "transaction-tab",
-      visible: true,
-    },
-    {
-      link: "/games",
-      name: "Games",
-      id: "view-games-tab",
-      visible: true,
-    },
-    {
-      link: "/tickets",
-      name: "Tickets",
-      id: "view-tickets-tab",
-      visible: true,
-    },
-    {
-      link: "/results",
-      name: "Game Results",
-      id: "view-results-tab",
-      visible: true,
-    },
-    {
-      link: "/reports",
-      name: "My Reports",
-      id: "view-reports-tab",
-      visible: globals.user?.isAgent === true || globals.user?.adminId,
-    },
-    {
-      link: "/overdraft",
-      name: "Manage Overdrafts",
-      id: "overdraft-tab",
-      visible: globals.user?.isAgent === true || globals.user?.adminId,
-    },
-    {
-      link: "/bonus",
-      name: "Bonus",
-      id: "bonus-tab",
-      visible: true,
-    },
+    }
   ];
 
   const content = menus
@@ -268,12 +182,12 @@ const createMenu = (drawerElement) => {
   drawerElement.innerHTML = content.join("");
 };
 
-async function fetchUserById(userId) {
+async function fetchAdminById(adminId) {
   console.log(globals[globals.environment]);
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/user/fetch-user/${userId}`;
+  }/user/fetch-admin/${adminId}`;
 
   try {
     const response = await fetch(apiUrl, {
@@ -298,35 +212,35 @@ async function fetchUserById(userId) {
   }
 }
 
-function saveUser(user, output = null) {
+function saveAdmin(user, output = null) {
   console.log(globals[globals.environment]);
   const responseElement = output;
 
   if (responseElement) {
     responseElement.innerHTML =
-      responseElement.innerHTML + "<br>Saving user...";
+      responseElement.innerHTML + "<br>Saving admin...";
   }
 
   try {
     if (user) {
       console.log(user);
       globals.user = user;
-      sessionStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("admin", JSON.stringify(user));
 
       if (responseElement) {
         responseElement.innerHTML =
-          responseElement.innerHTML + "<br>User saved successfully!";
+          responseElement.innerHTML + "<br>Admin saved successfully!";
       }
     } else if (responseElement) {
       responseElement.innerHTML =
-        responseElement.innerHTML + "<br>User saving failed!";
+        responseElement.innerHTML + "<br>Admin saving failed!";
     }
   } catch (error) {
     console.log(error);
     const { status } = error;
     if (responseElement) {
       responseElement.innerHTML =
-        responseElement.innerHTML + `<br>User saving failed:${status}!`;
+        responseElement.innerHTML + `<br>Admin saving failed:${status}!`;
     }
   }
 }
@@ -340,7 +254,7 @@ const setPageIndex = (newIndex) => {
   }
 
   if (!globals.user?.userId && globals.currentPageIndex !== 0) {
-    window.location.replace("/");
+    window.location.replace('/');
   }
 
   if (globals.user?.status === false) {
@@ -357,12 +271,18 @@ function fetchUserBalance(containerElement, type = "main") {
     globals[globals.environment].apiBaseUrl
   }/user/fetch-authenticated-user`;
 
-  fetchAPI({
-    url: apiUrl,
+  fetch(apiUrl, {
     method: "get",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+      authorization: `Bearer ${globals.token}`,
+      mode: "no-cors",
+      "x-api-key": globals[globals.environment].apiKey,
+    },
   })
-    .then((result) => {
+    .then(async (response) => {
       try {
+        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -408,7 +328,7 @@ function fetchUserBalance(containerElement, type = "main") {
 
 const loadAutoPlayers = () => {
   let savedBots = localStorage.getItem("bots");
-  let botsPane = document.querySelector("#play-tab");
+  let botsPane = document.querySelector('#play-tab');
 
   if (savedBots && botsPane) {
     savedBots = JSON.parse(savedBots);
@@ -433,14 +353,16 @@ async function autoPlayer(
   amountPerTicket = null
 ) {
   const getTooltipInfo = (botProps) => {
-    const totalRate = globals.autoPlayBots.reduce(function (overall, nextBot) {
-      // console.log(nextBot.analytics);
-      if (nextBot.analytics) {
-        return overall + nextBot.analytics.successRate;
-      }
+    const totalRate = globals.autoPlayBots.reduce(
+      function(overall, nextBot){
+        // console.log(nextBot.analytics);
+        if (nextBot.analytics) {
+          return overall + nextBot.analytics.successRate;
+        }
 
-      return overall;
-    }, 0);
+        return overall;
+      }, 0
+    );
 
     const overallSuccessRate = totalRate / globals.autoPlayBots.length;
 
@@ -452,11 +374,11 @@ async function autoPlayer(
       2
     )}%, <br/>Restarts: ${
       botProps.analytics.restart
-    }, <br>Overall Success Rate: ${Number(overallSuccessRate).toFixed(
-      2
-    )}, <br>Overall Failure Rate: ${Number(100 - overallSuccessRate).toFixed(
-      2
-    )}`;
+    }, <br>Overall Success Rate: ${
+      Number(overallSuccessRate).toFixed(2)
+    }, <br>Overall Failure Rate: ${
+      Number(100 - overallSuccessRate).toFixed(2)
+    }`;
   };
 
   const generateRandomizedTicket = async (botId, botGameOptions, amount) => {
@@ -465,31 +387,26 @@ async function autoPlayer(
       w_by_m_bet_type_pattern: /^(\dw-by-\dm)/gi,
     };
 
-    // PICK RANDOM NUMBER OF SLIPS TO GENERATE
-    const numberOfSlips = generateRandomNumber(1, 10);
+    const numberOfSlips = generateRandomNumber(1, 5);
     const betSlips = [];
 
-    // CREATE CORRESPONDING NUMBER OF SLIPS
     for (let i = 0; i < numberOfSlips; i++) {
-      // RANDOM BETYPE FROM BET OPTIONS
       const betType =
         botGameOptions.betOptions[
           generateRandomNumber(0, botGameOptions.betOptions.length - 1)
         ];
-      // RANDOM BOOSTER FROM BOOSTER OPTIONS
       const booster =
         botGameOptions.boosterOptions[
           generateRandomNumber(0, botGameOptions.boosterOptions.length - 1)
         ];
-      // RANDOM RESULT TYPE FROM RESULT OPTIONS
       const resultType =
         botGameOptions.resultOptions[
           generateRandomNumber(0, botGameOptions.resultOptions.length - 1)
         ];
-
       let selections = new Set();
 
-      // ADD RANDOM NUMBERS TO SELECTIONS SET
+      // console.log(globals.BET_TYPE_MINIMUM_SELECTION[betType?.name]);
+
       for (
         let j = 1;
         j <= (globals.BET_TYPE_MINIMUM_SELECTION[betType?.name] || 0);
@@ -500,63 +417,45 @@ async function autoPlayer(
         );
       }
 
-      // CONVERT SELECTION SET TO ARRAY
       let newArraySelection = Array.from(selections);
-
-      // CONVERT SELECTIONS ARRAY IN JOIN STRING BASED ON IF BET TYPE IS SET A/B OR NOT
+      // console.log(newArraySelection);
       if (
-        !betType?.name.match(Patterns.w_by_m_bet_type_pattern) &&
-        !betType?.name.match(Patterns.x_by_y_bet_type_pattern)
+        !betType?.name.match(Patterns.w_by_m_bet_type_pattern)
+        && !betType?.name.match(Patterns.x_by_y_bet_type_pattern)
       ) {
-        newArraySelection = newArraySelection.join("-");
+        newArraySelection = newArraySelection.join('-');
       } else {
-        let strippedBetype = betType?.name.replace("-swap", "");
-        strippedBetype = strippedBetype.replace(/w|m/gi, "");
-        const [setACount, setBCount] = strippedBetype.split("-by-");
+        let strippedBetype = betType?.name.replace('-swap', '');
+        strippedBetype = strippedBetype.replace(/w|m/gi, '');
+        const [setACount, setBCount] = strippedBetype.split('-by-');
         // console.log(strippedBetype, setACount, setBCount);
-
+        
         const setA = newArraySelection.slice(0, parseInt(setACount, 10));
         const setB = newArraySelection.slice(parseInt(setACount, 10));
 
-        newArraySelection = `${setA.join("-")}/${setB.join("-")}`;
+        newArraySelection = `${setA.join('-')}/${setB.join('-')}`;
       }
 
-      const finalSlip = {
+      betSlips.push({
         betType: betType?.name || "",
         booster: booster || "",
         resultType: resultType || "",
         amount: amount / numberOfSlips,
         selections: newArraySelection,
-      };
-
-      betSlips.push(finalSlip);
+      });
     }
 
-    // RANDOMIZE THE WINNING REDEMPTION METHOD SELECTED
-    // debugger;
-    const availableWRM = !globals.user.isAgent
-      ? ["wallet", "bank"] : ["dps", "bank"];
-    const selectedWRM = availableWRM[generateRandomNumber(0, availableWRM.length - 1)];
-
-    console.log(selectedWRM);
-
-    const finalTicket = {
+    const retTicket = {
       gameId: botGameOptions.gameId,
       lotteryId: botGameOptions.lotteryId,
-      winningRedemptionMethod: selectedWRM,
+      winningRedemptionMethod: !globals.user.isAgent ? "wallet" : "dps",
       sourceWallet: "mainWallet",
       betSlips,
     };
 
-    if (selectedWRM === "bank") {
-      finalTicket.bankDetails = JSON.stringify({
-        accountNumber: "0211394434",
-        accountName: "Temiloluwa ogunbanjo",
-        bankCode: "058",
-      });
-    }
+    // console.log(retTicket, globals.user);
 
-    return finalTicket;
+    return retTicket;
   };
 
   const fetchPotentialWinningForBot = async (botId, ticket) => {
@@ -565,12 +464,18 @@ async function autoPlayer(
         globals[globals.environment].apiBaseUrl
       }/game/ticket/get-potential-winning`;
 
-      const result = await fetchAPI({
-        url: apiUrl,
+      const response = await fetch(apiUrl, {
         method: "POST",
-        data: ticket,
+        body: JSON.stringify(ticket),
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          authorization: `Bearer ${globals.token}`,
+          mode: "no-cors",
+          "x-api-key": globals[globals.environment].apiKey,
+        },
       });
 
+      const result = await response.json();
       const { status } = result;
 
       if (result && result.data) {
@@ -598,22 +503,32 @@ async function autoPlayer(
       globals[globals.environment].apiBaseUrl
     }/game/create-ticket`;
 
-    const body = {
+    const body = JSON.stringify({
       gameId: ticket.gameId,
       totalStakedAmount: ticket.totalStakedAmount,
-      winningRedemptionMethod: ticket.winningRedemptionMethod,
+      winningRedemptionMethod: ticket.winningRedemptionMethod || "wallet",
       sourceWallet: ticket.sourceWallet,
       betSlips: JSON.stringify(ticket.betSlips),
-    };
+    });
+
+    if (globals.autoPlayBots[botId]) {
+      globals.autoPlayBots[botId].tickets.push(JSON.parse(body));
+    }
     // console.log({ cre: JSON.parse(body) });
 
-    fetchAPI({
-      url: apiUrl,
+    fetch(apiUrl, {
       method: "POST",
-      data: body,
+      body,
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+        authorization: `Bearer ${globals.token}`,
+        mode: "no-cors",
+        "x-api-key": globals[globals.environment].apiKey,
+      },
     })
-      .then((result) => {
+      .then(async (response) => {
         try {
+          const result = await response.json();
           const { status } = result;
 
           if (result && result.data) {
@@ -645,13 +560,6 @@ async function autoPlayer(
           globals.autoPlayBots[botId].analytics.failed += 1;
         }
       });
-
-    if (globals.autoPlayBots[botId]) {
-      const savedTicket = body;
-      savedTicket.betSlips = JSON.parse(savedTicket.betSlips);
-
-      globals.autoPlayBots[botId].tickets.push(savedTicket);
-    }
   }
 
   function saveBotStates() {
@@ -791,29 +699,6 @@ async function autoPlayer(
   saveBotStates();
 }
 
-async function fetchAPI(options) {
-  const defaultOptions = { method: "GET", url: "" };
-  options =
-    typeof options === "object"
-      ? { ...defaultOptions, ...options }
-      : defaultOptions;
-
-  // console.log(options);
-
-  const response = await fetch(options.url, {
-    method: options.method,
-    body: JSON.stringify(options.data),
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
-  });
-
-  return response.json();
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   globals.user = JSON.parse(sessionStorage.getItem("user"));
   console.log(globals.user);
@@ -824,13 +709,13 @@ document.addEventListener("DOMContentLoaded", () => {
     createMenu(drawerElement);
   }
 
-  if (toggleSwitches && toggleSwitches.length > 0) {
-    toggleSwitches.forEach((tSwitch) => {
-      tSwitch.addEventListener("change", (ev) => {
-        console.log(ev.target.checked);
-      });
-    });
-  }
+  // if (toggleSwitches && toggleSwitches.length > 0) {
+  //   toggleSwitches.forEach((tSwitch) => {
+  //     tSwitch.addEventListener("change", (ev) => {
+  //       console.log(ev.target.checked);
+  //     });
+  //   });
+  // }
 
   loadAutoPlayers();
 });

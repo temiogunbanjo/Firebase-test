@@ -40,17 +40,40 @@ function createTicketCard(ticket) {
             <div class="ticket-label" style="font-weight:600">Bet Slips:</div>
             <div class="ticket-slip-container">${JSON.parse(ticket.betSlips)
               .map((slip) => {
+                const slipWinStatusClass = (() => {
+                  if (slip.hasWon === true) {
+                    return 'won';
+                  }
+
+                  if (slip.hasWon === false) {
+                    return 'lost';
+                  }
+
+                  return '';
+                })();
+
                 return `
-                  <div class="ticket-slip" style="line-height: 1.3">
-                    ${slip.betType} / ${slip.booster} / ${slip.resultType} – N${
-                  parseFloat(slip.amount).toFixed(2)
-                }
+                  <div class="ticket-slip ${slipWinStatusClass}" style="line-height: 1.3">
+                    ${slip.betType} / ${slip.booster} / ${
+                  slip.resultType
+                } – N${parseFloat(slip.amount).toFixed(2)}
                     <br/>
                     ${
                       slip.selections
                         ? slip.selections
                             ?.split("-")
-                            .map((e) => parseInt(e, 10))
+                            .map(
+                              (e) =>
+                                `<span style="${
+                                  !!ticket.Gameresult?.results &&
+                                  ticket.Gameresult?.results
+                                    .split("-")
+                                    .map((a) => parseInt(a, 10))
+                                    .includes(parseInt(e, 10))
+                                    ? "font-size: 16px; font-weight: 700; color: orange"
+                                    : ""
+                                }">${e}</span>`
+                            )
                             .join(", ")
                         : "N/A"
                     } => (${slip.linesCount} lines)
@@ -95,6 +118,14 @@ function createTicketCard(ticket) {
                 </div>`
               : ""
           }
+          ${
+            !!ticket.Gameresult
+              ? `<div class="d-flex bg-orange" style="flex-direction: column; border-radius: 8px; padding: 10px; color: white">
+                  <div class="fw-700" style="line-height: 1.5">Results:</div>
+                  <div>${ticket.Gameresult?.results}</div>
+                </div>`
+              : ""
+          }
         </div>
         
       </div>
@@ -107,27 +138,21 @@ async function createInstantResult(ticketId) {
     globals[globals.environment].apiBaseUrl
   }/game/create-instant-result`;
   try {
-    const response = await fetch(apiUrl, {
+    const result = await fetchAPI({
+      url: apiUrl,
       method: "post",
-      body: JSON.stringify({
+      data: {
         ticketId,
-      }),
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-        authorization: `Bearer ${globals.token}`,
-        mode: "no-cors",
-        "x-api-key": globals[globals.environment].apiKey,
       },
     });
 
-    const result = await response.json();
     const { status } = result;
 
     if (result && result.data) {
       // const { data } = result;
       const data = result?.data?.data;
       console.log(data);
-      viewTicketsHandler();
+      viewTicketsHandler({ page: currentPage });
     }
   } catch (error) {
     console.log(error);
@@ -189,10 +214,16 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
       page: parseInt(nextBtn.getAttribute("data-page"), 10) - 1 || 1,
       limit: 50,
     };
+  } else {
+    options = {
+      page: 1,
+      limit: 50,
+      ...options
+    }
   }
 
   if (!globals.user?.userId) {
-    window.location.replace('/');
+    window.location.replace("/");
   }
 
   const apiUrl = `${
@@ -201,18 +232,12 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
     options.limit
   }`;
 
-  fetch(apiUrl, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  fetchAPI({
+    url: apiUrl,
+    method: "GET",
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -290,15 +315,7 @@ function searchTicketHandler(
     };
   }
   const baseUrl = "https://engine.afrilot.com" || "http://127.0.0.1:8000";
-  const apiUrl = `${baseUrl}/search?game=${
-    game
-  }&selections=${
-    selections
-  }&startDate=${
-    startDate
-  }&endDate=${
-    endDate
-  }`;
+  const apiUrl = `${baseUrl}/search?game=${game}&selections=${selections}&startDate=${startDate}&endDate=${endDate}`;
 
   fetch(apiUrl, {
     method: "get",
@@ -360,25 +377,19 @@ function fetchGameOptions() {
     globals[globals.environment].apiBaseUrl
   }/game/fetch-game-options`;
 
-  fetch(apiUrl, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  fetchAPI({
+    url: apiUrl,
+    method: "GET",
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
           const { data } = result?.data;
           console.log(data);
 
-          const { betTypes, resultTypes, boosters } = data;
+          const { betTypes = [], resultTypes = [], boosters = [] } = data;
 
           betTypes.forEach((each, index) => {
             const option = document.createElement("option");
@@ -415,13 +426,13 @@ function fetchGameOptions() {
         }
       } catch (error) {
         console.log(error);
-        const { responsemessage, status } = error;
-        updateResponsePane(containerElement, responsemessage, status);
+        // const { responsemessage, status } = error;
+        // updateResponsePane(containerElement, responsemessage, status);
       }
     })
     .catch((error) => {
       console.log(error);
-      updateResponsePane(containerElement, error, "error");
+      // updateResponsePane(containerElement, error, "error");
     });
 }
 
@@ -488,5 +499,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setInterval(() => {
     fetchAll();
-  }, (0.5 * 60 * 1000));
+  }, 0.5 * 60 * 1000);
 });

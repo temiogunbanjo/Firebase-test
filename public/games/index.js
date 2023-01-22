@@ -4,24 +4,27 @@ function viewGamesHandler(ev) {
 
   // containerElement.innerHTML = "Fetching tickets...";
   const d = new Date();
-  const currentTime = d.toLocaleTimeString();
+  const currentTime = `${
+    d.getHours() < 10 ? "0" + d.getHours() : d.getHours()
+  }:${d.getMinutes()}:${d.getSeconds()}`;
   const currentWeekDay = d.getDay();
+
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-current-game?page=1&limit=100&currentWeekDay=${currentWeekDay}`;
+  }/game/fetch-current-game?page=1&limit=100&currentWeekDay=${
+    currentWeekDay
+  }&endTime=${
+    currentTime
+  }&includeRecurring=true`;
 
-  fetch(apiUrl, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  // console.log(currentTime);
+  fetchAPI({
+    url: apiUrl,
+    method: "GET",
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
+        // const  = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -51,6 +54,37 @@ function viewGamesHandler(ev) {
                           Number(game.totalFundPool)) *
                         100
                       : null;
+                    
+                    const gamePlayStatus = (() => {
+                      const [startHour, startMinute, startSeconds] = game.startTime.split(':');
+                      const [endHour, endMinute, endSeconds] = game.endTime.split(':');
+
+                      const startTimeMS = new Date().setHours(
+                        parseInt(startHour, 10),
+                        parseInt(startMinute, 10),
+                        parseInt(startSeconds, 10)
+                      );
+
+                      const endTimeMS = new Date().setHours(
+                        parseInt(endHour, 10),
+                        parseInt(endMinute, 10),
+                        parseInt(endSeconds, 10)
+                      );
+
+                      const currentTimeMS = Date.now();
+
+                      // console.log(startTimeMS, endTimeMS);
+
+                      if (currentTimeMS >= startTimeMS && currentTimeMS < endTimeMS) {
+                        return 'active';
+                      }
+                      
+                      if (currentTimeMS > startTimeMS && currentTimeMS <= endTimeMS) {
+                        return 'ended';
+                      }
+
+                      return 'upcoming';
+                    })()
                     // console.log({
                     //   poolProgressPercent,
                     //   poolProgressPercentRaw:
@@ -62,6 +96,7 @@ function viewGamesHandler(ev) {
                     // });
                     return `
                     <div class="game-card">
+                      <span class="playing-status ${gamePlayStatus} capitalize">${gamePlayStatus}</span>
                       <div class="d-flex rows align-items-center ticket-header">
                         <h3 style="margin-bottom: 0.5em">Game</h3>
                         <span
@@ -89,7 +124,8 @@ function viewGamesHandler(ev) {
                           </p>
 
                           ${
-                            poolProgressPercent !== null && poolProgressPercent >= 0
+                            poolProgressPercent !== null &&
+                            poolProgressPercent >= 0
                               ? `<p style="width: 100%">
                                   <progress value='${poolProgressPercent}' max="100" style="width: 100%;">
                                     ${poolProgressPercent}%
@@ -153,5 +189,5 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(() => {
     // alert('hey');
     viewGamesHandler({ page: cPage, limit: 50 });
-  }, (0.2 * 60 * 1000))
+  }, 0.2 * 60 * 1000);
 });

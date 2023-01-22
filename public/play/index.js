@@ -85,7 +85,6 @@ const updateUI = () => {
 };
 
 function populateGameArea(game) {
-  // debugger;
   const ballContainer = document.getElementById("ball-container");
   const gameTitle = document.getElementById("game-name");
   const poolBarSection = document.getElementById("pool-bar-section");
@@ -114,11 +113,11 @@ function populateGameArea(game) {
   // SAVE GAME INFO
   GameOptions.lotteryId = lotteryId;
   GameOptions.gameId = gameId;
-  GameOptions.betOptions = betOptions;
-  GameOptions.boosterOptions = boosterOptions;
-  GameOptions.resultOptions = resultOptions;
-  GameOptions.overOptions = overOptions;
-  GameOptions.underOptions = underOptions;
+  GameOptions.betOptions = betOptions.filter((each) => each !== '');
+  GameOptions.boosterOptions = boosterOptions.filter((each) => each !== '');
+  GameOptions.resultOptions = resultOptions.filter((each) => each !== '');
+  GameOptions.overOptions = overOptions.filter((each) => each !== '');
+  GameOptions.underOptions = underOptions.filter((each) => each !== '');
   GameOptions.gameCount = gameCount;
 
   const poolProgressPercent = totalFundPool
@@ -179,40 +178,45 @@ function populateGameArea(game) {
   //   boosterOptions,
   //   resultOptions,
   // });
+  // debugger;
 
+  betOptions.unshift('');
   betOptions.forEach((each, index) => {
     const option = document.createElement("option");
     option.setAttribute("value", each.name);
     option.textContent = each.name;
-    if (index === 0) {
+    if (index === 1) {
       option.setAttribute("selected", true);
     }
 
     betTypeSelectionMenu.appendChild(option);
   });
 
+  boosterOptions.unshift('');
   boosterOptions.forEach((each, index) => {
     const option = document.createElement("option");
     option.setAttribute("value", each);
     option.textContent = each;
-    if (index === 0) {
+    if (index === 1) {
       option.setAttribute("selected", true);
     }
 
     boosterSelectionMenu.appendChild(option);
   });
 
+  resultOptions.unshift('');
   resultOptions.forEach((each, index) => {
     const option = document.createElement("option");
     option.setAttribute("value", each);
     option.textContent = each;
-    if (index === 0) {
+    if (index === 1) {
       option.setAttribute("selected", true);
     }
 
     resultTypeSelectionMenu.appendChild(option);
   });
 
+  overOptions.unshift('');
   overOptions.forEach((each) => {
     const option = document.createElement("option");
     option.setAttribute("value", each);
@@ -221,6 +225,7 @@ function populateGameArea(game) {
     overSelectionMenu.appendChild(option);
   });
 
+  underOptions.unshift('');
   underOptions.forEach((each) => {
     const option = document.createElement("option");
     option.setAttribute("value", each);
@@ -517,6 +522,9 @@ function start() {
   }
 
   fetchUserBalance(mainBalanceElement, "main");
+  setInterval(() => {
+    fetchUserBalance(mainBalanceElement, "main");
+  }, 20 * 1000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -612,8 +620,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   start();
-
-  setInterval(() => {
-    start();
-  }, 20 * 1000);
 });
