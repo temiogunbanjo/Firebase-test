@@ -62,6 +62,16 @@ section#navigation {
     min-height: 53px;
 }
 
+#game-options-area legend{
+  text-align: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+  padding: 8px 12px;
+  border-radius: 5vh;
+}
+
 @media screen and (max-width: 900px){
   #game-options-area {
     flex-direction: column;

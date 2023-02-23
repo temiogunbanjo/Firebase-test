@@ -44,15 +44,42 @@ limitations under the License.
       <!-- Container for the Table of content -->
       <section
         class="d-flex rows align-items-center advertisement"
-        style="justify-content: space-between; background-color: #222; padding: 2rem 3rem 2rem 2rem; color: white; position: relative;"
+        style="
+          justify-content: space-between;
+          background-color: #222;
+          padding: 2rem 3rem 2rem 2rem;
+          color: white;
+          position: relative;
+        "
       >
-        <span style="position: absolute; top: 0; right: 0; color: dodgerblue; font-size: 12px; padding: 3px 5px; background-color: rgba(255, 255, 255, 0.1)">Advertisement</span>
+        <span
+          style="
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: dodgerblue;
+            font-size: 12px;
+            padding: 3px 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+          "
+          >Advertisement</span
+        >
         <div class="d-flex cols">
-          <h2 style="margin-top: 0.5rem; margin-bottom: 0.5rem; letter-spacing: 2px;">PLAY GAMES AUTOMATICALLY!!</h2>
-          <span style="color: crimson; font-size: 12px">A new feature for your experience blah blah blah...</span>
+          <h2
+            style="
+              margin-top: 0.5rem;
+              margin-bottom: 0.5rem;
+              letter-spacing: 2px;
+            "
+          >
+            PLAY GAMES AUTOMATICALLY!!
+          </h2>
+          <span style="color: crimson; font-size: 12px"
+            >A new feature for your experience blah blah blah...</span
+          >
         </div>
 
-        <div class="d-flex rows align-items-center" style="margin: 1.5rem 0;">
+        <div class="d-flex rows align-items-center" style="margin: 1.5rem 0">
           <label
             for="autoplay-switch"
             style="font-size: 13px; margin-right: 5px"
@@ -64,7 +91,12 @@ limitations under the License.
       </section>
 
       <section id="navigation" class="d-flex rows align-items-center">
-        <a href="/games" class="custom-button" style="margin-left: 15px; background-color: red;">Back</a>
+        <a
+          href="/games"
+          class="custom-button"
+          style="margin-left: 15px; background-color: red"
+          >Back</a
+        >
         <div
           class="d-flex rows"
           style="
@@ -75,9 +107,7 @@ limitations under the License.
             justify-content: space-between;
           "
         >
-          <div id="play-tab" class="d-flex rows">
-            
-          </div>
+          <div id="play-tab" class="d-flex rows"></div>
           <div
             class="d-flex cols"
             style="
@@ -95,10 +125,8 @@ limitations under the License.
       <section
         id="pool-bar-section"
         class="d-flex rows align-items-center"
-        style="justify-content: space-between;"
-      >
-        
-      </section>
+        style="justify-content: space-between"
+      ></section>
 
       <section id="navigation-content" style="flex-grow: 1">
         <div id="play-tab-content" class="navigation-content">
@@ -107,15 +135,31 @@ limitations under the License.
             style="justify-content: space-between"
           >
             <h2 id="game-name"></h2>
-            <div class="d-flex rows">
+            <div class="d-flex rows" style="align-items: center">
               <span id="slip-counter" class="status-indicator">0 Slip</span>
-              <button id="create-ticket-button" disabled="true">
+              <button
+                id="create-ticket-button"
+                class="custom-button"
+                disabled="true"
+                style="margin: 0 5px"
+              >
                 Create Ticket
+              </button>
+              <button
+                id="save-ticket-button"
+                class="custom-button orange"
+                disabled="true"
+              >
+                Save Ticket
               </button>
             </div>
           </div>
 
-          <div class="d-flex rows" id="game-options-area" style="align-items: flex-start">
+          <div
+            class="d-flex rows"
+            id="game-options-area"
+            style="align-items: flex-start"
+          >
             <section id="ball-container" class="d-flex rows w-65">
               <!-- Container of Balls -->
             </section>
@@ -191,15 +235,14 @@ limitations under the License.
                 class="d-flex rows w-100 align-items-start"
                 style="
                   flex-wrap: wrap;
-                  padding: 10px 0;
+                  padding: 5px 0 10px;
                   margin-top: 20px;
-                  border-color: #eee;
+                  border: none;
+                  border-top: 1px solid #ccc;
                   background-color: rgba(30, 143, 255, 0.05);
                 "
               >
-                <legend style="text-align: center; font-size: 13px">
-                  Select Wallet
-                </legend>
+                <legend>Select Wallet</legend>
                 <div
                   class="d-flex rows"
                   style="margin-right: 5px; align-items: center"
@@ -246,15 +289,14 @@ limitations under the License.
                 class="d-flex rows w-100 align-items-start"
                 style="
                   flex-wrap: wrap;
-                  padding: 10px 0;
+                  padding: 8px 0 10px;
                   margin-top: 20px;
-                  border-color: #eee;
+                  border: none;
+                  border-top: 1px solid #ccc;
                   background-color: rgba(30, 143, 255, 0.05);
                 "
               >
-                <legend style="text-align: center; font-size: 13px">
-                  Select winning redemption method
-                </legend>
+                <legend>Select winning redemption method</legend>
                 <div
                   class="d-flex rows"
                   style="margin-right: 5px; align-items: center"
@@ -293,6 +335,33 @@ limitations under the License.
                     value="dps"
                   />
                   <label for="wrm-dps">Decentralized Payment Method</label>
+                </div>
+              </fieldset>
+
+              <!-- Select winning redemption method -->
+              <fieldset
+                class="d-flex cols w-100 align-items-start"
+                style="
+                  padding: 8px 0 10px;
+                  margin-top: 20px;
+                  border: none;
+                  border-top: 1px solid #ccc;
+                  /* background-color: rgba(30, 143, 255, 0.05); */
+                "
+              >
+                <legend>USE BOOKING CODE</legend>
+                <div
+                  class="d-flex cols flex-grow"
+                  style="margin-right: 5px; width: 100%;"
+                >
+                  <!-- <label for="booking-code-input">Wallet</label> -->
+                  <input
+                    type="text"
+                    name="bookingCode"
+                    id="booking-code-input"
+                    placeholder="e.g MBGXXXXXXX"
+                    class="option-select flex-grow border"
+                  />
                 </div>
               </fieldset>
             </section>

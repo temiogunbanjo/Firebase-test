@@ -1,0 +1,37 @@
+.option-select {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  color: #555;
+  background-color: #eee;
+  margin: 5px;
+  min-width: 200px;
+}
+
+.cta-search-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  color: #fff;
+  background-color: orangered;
+  margin: 5px;
+  /* min-width: 200px; */
+}
+
+.ticket-slip {
+  margin-bottom: 2px;
+  font-weight: 400;
+}
+
+.ticket-slip.won, .ticket-slip.lost {
+  padding-left: 8px;
+  border-left: 2px solid;
+}
+
+.ticket-slip.won {
+  border-left-color: #4ec34e;
+}
+
+.ticket-slip.lost {
+  border-left-color: red;
+}

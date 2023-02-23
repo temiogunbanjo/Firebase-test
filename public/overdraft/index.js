@@ -357,7 +357,7 @@ function transferHandler(ev) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(10);
+  setPageIndex(11);
   const transferForm = document.querySelector("#transfer-form");
   transferForm.addEventListener("submit", transferHandler);
 

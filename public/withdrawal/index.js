@@ -231,7 +231,7 @@ function viewWithdrawalRequestHandler(options = { page: 1, limit: 10 }) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(2);
+  setPageIndex(3);
   let nextBtn = document.querySelector(
     "#results-pagination #next-results-page"
   );

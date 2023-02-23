@@ -2,7 +2,7 @@
 const globals = {
   autoPlayBots: [],
   currentPageIndex: 0,
-  environment: "western",
+  environment: "western_test",
   token: localStorage.getItem("token") || null,
   user: JSON.parse(sessionStorage.getItem("user") || "{}") || {},
   notificationOptions: {
@@ -26,11 +26,17 @@ const globals = {
     searchBaseUrl: "https://western.gaim.tech",
     apiKey: "USR.Ngu4rC-VMenpv-m251tw-rYC8Om-ryx89j-c4",
   },
+  western_test: {
+    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
+    apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
+    searchBaseUrl: "https://western.gaim.tech",
+    apiKey: "USR.HvumDQ-vwJY1n-euHuLb-Zz1V3G-TEST-cq",
+  },
   mbg: {
     // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
     searchBaseUrl: "https://western.gaim.tech",
-    apiKey: "USSD.iRDi0D--34pj54-xVRMWr-lkYFGR-NV34nu-a",
+    apiKey: "USR.JHWeFa-DNDlJf-Hh8On3-Xpaj3s-BVSDdO-n6",
   },
   ticket: {
     sourceWallet: "mainWallet",
@@ -63,11 +69,11 @@ const globals = {
     "nap-3-t": 3,
     "nap-4-t": 4,
     "nap-5-t": 5,
-    "n6": 6,
-    "n7":7,
-    "n8": 8,
-    "n9": 9,
-    "n10": 10,
+    n6: 6,
+    n7: 7,
+    n8: 8,
+    n9: 9,
+    n10: 10,
     "perm-1-t": generateRandomNumber(1, 20),
     "perm-2-t": generateRandomNumber(2, 20),
     "perm-3-t": generateRandomNumber(3, 20),
@@ -169,7 +175,7 @@ const updateResponsePane = (responseElement, dataResponse, status) => {
       : JSON.stringify(dataResponse, null, 2);
 };
 
-const createMenu = (drawerElement) => {
+const createMenu = async (drawerElement) => {
   const menus = [
     {
       link: "/",
@@ -220,6 +226,12 @@ const createMenu = (drawerElement) => {
       visible: true,
     },
     {
+      link: "/booked-tickets",
+      name: "Booked Tickets",
+      id: "view-tickets-tab",
+      visible: true,
+    },
+    {
       link: "/results",
       name: "Game Results",
       id: "view-results-tab",
@@ -229,21 +241,46 @@ const createMenu = (drawerElement) => {
       link: "/reports",
       name: "My Reports",
       id: "view-reports-tab",
-      visible: globals.user?.isAgent === true || globals.user?.adminId,
+      visible: globals.user?.isAgent === true || !!globals.user?.adminId,
     },
     {
       link: "/overdraft",
       name: "Manage Overdrafts",
       id: "overdraft-tab",
-      visible: globals.user?.isAgent === true || globals.user?.adminId,
+      visible: globals.user?.isAgent === true || !!globals.user?.adminId,
     },
     {
       link: "/bonus",
       name: "Bonus",
       id: "bonus-tab",
-      visible: true,
+      visible: globals.user?.isAgent === false,
     },
   ];
+
+  try {
+    const apiUrl = `${
+      globals[globals.environment].apiBaseUrl
+    }/site-settings/fetch-setting-by-slug/dynamic-headings`;
+
+    const response = await fetchAPI({
+      url: apiUrl,
+      method: "GET",
+    });
+
+    const dynamicHeadings = JSON.parse(response?.data?.data?.content || "[]");
+    console.log(dynamicHeadings);
+
+    dynamicHeadings.forEach((heading) => {
+      menus.push({
+        link: `/extra?slug=${heading.value}`,
+        name: `${heading.name}`,
+        id: "extra-tab",
+        visible: true,
+      });
+    });
+  } catch (e) {
+    console.log(e);
+  }
 
   const content = menus
     .filter((eachMenu) => {
@@ -276,14 +313,9 @@ async function fetchUserById(userId) {
   }/user/fetch-user/${userId}`;
 
   try {
-    const response = await fetch(apiUrl, {
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-        authorization: `Bearer ${globals.token}`,
-        "x-api-key": globals[globals.environment].apiKey,
-      },
+    const result = await fetchAPI({
+      url: apiUrl,
     });
-    const result = await response.json();
 
     if (result && result.data) {
       const { data } = result;
@@ -336,7 +368,9 @@ const setPageIndex = (newIndex) => {
   globals.currentPageIndex = newIndex;
 
   if (drawerElement) {
-    createMenu(drawerElement);
+    (async () => {
+      await createMenu(drawerElement);
+    })();
   }
 
   if (!globals.user?.userId && globals.currentPageIndex !== 0) {
@@ -386,13 +420,17 @@ function fetchUserBalance(containerElement, type = "main") {
               balance = data.commissionBalance;
               break;
 
+            case "winning":
+              balance = data.winningBalance;
+              break;
+
             case "main":
             default:
               balance = data.walletBalance;
               break;
           }
 
-          containerElement.innerHTML = balance;
+          containerElement.innerHTML = balance || "--";
         }
       } catch (error) {
         console.log(error);
@@ -535,8 +573,10 @@ async function autoPlayer(
     // RANDOMIZE THE WINNING REDEMPTION METHOD SELECTED
     // debugger;
     const availableWRM = !globals.user.isAgent
-      ? ["wallet", "bank"] : ["dps", "bank"];
-    const selectedWRM = availableWRM[generateRandomNumber(0, availableWRM.length - 1)];
+      ? ["wallet", "bank"]
+      : ["dps", "bank"];
+    const selectedWRM =
+      availableWRM[generateRandomNumber(0, availableWRM.length - 1)];
 
     console.log(selectedWRM);
 
@@ -544,7 +584,10 @@ async function autoPlayer(
       gameId: botGameOptions.gameId,
       lotteryId: botGameOptions.lotteryId,
       winningRedemptionMethod: selectedWRM,
-      sourceWallet: "mainWallet",
+      sourceWallet:
+        document.querySelector(
+          "#play-tab-content input[name='sourceWallet']:checked"
+        )?.value || "mainWallet",
       betSlips,
     };
 

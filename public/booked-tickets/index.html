@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2016 Google Inc.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase Cloud Messaging Example</title>
+
+    <!-- Material Design Theming -->
+    <!-- <link
+      rel="stylesheet"
+      href="https://code.getmdl.io/1.1.3/material.orange-indigo.min.css"
+    /> -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link rel="stylesheet" href="../main.css" />
+    <link rel="stylesheet" href="./index.css" />
+    <link rel="manifest" href="../manifest.json" />
+    <script src="../common.js"></script>
+    <script src="./index.js"></script>
+  </head>
+  <body>
+    <!-- Header section containing title -->
+    <header class="d-flex rows">
+      <div class="">
+        <h3>Firebase Cloud Messaging</h3>
+      </div>
+    </header>
+
+    <main class="d-flex rows">
+      <!-- Container for the Table of content -->
+      <section id="navigation" class="w-30">
+        <ul></ul>
+      </section>
+
+      <section id="navigation-content" style="flex-grow: 1">
+        <div id="notice" class="hide"></div>
+
+        <div id="play-tab" class="d-flex rows">
+            
+        </div>
+        
+        <h3 style="margin-bottom: 0; margin-left: 5px">Search Booked Ticket</h3>
+        <section
+          id="ticket-search-pane"
+          class="d-flex rows w-100 align-items-start"
+          style="
+            flex-wrap: wrap;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+          "
+        >
+          <input
+            type="search"
+            name=""
+            id="game-name-input"
+            class="option-select flex-grow"
+            placeholder="Enter game name or gameId"
+          />
+
+          <select id="bet-type-selector" class="option-select flex-grow">
+            <option value="">Select BetType</option>
+          </select>
+
+          <select id="booster-selector" class="option-select flex-grow">
+            <option value="">Select Booster</option>
+          </select>
+
+          <select id="result-selector" class="option-select flex-grow">
+            <option value="">Select Result Type</option>
+          </select>
+
+          <input
+            type="search"
+            name=""
+            id="selections-input"
+            class="option-select flex-grow"
+            placeholder="Enter dash separated numbers E.g. 1-2-3-4"
+          />
+
+          <button id="search-ticket-button" class="cta-search-button">
+            Search
+          </button>
+        </section>
+
+        <section id="view-tickets-tab-content" class="navigation-content">
+          <!-- div to display the tickets played -->
+          <div
+            id="ticket-container"
+            class="d-flex rows w-100"
+            style="margin-top: 1rem; flex-wrap: wrap"
+          >
+            <p class="loading">loading...</p>
+          </div>
+
+          <div
+            id="ticket-pagination"
+            class="d-flex rows w-100 align-items-center"
+            style="justify-content: flex-end"
+          >
+            <button id="prev-ticket-page" class="custom-button">
+              Previous Page
+            </button>
+            <div class="pagination-count-wrapper">
+              <span id="ticket-page-count">1</span> /
+              <span id="total-ticket-pages">1</span>
+            </div>
+            <button id="next-ticket-page" class="custom-button">
+              Next Page
+            </button>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

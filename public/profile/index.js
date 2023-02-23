@@ -83,10 +83,12 @@ function viewUserProfile() {
 const fetchAllData = () => {
   const mainBalanceElement = document.querySelector("#wallet-balance");
   const commissionBalanceElement = document.querySelector("#commission-balance");
+  const winningBalanceElement = document.querySelector("#winning-balance");
 
   viewUserProfile();
   fetchUserBalance(mainBalanceElement, "main");
   fetchUserBalance(commissionBalanceElement, "commission");
+  fetchUserBalance(winningBalanceElement, "winning");
 };
 
 document.addEventListener("DOMContentLoaded", () => {

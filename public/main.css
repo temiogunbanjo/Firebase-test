@@ -349,8 +349,17 @@ form button[type="submit"],
   border: none;
 }
 
+.custom-button:disabled {
+  opacity: 0.3;
+  cursor: no-drop;
+}
+
 .custom-button.danger {
   background-color: red;
+}
+
+.custom-button.orange {
+  background-color: orange;
 }
 
 .custom-button.outlined {

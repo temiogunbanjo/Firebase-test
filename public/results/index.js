@@ -84,7 +84,7 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(8);
+  setPageIndex(9);
 
   let nextBtn = null;
   let prevBtn = null;

@@ -64,6 +64,7 @@ const updateSelectionArea = () => {
   const selectionsContainer = document.getElementById("selection-area");
   const slipCounter = document.getElementById("slip-counter");
   const createTicketButton = document.getElementById("create-ticket-button");
+  const saveTicketButton = document.getElementById("save-ticket-button");
 
   selectionsContainer.innerHTML = `${Object.keys(globals.currentSelections)
     .map((selection) => {
@@ -75,8 +76,10 @@ const updateSelectionArea = () => {
 
   if (globals.ticket.betSlips.length === 0) {
     createTicketButton.setAttribute("disabled", true);
+    saveTicketButton.setAttribute("disabled", true);
   } else {
     createTicketButton.removeAttribute("disabled");
+    saveTicketButton.removeAttribute("disabled");
   }
 };
 
@@ -113,11 +116,11 @@ function populateGameArea(game) {
   // SAVE GAME INFO
   GameOptions.lotteryId = lotteryId;
   GameOptions.gameId = gameId;
-  GameOptions.betOptions = betOptions.filter((each) => each !== '');
-  GameOptions.boosterOptions = boosterOptions.filter((each) => each !== '');
-  GameOptions.resultOptions = resultOptions.filter((each) => each !== '');
-  GameOptions.overOptions = overOptions.filter((each) => each !== '');
-  GameOptions.underOptions = underOptions.filter((each) => each !== '');
+  GameOptions.betOptions = betOptions.filter((each) => each !== "");
+  GameOptions.boosterOptions = boosterOptions.filter((each) => each !== "");
+  GameOptions.resultOptions = resultOptions.filter((each) => each !== "");
+  GameOptions.overOptions = overOptions.filter((each) => each !== "");
+  GameOptions.underOptions = underOptions.filter((each) => each !== "");
   GameOptions.gameCount = gameCount;
 
   const poolProgressPercent = totalFundPool
@@ -125,8 +128,8 @@ function populateGameArea(game) {
     : null;
 
   gameTitle.innerHTML = `<span>Game: ${name}</span> <span class="status-indicator">${category}</span>`;
-  poolBarSection.innerHTML = poolProgressPercent !== null
-    && poolProgressPercent >= 0
+  poolBarSection.innerHTML =
+    poolProgressPercent !== null && poolProgressPercent >= 0
       ? `<progress value='${poolProgressPercent}' max="100" style="width: 96%; margin: 0 auto; display: block">
   ${poolProgressPercent}%
 </progress>`
@@ -137,12 +140,12 @@ function populateGameArea(game) {
     balls.push(i);
   }
 
-  ballContainer.innerHTML = '';
-  betTypeSelectionMenu.innerHTML = '';
-  boosterSelectionMenu.innerHTML = '';
-  resultTypeSelectionMenu.innerHTML = '';
-  overSelectionMenu.innerHTML = '';
-  underSelectionMenu.innerHTML = '';
+  ballContainer.innerHTML = "";
+  betTypeSelectionMenu.innerHTML = "";
+  boosterSelectionMenu.innerHTML = "";
+  resultTypeSelectionMenu.innerHTML = "";
+  overSelectionMenu.innerHTML = "";
+  underSelectionMenu.innerHTML = "";
 
   balls.forEach((each) => {
     const aBallElement = document.createElement("SPAN");
@@ -180,7 +183,7 @@ function populateGameArea(game) {
   // });
   // debugger;
 
-  betOptions.unshift('');
+  betOptions.unshift("");
   betOptions.forEach((each, index) => {
     const option = document.createElement("option");
     option.setAttribute("value", each.name);
@@ -192,7 +195,7 @@ function populateGameArea(game) {
     betTypeSelectionMenu.appendChild(option);
   });
 
-  boosterOptions.unshift('');
+  boosterOptions.unshift("");
   boosterOptions.forEach((each, index) => {
     const option = document.createElement("option");
     option.setAttribute("value", each);
@@ -204,7 +207,7 @@ function populateGameArea(game) {
     boosterSelectionMenu.appendChild(option);
   });
 
-  resultOptions.unshift('');
+  resultOptions.unshift("");
   resultOptions.forEach((each, index) => {
     const option = document.createElement("option");
     option.setAttribute("value", each);
@@ -216,7 +219,7 @@ function populateGameArea(game) {
     resultTypeSelectionMenu.appendChild(option);
   });
 
-  overOptions.unshift('');
+  overOptions.unshift("");
   overOptions.forEach((each) => {
     const option = document.createElement("option");
     option.setAttribute("value", each);
@@ -225,7 +228,7 @@ function populateGameArea(game) {
     overSelectionMenu.appendChild(option);
   });
 
-  underOptions.unshift('');
+  underOptions.unshift("");
   underOptions.forEach((each) => {
     const option = document.createElement("option");
     option.setAttribute("value", each);
@@ -378,29 +381,23 @@ function createTicket(ticket, byBot = false) {
     globals[globals.environment].apiBaseUrl
   }/game/create-ticket`;
 
-  const body = JSON.stringify({
+  const body = {
     gameId: ticket.gameId,
     totalStakedAmount: ticket.totalStakedAmount,
     winningRedemptionMethod: ticket.winningRedemptionMethod || "wallet",
     sourceWallet: ticket.sourceWallet,
     betSlips: JSON.stringify(ticket.betSlips),
-  });
+  };
 
-  console.log({ cre: JSON.parse(body) });
+  console.log({ cre: body });
 
-  fetch(apiUrl, {
+  fetchAPI({
+    url: apiUrl,
     method: "POST",
-    body,
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+    data: body,
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -433,6 +430,68 @@ function createTicket(ticket, byBot = false) {
         errorHandler(error);
         // const { responsemessage, status } = error;
         // updateResponsePane(containerElement, responsemessage, status);
+      } finally {
+        updateUI();
+      }
+    })
+    .catch((error) => {
+      errorHandler(error);
+      // updateResponsePane(containerElement, error, "error");
+    });
+}
+
+function saveTicket(ticket, byBot = false) {
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/save-ticket`;
+
+  const body = {
+    gameId: ticket.gameId,
+    totalStakedAmount: ticket.totalStakedAmount,
+    winningRedemptionMethod: ticket.winningRedemptionMethod || "wallet",
+    sourceWallet: ticket.sourceWallet,
+    betSlips: JSON.stringify(ticket.betSlips),
+  };
+
+  console.log({ cre: body });
+
+  fetchAPI({
+    url: apiUrl,
+    method: "POST",
+    data: body,
+  })
+    .then(async (result) => {
+      try {
+        const { status } = result;
+
+        if (result && result.data) {
+          const { data } = result?.data;
+
+          // totalPotValueElement.textContent = data.totalPotentialWinning;
+          // totalStkValueElement.textContent = data.totalStakedAmount;
+
+          // globals.ticket.betSlips = JSON.parse(data.betSlips);
+
+          console.log({ saveTicketResponse: data, ticket: globals.ticket });
+
+          if (data?.ticketId) {
+            globals.ticket = {
+              gameId: globals.ticket.gameId,
+              lotteryId: globals.ticket.lotteryId,
+              betSlips: [],
+            };
+
+            updateUI();
+
+            if (!byBot) {
+              alert(`Ticket saved succesfully.Use booking code: ${data.bookingCode}`);
+            } else {
+              console.log("Ticket saved succesfully");
+            }
+          }
+        }
+      } catch (error) {
+        errorHandler(error);
       } finally {
         updateUI();
       }
@@ -532,6 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const addSlipButton = document.getElementById("add-slip");
   const autoplaySwitch = document.getElementById("autoplay-switch");
   const createTicketButton = document.getElementById("create-ticket-button");
+  const saveTicketButton = document.getElementById("save-ticket-button");
 
   const betTypeSelectionMenu = document.getElementById("bet-type-selector");
   const boosterSelectionMenu = document.getElementById("booster-selector");
@@ -540,8 +600,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const underSelectionMenu = document.getElementById("under-type-selector");
   const amountInput = document.getElementById("amount-input");
 
-  if (localStorage.getItem('bots')) {
-    let savedBots = JSON.parse(localStorage.getItem('bots'));
+  if (localStorage.getItem("bots")) {
+    let savedBots = JSON.parse(localStorage.getItem("bots"));
     if (savedBots.length > 0) {
       autoplaySwitch.checked = true;
     }
@@ -557,7 +617,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       globals.autoPlayBots = [];
-      localStorage.removeItem('bots');
+      localStorage.removeItem("bots");
     }
   });
 
@@ -617,6 +677,19 @@ document.addEventListener("DOMContentLoaded", () => {
     globals.ticket.winningRedemptionMethod = wrmSelector.value;
 
     createTicket(globals.ticket);
+  });
+
+  saveTicketButton.addEventListener("click", (ev) => {
+    const walletSelector = document.querySelector(
+      "#play-tab-content input[name='sourceWallet']:checked"
+    );
+    const wrmSelector = document.querySelector(
+      "#play-tab-content input[name='winningRedemptionMethod']:checked"
+    );
+    globals.ticket.sourceWallet = walletSelector.value;
+    globals.ticket.winningRedemptionMethod = wrmSelector.value;
+
+    saveTicket(globals.ticket);
   });
 
   start();

@@ -1,10 +1,10 @@
 let currentPage = 1;
 
-function createTicketCard(ticket) {
+function createBookedTicketCard(ticket) {
   return `
     <div class="ticket-card">
       <div class="d-flex rows align-items-center ticket-header" style="margin-bottom:1em">
-        <h3 style="margin-bottom:0.5em">Ticket</h3>
+        <h3 style="margin-bottom:0.5em">Booked Ticket</h3>
         <span style="font-size:11px;">
           <i class="ticket-label">Created On:</i>
           <i class="ticket-value">${new Date(
@@ -35,10 +35,6 @@ function createTicketCard(ticket) {
           <p>
             <span class="ticket-label">Total Staked:</span>
             <span class="ticket-value">${ticket.totalStakedAmount}</span>
-          </p>
-          <p>
-            <span class="ticket-label">W.R.M.:</span>
-            <span class="ticket-value">${ticket.winningRedemptionMethod.toUpperCase()}</span>
           </p>
           <p style="margin-top: 1.5em">
             <div class="ticket-label" style="font-weight:600">Bet Slips:</div>
@@ -232,7 +228,7 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-tickets/${globals.user?.userId}?page=${options.page}&limit=${
+  }/game/fetch-saved-tickets/${globals.user?.userId}?page=${options.page}&limit=${
     options.limit
   }`;
 
@@ -263,7 +259,7 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
 
           containerElement.innerHTML = data
             .map((ticket) => {
-              return createTicketCard(ticket);
+              return createBookedTicketCard(ticket);
             })
             .join("");
         }
@@ -446,7 +442,7 @@ function fetchAll() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(7);
+  setPageIndex(8);
 
   let nextBtn = document.querySelector("#ticket-pagination #next-ticket-page");
   let prevBtn = document.querySelector("#ticket-pagination #prev-ticket-page");

@@ -7,18 +7,12 @@ function viewReports() {
     globals[globals.environment].apiBaseUrl
   }/agent/fetch-sales-report?interval=weekly`;
 
-  fetch(apiUrl, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  fetchAPI({
+    url: apiUrl,
+    method: "GET"
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -40,6 +34,6 @@ function viewReports() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(9);
+  setPageIndex(10);
   viewReports();
 });

@@ -14,18 +14,12 @@ function viewBonusHandler(options = { page: 1, limit: 50 }) {
     globals[globals.environment].apiBaseUrl
   }/bonus/fetch-all-bonuses?page=${options.page}&limit=${options.limit}`;
 
-  fetch(apiUrl, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  fetchAPI({
+    url: apiUrl,
+    method: "GET",
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -67,11 +61,15 @@ function viewBonusHandler(options = { page: 1, limit: 50 }) {
                   <div class="ticket-body-row">
                     <p class="d-flex rows align-items-center" style="justify-content:space-between">
                       <span class="ticket-label">Qualification:</span>
-                      <span class="ticket-value">N ${bonus.minimumDeposit || '0.00'} | ${bonus.depositRound} deposit </span>
+                      <span class="ticket-value">N ${
+                        bonus.minimumDeposit || "0.00"
+                      } | ${bonus.depositRound} deposit </span>
                     </p>
                     <p class="d-flex rows align-items-center" style="justify-content:space-between">
                       <span class="ticket-label">Win Criteria:</span>
-                      <span class="ticket-value">${bonus.gameType} | ${bonus.betType} | ${bonus.winCount} </span>
+                      <span class="ticket-value">${bonus.gameType} | ${
+                bonus.betType
+              } | ${bonus.winCount} </span>
                     </p>
                   </div>
 
@@ -127,20 +125,14 @@ function viewAppliedBonusHandler(options = { page: 1, limit: 20 }) {
     globals[globals.environment].apiBaseUrl
   }/bonus/fetch-applied-bonuses?page=${options.page}&limit=${options.limit}`;
 
-  fetch(apiUrl, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  fetchAPI({
+    url: apiUrl,
+    method: "GET",
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
-
+        // console.log(result);
         if (result && result.data) {
           const { data } = result?.data;
           console.log(data);
@@ -180,34 +172,50 @@ function viewAppliedBonusHandler(options = { page: 1, limit: 20 }) {
                   <div class="ticket-body-row">
                     <p class="d-flex rows align-items-center" style="justify-content:space-between">
                       <span class="ticket-label">Qualification:</span>
-                      <span class="ticket-value">N ${bonus.minimumDeposit || '0.00'} | ${bonus.depositRound} deposit </span>
+                      <span class="ticket-value">N ${
+                        bonus.minimumDeposit || "0.00"
+                      } | ${bonus.depositRound} deposit </span>
                     </p>
                     <p class="d-flex rows align-items-center" style="justify-content:space-between">
                       <span class="ticket-label">Win Criteria:</span>
-                      <span class="ticket-value">${bonus.gameType} | ${bonus.betType} | ${bonus.Bonus.winCount} </span>
+                      <span class="ticket-value">${bonus.gameType} | ${
+                bonus.betType
+              } | ${bonus.Bonus.winCount} </span>
                     </p>
                     <div
                       class="d-flex cols w-auto flex-grow"
                       style="background-color: orange; color: white; border: none;padding: 10px;border-radius: 5vh; margin: 20px 1px 0px; text-align: center;"
                     >
                       <span style="font-size: 10px">Prize:</span>
-                      <span style="font-size: 13px; font-weight: 700">${bonus.prize || "-"}</span>
+                      <span style="font-size: 13px; font-weight: 700">${
+                        bonus.prize || "-"
+                      }</span>
                     </div>
                   </div>
 
                   <div class="ticket-body-row">
                     <p class="d-flex rows align-items-center" style="justify-content:space-between">
                       <span class="ticket-label">Game Play Count:</span>
-                      <span class="ticket-value">${bonus.gamePlayCount || '0'}/${bonus.Bonus.gamePlayCount || '0'}</span>
+                      <span class="ticket-value">${
+                        bonus.gamePlayCount || "0"
+                      }/${bonus.Bonus.gamePlayCount || "0"}</span>
                     </p>
                     <p class="d-flex rows align-items-center" style="justify-content:space-between">
                       <span class="ticket-label">Win Count:</span>
-                      <span class="ticket-value">${bonus.winCount || '0'}/${bonus.Bonus.winCount || '0'}</span>
+                      <span class="ticket-value">${bonus.winCount || "0"}/${
+                bonus.Bonus.winCount || "0"
+              }</span>
                     </p>
-                    ${bonus.isConsecutive ? `<p class="d-flex rows align-items-center" style="justify-content:space-between">
+                    ${
+                      bonus.isConsecutive
+                        ? `<p class="d-flex rows align-items-center" style="justify-content:space-between">
                       <span class="ticket-label">Consecutive Wins:</span>
-                      <span class="ticket-value">${bonus.consecutiveWinCount || '0'}/${bonus.Bonus.winCount || '0'}</span>
-                    </p>` : ""}
+                      <span class="ticket-value">${
+                        bonus.consecutiveWinCount || "0"
+                      }/${bonus.Bonus.winCount || "0"}</span>
+                    </p>`
+                        : ""
+                    }
                   </div>
                 </div>
               </div>
@@ -217,12 +225,14 @@ function viewAppliedBonusHandler(options = { page: 1, limit: 20 }) {
         }
       } catch (error) {
         console.log(error);
+        alert(error.message);
         const { responsemessage, status } = error;
         updateResponsePane(containerElement, responsemessage, status);
       }
     })
     .catch((error) => {
       console.log(error);
+      alert(error.message);
       updateResponsePane(containerElement, error, "error");
     });
 }
@@ -230,28 +240,22 @@ function viewAppliedBonusHandler(options = { page: 1, limit: 20 }) {
 const fetchAllData = () => {
   const balanceElement = document.querySelector("#bonus-balance");
   viewBonusHandler({ page: 1, limit: 50 });
-  viewAppliedBonusHandler();
-  fetchUserBalance(balanceElement, 'bonus');
-}
+  viewAppliedBonusHandler({ page: 1, limit: 50 });
+  fetchUserBalance(balanceElement, "bonus");
+};
 
 function applyForBonus(bonusId) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
   }/bonus/apply-for-bonus`;
 
-  fetch(apiUrl, {
-    method: "post",
-    body: JSON.stringify({ bonusId }),
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  fetchAPI({
+    url: apiUrl,
+    method: "POST",
+    data: { bonusId },
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -262,18 +266,18 @@ function applyForBonus(bonusId) {
           // updateResponsePane(responseElement, result, status);
         }
       } catch (error) {
-        console.log('fetch', error);
+        console.log("fetch", error);
         const { responsemessage, status } = error;
         alert(responsemessage);
       }
     })
     .catch((error) => {
-      console.log('catch', error);
+      console.log("catch", error);
       alert(error.message);
     });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setPageIndex(11);
+  setPageIndex(10);
   fetchAllData();
 });
