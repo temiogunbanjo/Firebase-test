@@ -23,7 +23,7 @@
 
 html,
 body {
-  --primary-color: orange;
+  --primary-color: orangered;
   padding: 0;
   margin: 0;
   font-family: Nunito, Montserrat, Roboto, "Helvetica", sans-serif;
@@ -332,7 +332,7 @@ summary {
   padding: 0.5rem;
 }
 
-form input, form select {
+form input, form select, form textarea {
   background-color: #f3f3f5;
   border: none;
   padding: 1rem;
@@ -344,7 +344,7 @@ form button[type="submit"],
 .custom-button {
   margin-top: 1rem;
   margin-bottom: 1rem;
-  background-color: var(--primary-color);
+  background-color: dodgerblue;
   color: white;
   padding: 14px 20px;
   border-radius: 5px;
@@ -368,7 +368,7 @@ form input[type="radio"] + label {
 
 .response-pane {
   min-height: 100px;
-  max-height: 400px;
+  max-height: 600px;
   padding: 20px;
   border-radius: 5px;
   background-color: #223;

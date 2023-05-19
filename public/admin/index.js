@@ -1,11 +1,11 @@
-function fetchAndSaveAdmin(token) {
+function fetchAndSaveAdmin(adminId) {
   console.log(globals[globals.environment]);
   const responseElement = document.querySelector("#login-form .response");
   responseElement.innerHTML = responseElement.innerHTML + "<br>Fetching admin...";
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/admin/fetch-admin`;
+  }/admin/fetch-profile/${adminId}`;
 
   fetch(apiUrl, {
     headers: {
@@ -24,7 +24,7 @@ function fetchAndSaveAdmin(token) {
           const user = data?.data;
           console.log(user);
           globals.user = user;
-          saveUser(user, responseElement);
+          saveAdmin(user, responseElement);
         } else {
           responseElement.innerHTML =
             responseElement.innerHTML + "<br>Admin fetching failed!";
@@ -76,13 +76,13 @@ function loginHandler(ev) {
 
         if (result && result.data) {
           const { data } = result;
-          const { token } = data?.data;
+          const { token, adminId } = data?.data;
 
           globals.token = token;
           localStorage.setItem("token", token);
 
           updateResponsePane(responseElement, data, status);
-          fetchAndSaveAdmin(token);
+          fetchAndSaveAdmin(adminId);
         } else {
           updateResponsePane(responseElement, result, status);
         }

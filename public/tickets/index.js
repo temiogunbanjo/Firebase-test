@@ -1,6 +1,12 @@
 let currentPage = 1;
 
+const bankNameTable = {
+  '058': "Guaranty Trust Bank",
+  '044': 'Access Bank'
+}
+
 function createTicketCard(ticket) {
+  const bankDetails = ticket.details ? JSON.parse(ticket.details) : {};
   return `
     <div class="ticket-card">
       <div class="d-flex rows align-items-center ticket-header" style="margin-bottom:1em">
@@ -40,20 +46,34 @@ function createTicketCard(ticket) {
             <span class="ticket-label">W.R.M.:</span>
             <span class="ticket-value">${ticket.winningRedemptionMethod.toUpperCase()}</span>
           </p>
+          ${
+            ticket.winningRedemptionMethod === "bank"
+              ? `
+              <details style="margin-top: 0.6em; font-size: 14px">
+                <summary style="color: dodgerblue">Bank Info</summary>
+                <p class="d-flex cols" style="background-color: dodgerblue; color: white; padding: 10px;border-radius: 5px;">
+                  <span>Bank Code: ${bankNameTable[bankDetails?.bankCode] || bankDetails?.bankCode || '--'}</span>
+                  <span>Account Number: ${bankDetails?.accountNumber}</span>
+                  <span>Account Name: ${bankDetails?.accountName}</span>
+                </p>
+              </details>
+              `
+              : ""
+          }
           <p style="margin-top: 1.5em">
             <div class="ticket-label" style="font-weight:600">Bet Slips:</div>
             <div class="ticket-slip-container">${JSON.parse(ticket.betSlips)
               .map((slip) => {
                 const slipWinStatusClass = (() => {
                   if (slip.hasWon === true) {
-                    return 'won';
+                    return "won";
                   }
 
                   if (slip.hasWon === false) {
-                    return 'lost';
+                    return "lost";
                   }
 
-                  return '';
+                  return "";
                 })();
 
                 return `
@@ -170,17 +190,12 @@ async function deleteTicket(ticketId) {
     globals[globals.environment].apiBaseUrl
   }/game/delete-ticket/${ticketId}`;
   try {
-    const response = await fetch(apiUrl, {
-      method: "delete",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-        authorization: `Bearer ${globals.token}`,
-        mode: "no-cors",
-        "x-api-key": globals[globals.environment].apiKey,
-      },
+    const result = await fetchAPI({
+      url: apiUrl,
+      method: "delete"
     });
 
-    const result = await response.json();
+    // const result = await response.json();
     const { status } = result;
 
     if (result && result.data) {
@@ -222,8 +237,8 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
     options = {
       page: 1,
       limit: 50,
-      ...options
-    }
+      ...options,
+    };
   }
 
   if (!globals.user?.userId) {
@@ -391,7 +406,7 @@ function fetchGameOptions() {
 
         if (result && result.data) {
           const { data } = result?.data;
-          console.log(data);
+          // console.log(data);
 
           const { betTypes = [], resultTypes = [], boosters = [] } = data;
 

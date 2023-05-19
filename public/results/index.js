@@ -1,3 +1,4 @@
+let page = 1;
 function viewResultsHandler(options = { page: 1, limit: 50 }) {
   // ev.preventDefault();
   const containerElement = document.querySelector("#results-container");
@@ -16,6 +17,8 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
   }/game/fetch-result-history?page=${options.page}&limit=${
     options.limit
   }&order=S_N:DESC`;
+
+  console.log(apiUrl);
 
   fetchAPI({
     url: apiUrl,
@@ -86,20 +89,30 @@ function viewResultsHandler(options = { page: 1, limit: 50 }) {
 document.addEventListener("DOMContentLoaded", () => {
   setPageIndex(9);
 
-  let nextBtn = null;
-  let prevBtn = null;
+  let nextBtn = document.querySelector(
+    "#results-pagination #next-results-page"
+  );
+  let prevBtn = document.querySelector(
+    "#results-pagination #prev-results-page"
+  );
 
   if (nextBtn && prevBtn) {
     nextBtn.addEventListener("click", (ev) => {
-      const page = ev.target.getAttribute("data-page");
-      viewResultsHandler({ page: parseInt(page, 10), limit: 50 });
+      page = ev.target.getAttribute("data-page");
+      page = parseInt(page, 10);
+      viewResultsHandler({ page, limit: 50 });
     });
 
     prevBtn.addEventListener("click", (ev) => {
-      const page = ev.target.getAttribute("data-page");
-      viewResultsHandler({ page: parseInt(page, 10), limit: 50 });
+      page = ev.target.getAttribute("data-page");
+      page = parseInt(page, 10);
+      viewResultsHandler({ page, limit: 50 });
     });
   }
 
-  viewResultsHandler({ page: 1, limit: 50 });
+  viewResultsHandler({ page, limit: 50 });
+
+  setInterval(() => {
+    viewResultsHandler({ page, limit: 50 });
+  }, 0.333 * 60 * 1000);
 });

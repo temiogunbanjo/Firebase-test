@@ -1,9 +1,12 @@
 let currentPage = 1;
 
 function createBookedTicketCard(ticket) {
+  const bankDetails = ticket.details ? JSON.parse(ticket.details) : {};
+  const betSlips = JSON.parse(ticket.betSlips);
+  // console.log(ticket.ticketId, betSlips);
   return `
     <div class="ticket-card">
-      <div class="d-flex rows align-items-center ticket-header" style="margin-bottom:1em">
+      <div class="d-flex cols align-items-center ticket-header" style="margin-bottom:1em">
         <h3 style="margin-bottom:0.5em">Booked Ticket</h3>
         <span style="font-size:11px;">
           <i class="ticket-label">Created On:</i>
@@ -14,6 +17,10 @@ function createBookedTicketCard(ticket) {
       </div>
       <div class="d-flex cols ticket-body">
         <div class="ticket-body-row">
+          <p>
+            <span class="ticket-label">Booking Code:</span>
+            <span class="ticket-value">${ticket.bookingCode}</span>
+          </p>
           <p>
             <span class="ticket-label">ID:</span>
             <span class="ticket-value">${ticket.ticketId}</span>
@@ -36,20 +43,42 @@ function createBookedTicketCard(ticket) {
             <span class="ticket-label">Total Staked:</span>
             <span class="ticket-value">${ticket.totalStakedAmount}</span>
           </p>
+          <p>
+            <span class="ticket-label">W.R.M.:</span>
+            <span class="ticket-value">${ticket.winningRedemptionMethod.toUpperCase()}</span>
+          </p>
+          ${
+            ticket.winningRedemptionMethod === "bank"
+              ? `
+              <details style="margin-top: 0.6em; font-size: 14px">
+                <summary style="color: dodgerblue">Bank Info</summary>
+                <p class="d-flex cols" style="background-color: dodgerblue; color: white; padding: 10px;border-radius: 5px;">
+                  <span>Bank Code: ${
+                    bankNameTable[bankDetails?.bankCode] ||
+                    bankDetails?.bankCode ||
+                    "--"
+                  }</span>
+                  <span>Account Number: ${bankDetails?.accountNumber}</span>
+                  <span>Account Name: ${bankDetails?.accountName}</span>
+                </p>
+              </details>
+              `
+              : ""
+          }
           <p style="margin-top: 1.5em">
             <div class="ticket-label" style="font-weight:600">Bet Slips:</div>
-            <div class="ticket-slip-container">${JSON.parse(ticket.betSlips)
+            <div class="ticket-slip-container">${betSlips
               .map((slip) => {
                 const slipWinStatusClass = (() => {
                   if (slip.hasWon === true) {
-                    return 'won';
+                    return "won";
                   }
 
                   if (slip.hasWon === false) {
-                    return 'lost';
+                    return "lost";
                   }
 
-                  return '';
+                  return "";
                 })();
 
                 return `
@@ -218,8 +247,8 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
     options = {
       page: 1,
       limit: 50,
-      ...options
-    }
+      ...options,
+    };
   }
 
   if (!globals.user?.userId) {
@@ -228,9 +257,9 @@ function viewTicketsHandler(options = { page: 1, limit: 50 }) {
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-saved-tickets/${globals.user?.userId}?page=${options.page}&limit=${
-    options.limit
-  }`;
+  }/game/fetch-saved-tickets/${globals.user?.userId}?page=${
+    options.page
+  }&limit=${options.limit}`;
 
   fetchAPI({
     url: apiUrl,

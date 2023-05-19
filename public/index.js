@@ -60,18 +60,15 @@ function loginHandler(ev) {
   };
 
   const apiUrl = `${globals[globals.environment].apiBaseUrl}/auth/login`;
-  fetch(apiUrl, {
+  fetchAPI({
+    url: apiUrl,
     method: "post",
-    body: JSON.stringify(payload),
-    // mode: "no-cors",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      // mode: "no-cors",
-    },
+    data: payload,
+    // mode: "no-cors"
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
+        // const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {

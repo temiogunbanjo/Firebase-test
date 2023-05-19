@@ -1,3 +1,60 @@
+function topupHandler(ev) {
+  ev.preventDefault();
+  const responseElement = document.querySelector("#topup-form .response");
+
+  const amountField = document.querySelector(
+    "#topup-form input[name='amount']"
+  );
+  const narrationField = document.querySelector(
+    "#topup-form input[name='narration']"
+  );
+  const referenceField = document.querySelector(
+    "#topup-form input[name='payReference']"
+  );
+  const paymentMethodInput = document.querySelector(
+    "#topup-form input[name='paymentMethod']:checked"
+  );
+
+  responseElement.innerHTML = "Topping up wallet...";
+  const payload = {
+    amount: amountField?.value || 0,
+    provider: paymentMethodInput?.value || null,
+    narration: narrationField?.value || "Topping up...",
+    payReference: referenceField?.value,
+  };
+
+  const apiUrl = `${globals[globals.environment].apiBaseUrl}/wallet/topup`;
+
+  fetchAPI({
+    url: apiUrl,
+    method: "put",
+    data: payload,
+  })
+    .then(async (result) => {
+      try {
+        // const result = await response.json();
+        const { status } = result;
+
+        if (result && result.data) {
+          const { data } = result;
+          updateResponsePane(responseElement, data, status);
+        } else {
+          updateResponsePane(responseElement, result, status);
+        }
+      } catch (error) {
+        console.log(error);
+        const { responsemessage, status } = error;
+        updateResponsePane(responseElement, responsemessage, status);
+      } finally {
+        fetchAll();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      updateResponsePane(responseElement, error, "error");
+    });
+}
+
 function viewTransactionsHandler(options = { page: 1, limit: 50 }) {
   // ev.preventDefault();
   const containerElement = document.querySelector("#results-container");
@@ -17,18 +74,12 @@ function viewTransactionsHandler(options = { page: 1, limit: 50 }) {
     options.limit
   }&order=createdAt:DESC`;
 
-  fetch(apiUrl, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
+  fetchAPI({
+    url: apiUrl,
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
+        // const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -115,11 +166,23 @@ function viewTransactionsHandler(options = { page: 1, limit: 50 }) {
     });
 }
 
+function fetchAll() {
+  viewTransactionsHandler({ page: 1, limit: 50 });
+
+  const walletBalanceElement = document.querySelector("#main-balance");
+  fetchUserBalance(walletBalanceElement);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   setPageIndex(5);
 
-  let nextBtn = document.querySelector("#results-pagination #next-results-page");
-  let prevBtn = document.querySelector("#results-pagination #prev-results-page");
+  let nextBtn = document.querySelector(
+    "#results-pagination #next-results-page"
+  );
+  let prevBtn = document.querySelector(
+    "#results-pagination #prev-results-page"
+  );
+  const topupForm = document.querySelector("#topup-form");
 
   if (nextBtn && prevBtn) {
     nextBtn.addEventListener("click", (ev) => {
@@ -133,5 +196,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  viewTransactionsHandler({ page: 1, limit: 50 });
+  topupForm.addEventListener("submit", topupHandler);
+  fetchAll();
 });

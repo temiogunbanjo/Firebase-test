@@ -11,11 +11,7 @@ function viewGamesHandler(ev) {
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-current-game?page=1&limit=100&currentWeekDay=${
-    currentWeekDay
-  }&endTime=${
-    currentTime
-  }&includeRecurring=true`;
+  }/game/fetch-current-game?page=1&limit=100&currentWeekDay=${currentWeekDay}&endTime=${currentTime}&includeRecurring=true&order=recurring:DESC,recurringInterval:ASC,endTime:ASC`;
 
   // console.log(currentTime);
   fetchAPI({
@@ -54,10 +50,12 @@ function viewGamesHandler(ev) {
                           Number(game.totalFundPool)) *
                         100
                       : null;
-                    
+
                     const gamePlayStatus = (() => {
-                      const [startHour, startMinute, startSeconds] = game.startTime.split(':');
-                      const [endHour, endMinute, endSeconds] = game.endTime.split(':');
+                      const [startHour, startMinute, startSeconds] =
+                        game.startTime.split(":");
+                      const [endHour, endMinute, endSeconds] =
+                        game.endTime.split(":");
 
                       const startTimeMS = new Date().setHours(
                         parseInt(startHour, 10),
@@ -75,16 +73,22 @@ function viewGamesHandler(ev) {
 
                       // console.log(startTimeMS, endTimeMS);
 
-                      if (currentTimeMS >= startTimeMS && currentTimeMS < endTimeMS) {
-                        return 'active';
-                      }
-                      
-                      if (currentTimeMS > startTimeMS && currentTimeMS <= endTimeMS) {
-                        return 'ended';
+                      if (
+                        currentTimeMS >= startTimeMS &&
+                        currentTimeMS < endTimeMS
+                      ) {
+                        return "active";
                       }
 
-                      return 'upcoming';
-                    })()
+                      if (
+                        currentTimeMS > startTimeMS &&
+                        currentTimeMS <= endTimeMS
+                      ) {
+                        return "ended";
+                      }
+
+                      return "upcoming";
+                    })();
                     // console.log({
                     //   poolProgressPercent,
                     //   poolProgressPercentRaw:
@@ -98,16 +102,23 @@ function viewGamesHandler(ev) {
                     <div class="game-card">
                       <span class="playing-status ${gamePlayStatus} capitalize">${gamePlayStatus}</span>
                       <div class="d-flex rows align-items-center ticket-header">
-                        <h3 style="margin-bottom: 0.5em">Game</h3>
-                        <span
-                          class="status-indicator"
-                          data-status="${game.status === true ? "won" : "lost"}"
-                        >o</span>
+                        <h3 style="margin-bottom: 0.5em;text-transform:capitalize">${
+                          game.name
+                        }</h3>
+                        ${
+                          game.recurring
+                            ? `<small class="d-flex rows center" style="font-weight: 700;font-size:10px; border-radius: 50%;border: 2px solid orange; color: #111; margin-left: 8px; width: 28px; height: 28px">
+                              ${game.recurringInterval}
+                              </small>`
+                            : ""
+                        }
                       </div>
-                      <small class="status-indicator" style="margin-bottom: 1em;font-weight: 600">
-                        ${game.startTime} - ${game.endTime}
-                      </small>
-
+                      <div class="d-flex rows align-items-center" style="margin-bottom: 1em;">
+                        <small class="status-indicator" style="font-weight: 600">
+                          ${game.startTime} - ${game.endTime}
+                        </small>
+                      </div>
+                      
                       <div class="d-flex cols ticket-body">
                         <div class="ticket-body-row">
                           <p>
@@ -116,11 +127,11 @@ function viewGamesHandler(ev) {
                           </p>
 
                           <p>
-                            <span class="ticket-label">Game:</span>
+                            <span class="ticket-label">Lottery:</span>
                             <span
                               class="ticket-value"
                               style="text-transform: capitalize"
-                            >${game.name}</span>
+                            >${game.lotteryName}</span>
                           </p>
 
                           ${

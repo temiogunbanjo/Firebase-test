@@ -42,14 +42,98 @@ limitations under the License.
     <main class="d-flex rows">
       <!-- Container for the Table of content -->
       <section id="navigation" class="w-30">
-        <ul>
-        </ul>
+        <ul></ul>
       </section>
 
       <section id="navigation-content" style="flex-grow: 1">
         <div id="notice" class="hide"></div>
+        <div id="topup-tab-content" class="navigation-content">
+          <!-- div to display the withdrawals made -->
+          <form
+            id="topup-form"
+            class="d-flex rows w-100"
+            style="margin-top: 1rem"
+          >
+            <div class="d-flex cols" style="width: 50%; max-width: 500px">
+              <h2 style="margin-bottom: 10px">Topup Form</h2>
+              <h5
+                style="margin-top: 3px; align-items: center"
+                class="d-flex rows"
+              >
+                <span style="margin-right: 10px">Main Balance: </span>
+                <span id="main-balance" class="status-indicator">0.00</span>
+              </h5>
+
+              <div class="d-flex cols">
+                <div class="d-flex rows align-items-center">
+                  <input
+                    id="source-source"
+                    type="radio"
+                    name="paymentMethod"
+                    value="source"
+                    checked
+                  />
+                  <label for="source-source">Source</label>
+
+                  <input
+                    id="paystack-source"
+                    type="radio"
+                    name="paymentMethod"
+                    value="paystack"
+                  />
+                  <label for="paystack-source">Paystack</label>
+
+                  <input
+                    id="interswitch-source"
+                    type="radio"
+                    name="paymentMethod"
+                    value="interswitch"
+                  />
+                  <label for="interswitch-source">interswitch</label>
+                </div>
+
+                <div class="d-flex cols">
+                  <input
+                    class="flex-grow"
+                    type="number"
+                    name="amount"
+                    placeholder="amount to withdraw"
+                    min="1"
+                    value="1"
+                  />
+                </div>
+
+                <div class="d-flex cols">
+                  <input
+                    class="flex-grow"
+                    type="text"
+                    name="narration"
+                    placeholder="Narration"
+                  />
+                </div>
+
+                <div class="d-flex cols">
+                  <input
+                    class="flex-grow"
+                    type="text"
+                    name="payReference"
+                    placeholder="Payment reference e.g. TREF-122XXXXX"
+                  />
+                </div>
+
+                <div class="d-flex cols">
+                  <button type="submit">Topup</button>
+                </div>
+              </div>
+            </div>
+
+            <pre class="response response-pane" style="margin-left: 20px"></pre>
+          </form>
+        </div>
+
         <div id="view-results-tab-content" class="navigation-content">
           <!-- div to display the games available played -->
+          <h2 style="margin-bottom: 10px">Transactions</h2>
           <div
             id="results-container"
             class="d-flex cols w-100"

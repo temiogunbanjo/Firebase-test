@@ -14,11 +14,11 @@ const globals = {
     apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
   },
   white: {
-    apiBaseUrl: "https://white-api.gaim.tech/api/v1",
-    // apiBaseUrl: "http://localhost:3000/api/v1",
+    // apiBaseUrl: "https://white-api.gaim.tech/api/v1",
+    apiBaseUrl: "http://localhost:3000/api/v1",
     searchBaseUrl: "https://white-engine.gaim.tech",
-    apiKey: "USR.cyU01p-PF1ktQ-hwhGal-2eJemM-H7Fch5-br",
-    // apiKey: "USR.cyU01p-PF1ktQ-hwhGal-2eJemM-H7Fch5-br",
+    apiKey: "ADM.t6CliW-jkIsim-VzwV11-Ca8BNx-qgHEWf-RX",
+    // apiKey: "ADM.t6CliW-jkIsim-VzwV11-Ca8BNx-qgHEWf-RX",
   },
   western: {
     // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
@@ -152,9 +152,15 @@ const updateResponsePane = (responseElement, dataResponse, status) => {
 const createMenu = (drawerElement) => {
   const menus = [
     {
-      link: "/",
+      link: "/admin",
       name: "Authentication",
       id: "auth-tab",
+      visible: true,
+    },
+    {
+      link: "/admin/bonus",
+      name: "Bonus Management",
+      id: "bonus-tab",
       visible: true,
     }
   ];
@@ -182,34 +188,27 @@ const createMenu = (drawerElement) => {
   drawerElement.innerHTML = content.join("");
 };
 
-async function fetchAdminById(adminId) {
-  console.log(globals[globals.environment]);
+async function fetchAPI(options) {
+  const defaultOptions = { method: "GET", url: "" };
+  options =
+    typeof options === "object"
+      ? { ...defaultOptions, ...options }
+      : defaultOptions;
 
-  const apiUrl = `${
-    globals[globals.environment].apiBaseUrl
-  }/user/fetch-admin/${adminId}`;
+  // console.log(options);
 
-  try {
-    const response = await fetch(apiUrl, {
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-        authorization: `Bearer ${globals.token}`,
-        "x-api-key": globals[globals.environment].apiKey,
-      },
-    });
-    const result = await response.json();
+  const response = await fetch(options.url, {
+    method: options.method,
+    body: JSON.stringify(options.data),
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+      authorization: `Bearer ${globals.token}`,
+      mode: "no-cors",
+      "x-api-key": globals[globals.environment].apiKey,
+    },
+  });
 
-    if (result && result.data) {
-      const { data } = result;
-      const user = data?.data;
-      console.log(user);
-      return user;
-    } else {
-      return Promise.reject(result);
-    }
-  } catch (error) {
-    console.log(error);
-  }
+  return response.json();
 }
 
 function saveAdmin(user, output = null) {

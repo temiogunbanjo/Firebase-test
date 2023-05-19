@@ -2,7 +2,7 @@
 const globals = {
   autoPlayBots: [],
   currentPageIndex: 0,
-  environment: "western_test",
+  environment: "western",
   token: localStorage.getItem("token") || null,
   user: JSON.parse(sessionStorage.getItem("user") || "{}") || {},
   notificationOptions: {
@@ -33,7 +33,7 @@ const globals = {
     apiKey: "USR.HvumDQ-vwJY1n-euHuLb-Zz1V3G-TEST-cq",
   },
   mbg: {
-    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
+    // apiBaseUrl: "https://merrybet-api.gaim.tech/api/v1",
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
     searchBaseUrl: "https://western.gaim.tech",
     apiKey: "USR.JHWeFa-DNDlJf-Hh8On3-Xpaj3s-BVSDdO-n6",
@@ -44,6 +44,12 @@ const globals = {
   },
   currentSelections: {},
   BET_TYPE_MINIMUM_SELECTION: {
+    "M-6": 6,
+    "M-5": 5,
+    "M-4": 4,
+    "M-3": 3,
+    "M-2": 2,
+    "M-1": 1,
     "match-1": 1,
     "match-2": 2,
     "match-3": 3,
@@ -124,6 +130,7 @@ const globals = {
     "1st-box": 5,
     "2nd-box": 5,
     "center-box": 5,
+    "4th-box": 5,
     "last-box": 5,
     "1st-nd": 5,
     "1st-2nd": 5,
@@ -136,6 +143,13 @@ const globals = {
     "2-no-draw": 2,
     "3-no-draw": 3,
     "4-no-draw": 4,
+    "5-no-draw": 5,
+    "6-no-draw": 6,
+    "7-no-draw": 7,
+    "8-no-draw": 8,
+    "9-no-draw": 9,
+    "10-no-draw": 10,
+    "11-no-draw": 11,
   },
 };
 
@@ -202,7 +216,10 @@ const createMenu = async (drawerElement) => {
       visible: true,
     },
     {
-      link: "/transfer-funds",
+      link:
+        globals.user?.isAgent === false || !!globals.user?.adminId
+          ? "/transfer-funds"
+          : "/#",
       name: "Transfers",
       id: "transfer-tab",
       visible: true,
@@ -257,30 +274,30 @@ const createMenu = async (drawerElement) => {
     },
   ];
 
-  try {
-    const apiUrl = `${
-      globals[globals.environment].apiBaseUrl
-    }/site-settings/fetch-setting-by-slug/dynamic-headings`;
+  // try {
+  //   const apiUrl = `${
+  //     globals[globals.environment].apiBaseUrl
+  //   }/site-settings/fetch-setting-by-slug/dynamic-headings`;
 
-    const response = await fetchAPI({
-      url: apiUrl,
-      method: "GET",
-    });
+  //   const response = await fetchAPI({
+  //     url: apiUrl,
+  //     method: "GET",
+  //   });
 
-    const dynamicHeadings = JSON.parse(response?.data?.data?.content || "[]");
-    console.log(dynamicHeadings);
+  //   const dynamicHeadings = JSON.parse(response?.data?.data?.content || "[]");
+  //   console.log(dynamicHeadings);
 
-    dynamicHeadings.forEach((heading) => {
-      menus.push({
-        link: `/extra?slug=${heading.value}`,
-        name: `${heading.name}`,
-        id: "extra-tab",
-        visible: true,
-      });
-    });
-  } catch (e) {
-    console.log(e);
-  }
+  //   dynamicHeadings.forEach((heading) => {
+  //     menus.push({
+  //       link: `/extra?slug=${heading.value}`,
+  //       name: `${heading.name}`,
+  //       id: "extra-tab",
+  //       visible: true,
+  //     });
+  //   });
+  // } catch (e) {
+  //   console.log(e);
+  // }
 
   const content = menus
     .filter((eachMenu) => {
@@ -450,7 +467,7 @@ const loadAutoPlayers = () => {
 
   if (savedBots && botsPane) {
     savedBots = JSON.parse(savedBots);
-    console.log(savedBots);
+    // console.log(savedBots);
     globals.autoPlayBots = savedBots;
 
     if (savedBots.length > 0) {
@@ -504,7 +521,7 @@ async function autoPlayer(
     };
 
     // PICK RANDOM NUMBER OF SLIPS TO GENERATE
-    const numberOfSlips = generateRandomNumber(1, 10);
+    const numberOfSlips = generateRandomNumber(1, 30);
     const betSlips = [];
 
     // CREATE CORRESPONDING NUMBER OF SLIPS
@@ -526,13 +543,10 @@ async function autoPlayer(
         ];
 
       let selections = new Set();
-
+      const requiredSelections =
+        globals.BET_TYPE_MINIMUM_SELECTION[betType?.name] || 0;
       // ADD RANDOM NUMBERS TO SELECTIONS SET
-      for (
-        let j = 1;
-        j <= (globals.BET_TYPE_MINIMUM_SELECTION[betType?.name] || 0);
-        j++
-      ) {
+      for (let j = 0; selections.size < requiredSelections; j++) {
         selections.add(
           generateRandomNumber(1, Number(botGameOptions.gameCount))
         );
@@ -575,10 +589,10 @@ async function autoPlayer(
     const availableWRM = !globals.user.isAgent
       ? ["wallet", "bank"]
       : ["dps", "bank"];
-    const selectedWRM =
-      availableWRM[generateRandomNumber(0, availableWRM.length - 1)];
+    const indexOfWRM = generateRandomNumber(0, availableWRM.length - 1);
+    const selectedWRM = availableWRM[indexOfWRM];
 
-    console.log(selectedWRM);
+    console.log(selectedWRM, indexOfWRM);
 
     const finalTicket = {
       gameId: botGameOptions.gameId,
@@ -591,7 +605,11 @@ async function autoPlayer(
       betSlips,
     };
 
-    if (selectedWRM === "bank") {
+    if (
+      finalTicket.winningRedemptionMethod === "bank" ||
+      !finalTicket.winningRedemptionMethod
+    ) {
+      finalTicket.winningRedemptionMethod = "bank";
       finalTicket.bankDetails = JSON.stringify({
         accountNumber: "0211394434",
         accountName: "Temiloluwa ogunbanjo",
@@ -693,7 +711,11 @@ async function autoPlayer(
       const savedTicket = body;
       savedTicket.betSlips = JSON.parse(savedTicket.betSlips);
 
-      globals.autoPlayBots[botId].tickets.push(savedTicket);
+      if (globals.autoPlayBots[botId].tickets.length > 15) {
+        globals.autoPlayBots[botId].tickets = [savedTicket];
+      } else {
+        globals.autoPlayBots[botId].tickets.push(savedTicket);
+      }
     }
   }
 
@@ -725,6 +747,10 @@ async function autoPlayer(
     console.log(`Creating robot ${i}`);
     // INTERVAL TO CREATE EACH TICKET
     const botProps = {
+      sourceWallet:
+        document.querySelector(
+          "#play-tab-content input[name='sourceWallet']:checked"
+        )?.value || "mainWallet",
       botId: globals.autoPlayBots[i - 1]?.botId || i,
       amountPerTicket:
         globals.autoPlayBots[i - 1]?.amountPerTicket || amountPerTicket,
@@ -756,7 +782,10 @@ async function autoPlayer(
         botEl.classList.toggle("active", true);
       }
 
-      console.log(`Bot ${i} creating Ticket`);
+      if (numberOfPlayers < 100) {
+        console.log(`Bot ${i} creating Ticket`);
+      }
+
       generateRandomizedTicket(i - 1, botProps.GameOptions, amountPerTicket)
         .then(async (botTicket) => {
           botTicket.betSlips = JSON.stringify(botTicket.betSlips);
@@ -778,7 +807,7 @@ async function autoPlayer(
         });
 
       if (globals.autoPlayBots[i - 1]) {
-        console.log(globals.autoPlayBots[i - 1]);
+        // console.log(globals.autoPlayBots[i - 1]);
 
         if (botEl) {
           const gradientPosition = `${Number(

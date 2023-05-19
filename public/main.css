@@ -18,6 +18,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,800;1,400;1,600;1,800&display=swap");
 
 * {
+  /* color: goldenrod; */
   box-sizing: border-box;
 }
 
@@ -176,6 +177,11 @@ header h3 {
   flex-direction: column;
 }
 
+.center {
+  align-items: center;
+  justify-content: center;
+}
+
 .align-items-center {
   align-items: center;
 }
@@ -324,7 +330,7 @@ section#navigation ul li a:hover{
   display: none !important;
 }
 
-summary {
+summary#token-controls {
   background-color: dodgerblue;
   color: white;
   padding: 0.5rem;
