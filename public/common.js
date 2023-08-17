@@ -2,7 +2,7 @@
 const globals = {
   autoPlayBots: [],
   currentPageIndex: 0,
-  environment: "western",
+  environment: localStorage.getItem("environment") || "western",
   token: localStorage.getItem("token") || null,
   user: JSON.parse(sessionStorage.getItem("user") || "{}") || {},
   notificationOptions: {
@@ -95,8 +95,8 @@ const globals = {
     "perm-3-ol": generateRandomNumber(3, 20),
     "perm-4-ol": generateRandomNumber(4, 20),
     "perm-5-ol": generateRandomNumber(5, 20),
-    "no-draw": 10,
-    "*no-draw*": 20,
+    "no-draw": generateRandomNumber(3, 10),
+    "*no-draw*": generateRandomNumber(3, 20),
     "perfect-1": 1,
     "perfect-2": 2,
     "perfect-3": 3,
@@ -127,6 +127,7 @@ const globals = {
     "2w-by-2m": generateRandomNumber(4, 20),
     "2w-by-2m-swap": generateRandomNumber(4, 20),
     fnd: 5,
+    "banker-against-all": generateRandomNumber(1, 20),
     "1st-box": 5,
     "2nd-box": 5,
     "center-box": 5,
@@ -322,31 +323,6 @@ const createMenu = async (drawerElement) => {
   drawerElement.innerHTML = content.join("");
 };
 
-async function fetchUserById(userId) {
-  console.log(globals[globals.environment]);
-
-  const apiUrl = `${
-    globals[globals.environment].apiBaseUrl
-  }/user/fetch-user/${userId}`;
-
-  try {
-    const result = await fetchAPI({
-      url: apiUrl,
-    });
-
-    if (result && result.data) {
-      const { data } = result;
-      const user = data?.data;
-      console.log(user);
-      return user;
-    } else {
-      return Promise.reject(result);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 function saveUser(user, output = null) {
   console.log(globals[globals.environment]);
   const responseElement = output;
@@ -380,6 +356,10 @@ function saveUser(user, output = null) {
   }
 }
 
+function saveEnvironment(environment = globals.environment) {
+  localStorage.setItem("environment", environment);
+}
+
 const setPageIndex = (newIndex) => {
   const drawerElement = document.querySelector("#navigation ul");
   globals.currentPageIndex = newIndex;
@@ -402,64 +382,6 @@ const setPageIndex = (newIndex) => {
     }
   }
 };
-
-function fetchUserBalance(containerElement, type = "main") {
-  const apiUrl = `${
-    globals[globals.environment].apiBaseUrl
-  }/user/fetch-authenticated-user`;
-
-  fetchAPI({
-    url: apiUrl,
-    method: "get",
-  })
-    .then((result) => {
-      try {
-        const { status } = result;
-
-        if (result && result.data) {
-          // const categoryObject = {};
-
-          console.log(result.data);
-          const { data } = result?.data;
-          let balance = 0;
-
-          switch (type) {
-            case "bonus":
-              balance = data.bonusBalance;
-              containerElement.style.color = ((status) => {
-                if (status === "matured") return "green";
-                if (status === "pending") return "orange";
-                return "darkgrey";
-              })(data.bonusStatus);
-              break;
-
-            case "commission":
-              balance = data.commissionBalance;
-              break;
-
-            case "winning":
-              balance = data.winningBalance;
-              break;
-
-            case "main":
-            default:
-              balance = data.walletBalance;
-              break;
-          }
-
-          containerElement.innerHTML = balance || "--";
-        }
-      } catch (error) {
-        console.log(error);
-        const { responsemessage, status } = error;
-        updateResponsePane(containerElement, responsemessage, status);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      updateResponsePane(containerElement, error, "error");
-    });
-}
 
 const loadAutoPlayers = () => {
   let savedBots = localStorage.getItem("bots");
@@ -884,6 +806,89 @@ async function fetchAPI(options) {
   });
 
   return response.json();
+}
+
+async function fetchUserById(userId) {
+  console.log(globals[globals.environment]);
+
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/user/fetch-user/${userId}`;
+
+  try {
+    const result = await fetchAPI({
+      url: apiUrl,
+    });
+
+    if (result && result.data) {
+      const { data } = result;
+      const user = data?.data;
+      console.log(user);
+      return user;
+    } else {
+      return Promise.reject(result);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function fetchUserBalance(containerElement, type = "main") {
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/user/fetch-authenticated-user`;
+
+  fetchAPI({
+    url: apiUrl,
+    method: "get",
+  })
+    .then((result) => {
+      try {
+        const { status } = result;
+
+        if (result && result.data) {
+          // const categoryObject = {};
+
+          console.log(result.data);
+          const { data } = result?.data;
+          let balance = 0;
+
+          switch (type) {
+            case "bonus":
+              balance = data.bonusBalance;
+              containerElement.style.color = ((status) => {
+                if (status === "matured") return "green";
+                if (status === "pending") return "orange";
+                return "darkgrey";
+              })(data.bonusStatus);
+              break;
+
+            case "commission":
+              balance = data.commissionBalance;
+              break;
+
+            case "winning":
+              balance = data.winningBalance;
+              break;
+
+            case "main":
+            default:
+              balance = data.walletBalance;
+              break;
+          }
+
+          containerElement.innerHTML = balance || "--";
+        }
+      } catch (error) {
+        console.log(error);
+        const { responsemessage, status } = error;
+        updateResponsePane(containerElement, responsemessage, status);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      updateResponsePane(containerElement, error, "error");
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

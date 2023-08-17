@@ -43,7 +43,6 @@ function fetchAndSaveUser(token) {
     });
 }
 
-
 function loginHandler(ev) {
   ev.preventDefault();
   const responseElement = document.querySelector("#login-form .response");
@@ -99,4 +98,11 @@ document.addEventListener("DOMContentLoaded", () => {
   setPageIndex(0);
   const loginForm = document.querySelector("#login-form");
   loginForm.addEventListener("submit", loginHandler);
+
+  const environmentSelect = document.querySelector("#environment-option");
+  environmentSelect.value = globals.environment;
+  environmentSelect.addEventListener("change", (ev) => {
+    saveEnvironment(ev.currentTarget.value);
+    window.location.reload();
+  });
 });

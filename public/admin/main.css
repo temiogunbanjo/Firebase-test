@@ -23,7 +23,7 @@
 
 html,
 body {
-  --primary-color: orangered;
+  --primary-color: green;
   padding: 0;
   margin: 0;
   font-family: Nunito, Montserrat, Roboto, "Helvetica", sans-serif;
@@ -62,7 +62,7 @@ code {
   border: 1px solid red !important;
 }
 
-#notice{
+#notice {
   /* margin-top: 5px; */
   /* margin-bottom: 5px; */
   border-radius: 5px;
@@ -83,11 +83,10 @@ code {
   background-color: white;
   border-radius: 5vh;
   position: relative;
-
 }
 
-.toggle-switch::after{
-  content: '';
+.toggle-switch::after {
+  content: "";
   position: absolute;
   width: 21px;
   height: 21px;
@@ -105,7 +104,7 @@ code {
   background-color: rgba(78, 195, 78, 0.9);
 }
 
-.toggle-switch:checked::after{
+.toggle-switch:checked::after {
   left: calc(100% - 21px);
   /* background-image: radial-gradient(rgba(0, 0, 0, 0) 65%, rgba(0, 0, 0, 0.2)); */
   box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.15);
@@ -297,7 +296,7 @@ section#navigation ul {
   font-weight: 600;
 } */
 
-section#navigation ul li a{
+section#navigation ul li a {
   text-decoration: none;
   color: black;
   display: block;
@@ -310,7 +309,7 @@ section#navigation ul li a.active {
   color: white;
 }
 
-section#navigation ul li a:hover{
+section#navigation ul li a:hover {
   background-color: red;
   color: white;
 }
@@ -332,7 +331,10 @@ summary {
   padding: 0.5rem;
 }
 
-form input, form select, form textarea {
+form input,
+form select,
+.custom-select,
+form textarea {
   background-color: #f3f3f5;
   border: none;
   padding: 1rem;
@@ -497,14 +499,13 @@ form input[type="radio"] + label {
   /* align-items: center; */
 }
 
-.result-entry:nth-child(2n) {
+.result-entry:nth-child(2n - 1) {
   background-color: rgba(30, 143, 255, 0.05);
 }
 
 .pagination-count-wrapper {
   margin: 0 40px;
 }
-
 
 #play-tab {
   --user-color: #4ec34e;
@@ -543,7 +544,7 @@ form input[type="radio"] + label {
 
 #play-tab .user.active::after {
   /* font-size: 12px; */
-  content: '';
+  content: "";
   position: absolute;
   width: 40px;
   height: 40px;

@@ -238,107 +238,6 @@ function populateGameArea(game) {
   });
 }
 
-function viewGamesHandler(ev) {
-  // ev.preventDefault();
-  const containerElement = document.querySelector("#games-container");
-
-  // containerElement.innerHTML = "Fetching tickets...";
-  const d = new Date();
-  const currentTime = d.toLocaleTimeString();
-  const currentWeekDay = d.getDay();
-  const apiUrl = `${
-    globals[globals.environment].apiBaseUrl
-  }/game/fetch-current-game?page=1&limit=100&endTime=${currentTime}&currentWeekDay=${currentWeekDay}`;
-  fetch(apiUrl, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
-  })
-    .then(async (response) => {
-      try {
-        const result = await response.json();
-        const { status } = result;
-
-        if (result && result.data) {
-          const categoryObject = {};
-
-          const { data } = result?.data;
-
-          data.forEach((game) => {
-            if (!categoryObject[game.Lottery.category]) {
-              categoryObject[game.Lottery.category] = [game];
-            } else {
-              categoryObject[game.Lottery.category].push(game);
-            }
-          });
-
-          // console.log(categoryObject);
-
-          containerElement.innerHTML = Object.keys(categoryObject)
-            .map((category) => {
-              return `<div class="game-category-container">
-                <h3 class="game-category-head">${category}</h3>
-                <div class="game-category-body d-flex rows">
-                  ${categoryObject[category]
-                    .map((game) => {
-                      return `
-                      <div class="game-card">
-                      <div
-                        class="d-flex rows align-items-center ticket-header"
-                        style="margin-bottom: 1em"
-                      >
-                        <h3 style="margin-bottom: 0.5em">Game</h3>
-                        <span
-                          class="status-indicator"
-                          data-status="${game.status === true ? "won" : "lost"}"
-                          >o</span
-                        >
-                      </div>
-                      <div class="d-flex cols ticket-body">
-                        <div class="ticket-body-row">
-                          <p>
-                            <span class="ticket-label">Game ID:</span>
-                            <span class="ticket-value">${game.gameId}</span>
-                          </p>
-                          <p>
-                            <span class="ticket-label">Game:</span>
-                            <span
-                              class="ticket-value"
-                              style="text-transform: capitalize"
-                              >${game.name}</span
-                            >
-                          </p>
-                        </div>
-    
-                        <div class="d-flex rows ticket-body-row align-items-center">
-                            <button>Play Game</button>
-                        </div>
-                      </div>
-                    </div>
-                      `;
-                    })
-                    .join("")}
-                </div>
-              </div>`;
-            })
-            .join("");
-        }
-      } catch (error) {
-        console.log(error);
-        const { responsemessage, status } = error;
-        updateResponsePane(containerElement, responsemessage, status);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      updateResponsePane(containerElement, error, "error");
-    });
-}
-
 function fetchGameData(gameId) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
@@ -386,6 +285,7 @@ function createTicket(ticket, byBot = false) {
     totalStakedAmount: ticket.totalStakedAmount,
     winningRedemptionMethod: ticket.winningRedemptionMethod || "wallet",
     sourceWallet: ticket.sourceWallet,
+    bookingCode: ticket.bookingCode,
     betSlips: JSON.stringify(ticket.betSlips),
   };
 
@@ -673,7 +573,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const wrmSelector = document.querySelector(
       "#play-tab-content input[name='winningRedemptionMethod']:checked"
     );
+    const bookingCodeInput = document.querySelector(
+      "#play-tab-content input[name='bookingCode']"
+    );
     globals.ticket.sourceWallet = walletSelector.value;
+    globals.ticket.bookingCode = bookingCodeInput.value || null;
     globals.ticket.winningRedemptionMethod = wrmSelector.value;
 
     createTicket(globals.ticket);

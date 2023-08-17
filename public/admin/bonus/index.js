@@ -236,4 +236,16 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(() => {
     fetchAllData();
   }, 0.5 * 60 * 1000);
+
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/validate-user`;
+
+  fetchAPI({
+    url: apiUrl,
+    method: "POST",
+    data: {
+      UserId: "0123456789"
+    }
+  })
 });

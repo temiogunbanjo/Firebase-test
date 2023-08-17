@@ -33,10 +33,14 @@ limitations under the License.
   </head>
   <body>
     <!-- Header section containing title -->
-    <header class="d-flex rows">
+    <header class="d-flex rows" style="justify-content: space-between; align-items: center;">
       <div class="">
         <h3>Firebase Cloud Messaging</h3>
       </div>
+
+      <a href="/admin" class="">
+        <span style="font-size: 14px; color: white">Switch To Admin >></span>
+      </a>
     </header>
 
     <main class="d-flex rows">
@@ -48,6 +52,15 @@ limitations under the License.
 
       <section id="navigation-content" style="flex-grow: 1">
         <div id="notice" class="hide"></div>
+        <div id="" class="d-flex rows" style="justify-content: flex-end; margin-top: 5px;">
+          <label for="environment-option" style="margin-right: 10px;">Choose Environment:</label>
+          <select id="environment-option">
+            <option value="western">Western Lotto</option>
+            <option value="bet9ja">Bet9ja</option>
+            <option value="white">White Label</option>
+            <option value="mbg">Merry Bet</option>
+          </select>
+        </div>
         <div id="auth-tab-content" class="navigation-content">
           <!-- div to display the login form -->
           <form
