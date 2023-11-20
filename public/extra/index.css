@@ -1,0 +1,31 @@
+#navigation-content {
+  padding: 0 2rem 0 1rem;
+  min-width: 70%;
+  background-color: #f6f6f6;
+  min-height: 100vh;
+}
+
+.chat {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 15px;
+  background-color: white;
+  margin: 1rem 1rem 1rem 0;
+}
+
+.info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: capitalize;
+}
+
+.connected {
+  background-color: rgba(17, 255, 0, 0.1);
+  color: rgb(17, 205, 0);
+}
+
+.disconnected {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: rgb(182, 0, 42);
+}

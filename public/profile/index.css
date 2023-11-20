@@ -3,19 +3,20 @@ img {
 }
 
 .downline-card {
-  justify-content: center;
-  /* align-items: center; */
-  border: 1px solid #ccc;
-  width: calc(100% / 3);
+  /* justify-content: center; */
+  align-items: stretch;
+  /* border: 1px solid #ccc; */
+  width: calc(100% / 2);
   margin-right: 20px;
 }
 
 .downline-card img{
-  width: 100%;
-  height: 180px;
+  width: 110px;
+  height: 110px;
   display: block;
   object-fit: cover;
   /* border: 1px solid #ccc; */
+  border-radius: 50%;
   overflow: hidden;
 }
 
@@ -39,6 +40,7 @@ img {
   min-width: 200px;
   width: 30%;
   margin-bottom: 20px;
+  margin-right: 4px;
 }
 
 .more-info .more-info-item > *:first-child{

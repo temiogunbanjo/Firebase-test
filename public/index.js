@@ -94,10 +94,69 @@ function loginHandler(ev) {
     });
 }
 
+function registerHandler(ev) {
+  ev.preventDefault();
+  const responseElement = document.querySelector("#register-form .response");
+  // const emailField = document.querySelector("#register-form input[name='email']");
+  // const passwordField = document.querySelector(
+  //   "#register-form input[name='password']"
+  // );
+
+  responseElement.innerHTML = "Registering...";
+
+  const payload = {
+    // email: emailField.value,
+    // password: passwordField.value,
+  };
+
+  document.querySelectorAll("#register-form [name]").forEach((el) => {
+    console.log(`${el.getAttribute('name')}, ${el.value}`);
+    payload[el.getAttribute('name')] = el.value;
+  });
+
+  const apiUrl = `${globals[globals.environment].apiBaseUrl}/auth/signup`;
+  fetchAPI({
+    url: apiUrl,
+    method: "post",
+    data: payload,
+    // mode: "no-cors"
+  })
+    .then(async (result) => {
+      try {
+        // const result = await response.json();
+        const { status } = result;
+
+        if (result && result.data) {
+          const { data } = result;
+          // const { token } = data?.data;
+
+          // globals.token = token;
+          // localStorage.setItem("token", token);
+
+          updateResponsePane(responseElement, data, status);
+          // fetchAndSaveUser(token);
+        } else {
+          updateResponsePane(responseElement, result, status);
+        }
+      } catch (error) {
+        console.log(error);
+        const { status } = error;
+        updateResponsePane(responseElement, error, status);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      updateResponsePane(responseElement, error, "error");
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   setPageIndex(0);
   const loginForm = document.querySelector("#login-form");
   loginForm.addEventListener("submit", loginHandler);
+
+  const registerForm = document.querySelector("#register-form");
+  registerForm.addEventListener("submit", registerHandler);
 
   const environmentSelect = document.querySelector("#environment-option");
   environmentSelect.value = globals.environment;

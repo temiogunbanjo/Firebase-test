@@ -596,6 +596,28 @@ form input[type="radio"] + label {
   animation: fading-waves 1.5s ease-in 0s infinite both normal;
 }
 
+dialog[open] {
+  display: flex;
+}
+
+.dialog_overlay {
+  background-color: rgba(0, 0, 0, 0.45);
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.dialog_paper {
+  background-color: white;
+  border-radius: 15px;
+  padding: 10px;
+  max-width: 600px;
+}
+
 @keyframes fading-waves {
   from {
     transform: scale(0.9);
@@ -616,6 +638,7 @@ form input[type="radio"] + label {
 
   section#navigation {
     width: 100%;
+    max-width: unset;
   }
 
   section#navigation ul {

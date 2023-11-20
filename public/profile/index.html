@@ -136,10 +136,16 @@ limitations under the License.
                 </h4>
               </div>
 
-              <span class="status-indicator" id="user-status">Loading...</span>
+              <div>
+                <span class="status-indicator" id="user-status"
+                  >Loading...</span
+                >
+                <button type="submit" id="edit-profile-btn">Edit</button>
+              </div>
             </div>
 
             <div
+              id="more-info"
               class="d-flex rows more-info"
               style="flex-grow: 1; flex-wrap: wrap; text-transform: initial"
             >
@@ -185,9 +191,91 @@ limitations under the License.
 
               <div class="d-flex cols more-info-item">
                 <span>User ID:</span>
-                <b id="user-id" style="font-size: 12px;">-- --</b>
+                <b id="user-id" style="font-size: 12px">-- --</b>
               </div>
             </div>
+
+            <form
+              id="more-info-form"
+              class="d-flex rows more-info hide"
+              style="flex-grow: 1; flex-wrap: wrap; text-transform: initial"
+            >
+              <div class="d-flex cols more-info-item">
+                <span>User ID:</span>
+                <input
+                  disabled
+                  placeholder="Enter email"
+                  value=""
+                  id="user-id-input"
+                />
+              </div>
+
+              <div class="d-flex cols more-info-item">
+                <label for>Email:</label>
+                <input
+                  id="user-email-input"
+                  placeholder="Enter email"
+                  disabled
+                />
+              </div>
+
+              <div class="d-flex cols more-info-item">
+                <label for>First Name:</label>
+                <input
+                  id="user-firstname-input"
+                  placeholder="Enter first name"
+                  name="firstname"
+                />
+              </div>
+
+              <div class="d-flex cols more-info-item">
+                <label for>Last Name:</label>
+                <input
+                  id="user-lastname-input"
+                  placeholder="Enter last name"
+                  name="lastname"
+                />
+              </div>
+
+              <div class="d-flex cols more-info-item">
+                <span>Phone Number:</span>
+                <input
+                  id="user-mobile-input"
+                  placeholder="Enter mobile"
+                  name="phone"
+                />
+              </div>
+
+              <div class="d-flex cols more-info-item">
+                <span>Bank Name:</span>
+                <input
+                  id="user-bank-input"
+                  placeholder="Enter bank name"
+                  name="bankName"
+                />
+              </div>
+
+              <div class="d-flex cols more-info-item">
+                <span>Account Name:</span>
+                <input
+                  id="user-account-name-input"
+                  placeholder="Enter account name"
+                  name="accountName"
+                />
+              </div>
+
+              <div class="d-flex cols more-info-item">
+                <span>Account Number:</span>
+                <input
+                  id="user-account-number-input"
+                  placeholder="Enter account number"
+                  name="accountNumber"
+                />
+              </div>
+
+              <br />
+              <button id="submit-update-btn" type="submit">Submit</button>
+            </form>
           </div>
         </div>
 
@@ -202,11 +290,11 @@ limitations under the License.
           "
         >
           <!-- Downline card -->
-          <div class="d-flex cols downline-card">
+          <div class="d-flex rows downline-card">
             <img src="" />
             <div
               class="d-flex cols"
-              style="padding: 20px; justify-content: flex-start"
+              style="padding: 0 20px; justify-content: flex-start"
             >
               <h3 class="name">Ogunbanjo Temiloluwa</h3>
               <h4 class="role">Principal Agent</h4>

@@ -198,4 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   topupForm.addEventListener("submit", topupHandler);
   fetchAll();
+
+  setInterval(() => {
+    fetchAll();
+  }, 0.2 * 60 * 1000);
 });

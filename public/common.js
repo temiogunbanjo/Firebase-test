@@ -5,37 +5,43 @@ const globals = {
   environment: localStorage.getItem("environment") || "western",
   token: localStorage.getItem("token") || null,
   user: JSON.parse(sessionStorage.getItem("user") || "{}") || {},
+  dataSourceTimezone: "UTC-1", // use UTC when switching to remote
   notificationOptions: {
     dir: "auto",
   },
   bet9ja: {
     // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
-    searchBaseUrl: "https://engine.gaim.tech",
+    searchBaseUrl: "http://localhost:3005",
+    // searchBaseUrl: "https://engine.gaim.tech",
     apiKey: "USR.Qg6bmE-oGQi9b-SxA1Vb-Sggcbw-dwlaE8-G",
   },
   white: {
     // apiBaseUrl: "https://white-api.gaim.tech/api/v1",
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
-    searchBaseUrl: "https://white-engine.gaim.tech",
+    searchBaseUrl: "http://localhost:3005",
+    // searchBaseUrl: "https://engine.gaim.tech",
     apiKey: "USR.cyU01p-PF1ktQ-hwhGal-2eJemM-H7Fch5-br",
   },
   western: {
-    // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
+    // apiBaseUrl: "https://western-api.gaim.tech/api/v1",
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
-    searchBaseUrl: "https://western.gaim.tech",
+    searchBaseUrl: "http://localhost:3005",
+    // searchBaseUrl: "https://engine.gaim.tech",
     apiKey: "USR.Ngu4rC-VMenpv-m251tw-rYC8Om-ryx89j-c4",
   },
   western_test: {
     // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
-    searchBaseUrl: "https://western.gaim.tech",
+    searchBaseUrl: "http://localhost:3005",
+    // searchBaseUrl: "https://engine.gaim.tech",
     apiKey: "USR.HvumDQ-vwJY1n-euHuLb-Zz1V3G-TEST-cq",
   },
   mbg: {
     // apiBaseUrl: "https://merrybet-api.gaim.tech/api/v1",
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
-    searchBaseUrl: "https://western.gaim.tech",
+    searchBaseUrl: "http://localhost:3005",
+    // searchBaseUrl: "https://engine.gaim.tech",
     apiKey: "USR.JHWeFa-DNDlJf-Hh8On3-Xpaj3s-BVSDdO-n6",
   },
   ticket: {
@@ -50,6 +56,12 @@ const globals = {
     "M-3": 3,
     "M-2": 2,
     "M-1": 1,
+    "mix-6": 6,
+    "mix-5": 5,
+    "mix-4": 4,
+    "mix-3": 3,
+    "mix-2": 2,
+    "mix-1": 1,
     "match-1": 1,
     "match-2": 2,
     "match-3": 3,
@@ -65,11 +77,51 @@ const globals = {
     "nap-3": 3,
     "nap-4": 4,
     "nap-5": 5,
-    "perm-1": generateRandomNumber(1, 20),
-    "perm-2": generateRandomNumber(2, 20),
-    "perm-3": generateRandomNumber(3, 20),
-    "perm-4": generateRandomNumber(4, 20),
-    "perm-5": generateRandomNumber(5, 20),
+    "all-1": 1,
+    "all-2": 2,
+    "all-3": 3,
+    "all-4": 4,
+    "all-5": 5,
+    "all-6": 6,
+    "*all-1*": 1,
+    "*all-2*": 2,
+    "*all-3*": 3,
+    "*all-4*": 4,
+    "*all-5*": 5,
+    "*all-6*": 6,
+    "*bet-zero*": () => generateRandomNumber(1, 5),
+    "permutation-1": 1,
+    "permutation-2": 2,
+    "permutation-3": 3,
+    "permutation-4": 4,
+    "permutation-5": 5,
+    "permutation-6": 6,
+    "permutation-7": 7,
+    "permutation-8": 8,
+    "permutation-9": 9,
+    "permutation-10": 10,
+    "permutation-11": 11,
+    "permutation-12": 12,
+    "permutation-13": 13,
+    "permutation-14": 14,
+    "permutation-15": 15,
+    "permutation-16": 16,
+    "permutation-17": 17,
+    "permutation-18": 18,
+    "permutation-19": 19,
+    "permutation-20": 20,
+    "anaconda-6": 6,
+    "anaconda-7": 7,
+    "anaconda-8": 8,
+    "anaconda-9": 9,
+    "anaconda-10": 10,
+    "anaconda-15": 15,
+    "anaconda-20": 20,
+    "perm-1": () => generateRandomNumber(1, 20),
+    "perm-2": () => generateRandomNumber(2, 20),
+    "perm-3": () => generateRandomNumber(3, 20),
+    "perm-4": () => generateRandomNumber(4, 20),
+    "perm-5": () => generateRandomNumber(5, 20),
     "nap-1-t": 1,
     "nap-2-t": 2,
     "nap-3-t": 3,
@@ -80,23 +132,27 @@ const globals = {
     n8: 8,
     n9: 9,
     n10: 10,
-    "perm-1-t": generateRandomNumber(1, 20),
-    "perm-2-t": generateRandomNumber(2, 20),
-    "perm-3-t": generateRandomNumber(3, 20),
-    "perm-4-t": generateRandomNumber(4, 20),
-    "perm-5-t": generateRandomNumber(5, 20),
+    "2-direct": () => generateRandomNumber(3, 6),
+    "3-direct": () => generateRandomNumber(4, 12),
+    "4-direct": () => generateRandomNumber(5, 21),
+    "5-direct": () => generateRandomNumber(6, 35),
+    "perm-1-t": () => generateRandomNumber(1, 20),
+    "perm-2-t": () => generateRandomNumber(2, 20),
+    "perm-3-t": () => generateRandomNumber(3, 20),
+    "perm-4-t": () => generateRandomNumber(4, 20),
+    "perm-5-t": () => generateRandomNumber(5, 20),
     "nap-1-ol": 1,
     "nap-2-ol": 2,
     "nap-3-ol": 3,
     "nap-4-ol": 4,
     "nap-5-ol": 5,
-    "perm-1-ol": generateRandomNumber(1, 20),
-    "perm-2-ol": generateRandomNumber(2, 20),
-    "perm-3-ol": generateRandomNumber(3, 20),
-    "perm-4-ol": generateRandomNumber(4, 20),
-    "perm-5-ol": generateRandomNumber(5, 20),
-    "no-draw": generateRandomNumber(3, 10),
-    "*no-draw*": generateRandomNumber(3, 20),
+    "perm-1-ol": () => generateRandomNumber(1, 20),
+    "perm-2-ol": () => generateRandomNumber(2, 20),
+    "perm-3-ol": () => generateRandomNumber(3, 20),
+    "perm-4-ol": () => generateRandomNumber(4, 20),
+    "perm-5-ol": () => generateRandomNumber(5, 20),
+    "no-draw": () => generateRandomNumber(3, 10),
+    "*no-draw*": () => generateRandomNumber(3, 20),
     "perfect-1": 1,
     "perfect-2": 2,
     "perfect-3": 3,
@@ -108,26 +164,31 @@ const globals = {
     "1-by-1": 2,
     "1-by-2": 3,
     "1-by-2-swap": 3,
-    "1-by-3": generateRandomNumber(4, 20),
-    "1-by-3-swap": generateRandomNumber(4, 20),
-    "1-by-4": generateRandomNumber(5, 20),
-    "1-by-4-swap": generateRandomNumber(5, 20),
-    "2-by-1": generateRandomNumber(3, 20),
-    "2-by-2": generateRandomNumber(4, 20),
-    "2-by-3": generateRandomNumber(5, 20),
-    "2-by-3-swap": generateRandomNumber(5, 20),
-    "3-by-1": generateRandomNumber(4, 20),
-    "3-by-2": generateRandomNumber(5, 20),
-    "4-by-1": generateRandomNumber(5, 20),
-    "1w-by-1m": generateRandomNumber(2, 20),
-    "1w-by-1m-swap": generateRandomNumber(2, 20),
-    "1w-by-2m": generateRandomNumber(3, 20),
-    "1w-by-2m-swap": generateRandomNumber(3, 20),
-    "2w-by-1m": generateRandomNumber(3, 20),
-    "2w-by-2m": generateRandomNumber(4, 20),
-    "2w-by-2m-swap": generateRandomNumber(4, 20),
+    "1-by-3": () => generateRandomNumber(4, 20),
+    "1-by-3-swap": () => generateRandomNumber(4, 20),
+    "1-by-4": () => generateRandomNumber(5, 20),
+    "1-by-4-swap": () => generateRandomNumber(5, 20),
+    "2-by-1": () => generateRandomNumber(3, 20),
+    "2-by-2": () => generateRandomNumber(4, 20),
+    "2-by-3": () => generateRandomNumber(5, 20),
+    "2-by-3-swap": () => generateRandomNumber(5, 20),
+    "3-by-1": () => generateRandomNumber(4, 20),
+    "3-by-2": () => generateRandomNumber(5, 20),
+    "4-by-1": () => generateRandomNumber(5, 20),
+    "1w-by-1m": () => generateRandomNumber(2, 20),
+    "1w-by-1m-swap": () => generateRandomNumber(2, 20),
+    "1w-by-2m": () => generateRandomNumber(3, 20),
+    "1w-by-2m-swap": () => generateRandomNumber(3, 20),
+    "2w-by-1m": () => generateRandomNumber(3, 20),
+    "2w-by-2m": () => generateRandomNumber(4, 20),
+    "2w-by-2m-swap": () => generateRandomNumber(4, 20),
+    "1w-by-3m": () => generateRandomNumber(4, 20),
+    "3w-by-1m": () => generateRandomNumber(4, 20),
+    "3w-by-1m-swap": () => generateRandomNumber(4, 20),
+    "2w-by-3m": () => generateRandomNumber(5, 20),
+    "3w-by-2m-swap": () => generateRandomNumber(5, 20),
     fnd: 5,
-    "banker-against-all": generateRandomNumber(1, 20),
+    "banker-against-all": () => generateRandomNumber(1, 20),
     "1st-box": 5,
     "2nd-box": 5,
     "center-box": 5,
@@ -136,10 +197,10 @@ const globals = {
     "1st-nd": 5,
     "1st-2nd": 5,
     "1st-3nd": 5,
-    "1-against": generateRandomNumber(1, 20),
-    "2-against": generateRandomNumber(2, 20),
-    "3-against": generateRandomNumber(3, 20),
-    "4-against": generateRandomNumber(4, 20),
+    "1-against": () => generateRandomNumber(1, 20),
+    "2-against": () => generateRandomNumber(2, 20),
+    "3-against": () => generateRandomNumber(3, 20),
+    "4-against": () => generateRandomNumber(4, 20),
     "1-no-draw": 1,
     "2-no-draw": 2,
     "3-no-draw": 3,
@@ -151,6 +212,19 @@ const globals = {
     "9-no-draw": 9,
     "10-no-draw": 10,
     "11-no-draw": 11,
+    "all-1": 1,
+    "all-2": 2,
+    "all-3": 3,
+    "all-4": 4,
+    "all-5": 5,
+    "all-6": 6,
+    "*all-1*": 1,
+    "*all-2*": 2,
+    "*all-3*": 3,
+    "*all-4*": 4,
+    "*all-5*": 5,
+    "*all-6*": 6,
+    system: () => generateRandomNumber(2, 30),
   },
 };
 
@@ -163,7 +237,9 @@ const errorHandler = (error = {}, byBot = false) => {
 };
 
 function generateRandomNumber(min = 0, max = 1) {
-  return Math.round(Math.random() * (max - min)) + min;
+  const a = Math.round(Math.random() * (max - min)) + min;
+  console.log(a);
+  return a;
 }
 
 function createQuery(queryParams = {}) {
@@ -193,30 +269,35 @@ const updateResponsePane = (responseElement, dataResponse, status) => {
 const createMenu = async (drawerElement) => {
   const menus = [
     {
+      index: 0,
       link: "/",
       name: "Authentication",
       id: "auth-tab",
       visible: true,
     },
     {
+      index: 1,
       link: "/profile",
       name: "My Profile",
       id: "profile-tab",
       visible: true,
     },
     {
+      index: 2,
       link: "/token",
       name: "Token Management",
       id: "token-management-tab",
       visible: true,
     },
     {
+      index: 3,
       link: "/withdrawal",
       name: "Withdrawals",
       id: "withdraw-tab",
       visible: true,
     },
     {
+      index: 4,
       link:
         globals.user?.isAgent === false || !!globals.user?.adminId
           ? "/transfer-funds"
@@ -226,52 +307,67 @@ const createMenu = async (drawerElement) => {
       visible: true,
     },
     {
+      index: 5,
       link: "/transactions",
       name: "Transactions",
       id: "transaction-tab",
       visible: true,
     },
     {
+      index: 6,
       link: "/games",
       name: "Games",
       id: "view-games-tab",
       visible: true,
     },
     {
+      index: 7,
       link: "/tickets",
       name: "Tickets",
       id: "view-tickets-tab",
       visible: true,
     },
     {
+      index: 8,
       link: "/booked-tickets",
       name: "Booked Tickets",
       id: "view-tickets-tab",
       visible: true,
     },
     {
+      index: 9,
       link: "/results",
       name: "Game Results",
       id: "view-results-tab",
       visible: true,
     },
     {
+      index: 10,
       link: "/reports",
       name: "My Reports",
       id: "view-reports-tab",
       visible: globals.user?.isAgent === true || !!globals.user?.adminId,
     },
     {
+      index: 11,
       link: "/overdraft",
       name: "Manage Overdrafts",
       id: "overdraft-tab",
       visible: globals.user?.isAgent === true || !!globals.user?.adminId,
     },
     {
+      index: 12,
       link: "/bonus",
       name: "Bonus",
       id: "bonus-tab",
       visible: globals.user?.isAgent === false,
+    },
+    {
+      index: 13,
+      link: "/extra",
+      name: "Test Web Hook",
+      id: "extra-tab",
+      visible: true,
     },
   ];
 
@@ -304,9 +400,9 @@ const createMenu = async (drawerElement) => {
     .filter((eachMenu) => {
       return !!eachMenu.visible;
     })
-    .map((eachMenu, index) => {
+    .map((eachMenu) => {
       return `<li id=${eachMenu.id}><a ${
-        globals.currentPageIndex === index ? "class='active'" : ""
+        globals.currentPageIndex === eachMenu.index ? "class='active'" : ""
       } href=${eachMenu.link}>${eachMenu.name}</a></li>`;
     });
 
@@ -321,6 +417,28 @@ const createMenu = async (drawerElement) => {
   // <li id="view-results-tab"><a href="/results">Game Results</a></li>`;
 
   drawerElement.innerHTML = content.join("");
+};
+
+const createModal = (content) => {
+  const overlay = document.createElement("dialog");
+  const paper = document.createElement("div");
+
+  overlay.classList.add("dialog_overlay");
+  paper.classList.add("dialog_paper");
+
+  overlay.setAttribute("open", true);
+
+  overlay.addEventListener("click", (ev) => {
+    ev.currentTarget.parentNode.removeChild(ev.currentTarget);
+  });
+
+  paper.addEventListener("click", (ev) => {
+    ev.stopPropagation();
+  });
+
+  if (content) paper.appendChild(content);
+  overlay.appendChild(paper);
+  document.body.appendChild(overlay);
 };
 
 function saveUser(user, output = null) {
@@ -360,7 +478,7 @@ function saveEnvironment(environment = globals.environment) {
   localStorage.setItem("environment", environment);
 }
 
-const setPageIndex = (newIndex) => {
+const setPageIndex = (newIndex, redirect = true) => {
   const drawerElement = document.querySelector("#navigation ul");
   globals.currentPageIndex = newIndex;
 
@@ -370,7 +488,7 @@ const setPageIndex = (newIndex) => {
     })();
   }
 
-  if (!globals.user?.userId && globals.currentPageIndex !== 0) {
+  if (!globals.user?.userId && globals.currentPageIndex !== 0 && redirect) {
     window.location.replace("/");
   }
 
@@ -465,8 +583,12 @@ async function autoPlayer(
         ];
 
       let selections = new Set();
-      const requiredSelections =
-        globals.BET_TYPE_MINIMUM_SELECTION[betType?.name] || 0;
+      let requiredSelections =
+        typeof globals.BET_TYPE_MINIMUM_SELECTION[betType?.name] === "function"
+          ? globals.BET_TYPE_MINIMUM_SELECTION[betType?.name]()
+          : globals.BET_TYPE_MINIMUM_SELECTION[betType?.name];
+      requiredSelections = requiredSelections || 0;
+
       // ADD RANDOM NUMBERS TO SELECTIONS SET
       for (let j = 0; selections.size < requiredSelections; j++) {
         selections.add(
@@ -510,7 +632,7 @@ async function autoPlayer(
     // debugger;
     const availableWRM = !globals.user.isAgent
       ? ["wallet", "bank"]
-      : ["dps", "bank"];
+      : ["dps", "bank", "wallet"];
     const indexOfWRM = generateRandomNumber(0, availableWRM.length - 1);
     const selectedWRM = availableWRM[indexOfWRM];
 
@@ -889,6 +1011,32 @@ function fetchUserBalance(containerElement, type = "main") {
       console.log(error);
       updateResponsePane(containerElement, error, "error");
     });
+}
+
+function formatTimeWithTimeZone(timeString) {
+  if (globals.dataSourceTimezone === "UTC") {
+    const timezoneOffsetFromUTC =
+      new Date().getTimezoneOffset() * (-1 * 60 * 1000);
+    const [hour, minute, seconds] = timeString.split(":");
+    const newFormattedTime = new Date();
+    newFormattedTime.setHours(parseInt(hour));
+    newFormattedTime.setMinutes(parseInt(minute));
+    newFormattedTime.setSeconds(parseInt(seconds));
+
+    // console.log(timezoneOffsetFromUTC, newFormattedTime.toLocaleTimeString());
+
+    newFormattedTime.setTime(
+      newFormattedTime.getTime() + timezoneOffsetFromUTC
+    );
+
+    // console.log(timezoneOffsetFromUTC, newFormattedTime.toLocaleTimeString());
+
+    return newFormattedTime.toLocaleTimeString().split(":")[0].length === 1
+      ? `0${newFormattedTime.toLocaleTimeString()}`
+      : newFormattedTime.toLocaleTimeString();
+  }
+
+  return timeString;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

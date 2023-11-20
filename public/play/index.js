@@ -33,15 +33,15 @@ function fetchAndSaveUser(token) {
     globals[globals.environment].apiBaseUrl
   }/auth/validate-token?token=${token}`;
 
-  fetch(apiUrl, {
+  fetchAPI({
+    url: apiUrl,
     headers: {
       "Content-Type": "application/json;charset=utf-8",
       "x-api-key": globals[globals.environment].apiKey,
     },
   })
-    .then(async (response) => {
+    .then(async (result) => {
       try {
-        const result = await response.json();
         const { status } = result;
 
         if (result && result.data) {
@@ -221,18 +221,28 @@ function populateGameArea(game) {
 
   overOptions.unshift("");
   overOptions.forEach((each) => {
+    const name = typeof each === "object" ? each?.name : each;
+    const value = typeof each === "object" ? each?.value : each;
+    const formattedNamePrefix = name.split(' ')?.[1]?.replace(/[)(]/gi, '') || '';
+
     const option = document.createElement("option");
-    option.setAttribute("value", each);
-    option.textContent = each;
+    option.setAttribute("value", value);
+    option.setAttribute("data-prefix", formattedNamePrefix);
+    option.textContent = name;
 
     overSelectionMenu.appendChild(option);
   });
 
   underOptions.unshift("");
   underOptions.forEach((each) => {
+    const name = typeof each === "object" ? each?.name : each;
+    const value = typeof each === "object" ? each?.value : each;
+    const formattedNamePrefix = name.split(' ')?.[1]?.replace(/[)(]/gi, '') || '';
+
     const option = document.createElement("option");
-    option.setAttribute("value", each);
-    option.textContent = each;
+    option.setAttribute("value", value);
+    option.setAttribute("data-prefix", formattedNamePrefix);
+    option.textContent = name;
 
     underSelectionMenu.appendChild(option);
   });
@@ -538,6 +548,7 @@ document.addEventListener("DOMContentLoaded", () => {
         booster: boosterSelectionMenu.value,
         resultType: resultTypeSelectionMenu.value,
         overUnder: (() => {
+          console.log(overSelectionMenu);
           if (overSelectionMenu.value !== "") {
             return {
               over: overSelectionMenu.value,

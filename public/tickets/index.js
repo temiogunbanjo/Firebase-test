@@ -1,9 +1,100 @@
 let currentPage = 1;
 
 const bankNameTable = {
-  '058': "Guaranty Trust Bank",
-  '044': 'Access Bank'
-}
+  "058": "Guaranty Trust Bank",
+  "044": "Access Bank",
+};
+
+const showResults = (results, category) => {
+  const numberColors = {
+    'six49': {
+      ballCount: 49,
+      colors: ["red", "yellow", "blue"],
+      getBallColor(number) {
+        if (number === this.ballCount) return "black";
+        let b = 1;
+        const a = Array.from({ length: this.ballCount - 1 }, () => b++);
+
+        for (let i = 0; i < a.length; i++) {
+          const element = a[i];
+          const overShoot = Math.floor(i / this.colors.length);
+          const colorIndex = overShoot >= 1 ? i - this.colors.length * overShoot : i;
+          if (element === number) return this.colors[colorIndex];
+        };
+      }
+    },
+    'lotto-continental': {
+      ballCount: 90,
+      colors: ["red", "blue", "purple", "green", "crimson", "gold", "cyan", "rebeccapurple"],
+      getBallColor(_, i) {
+        switch (true) {
+          case i >= 0 && i < 5:
+            return this.colors[0];
+
+          case i >= 5 && i < 10:
+            return this.colors[1];
+
+          case i >= 10 && i < 15:
+            return this.colors[2];
+
+          case i >= 15 && i < 20:
+            return this.colors[3];
+
+          case i >= 20 && i < 25:
+            return this.colors[4];
+
+          case i >= 25 && i < 30:
+            return this.colors[5];
+
+          case i >= 30 && i < 35:
+            return this.colors[6];
+
+          case i >= 35 && i < 40:
+            return this.colors[7];
+        
+          default:
+            return this.colors[i];
+        }
+      }
+    },
+    '5of90': {
+      ballCount: 90,
+      colors: ["red", "cyan", "blue", "green", "crimson", "gold"],
+      getBallColor(_, i) {
+        switch (true) {
+          case i >= 0 && i < 5:
+            return this.colors[0];
+
+          case i >= 5 && i < 10:
+            return this.colors[1];
+
+          case i >= 10 && i < 15:
+            return this.colors[2];
+
+          case i >= 15 && i < 20:
+            return this.colors[3];
+
+          case i >= 20 && i < 25:
+            return this.colors[4];
+        
+          default:
+            return this.colors[i];
+        }
+      }
+    }
+  }
+
+  results = results.split("-").map((e, i) => {
+    const color = numberColors?.[category]?.getBallColor(Number(e), i);
+    return `<span style="font-size: 28px; font-weight: 800; color: ${color}; text-shadow: 1px 1px 3px #999">${e}</span>`;
+  });
+
+  console.log(results, category);
+  const content = document.createElement("div");
+  content.setAttribute("style", "font-size: 28px; font-weight: 700; padding: 10px; display: flex; flex-direction: row; justify-content: center; align-items:center; flex-wrap: wrap; max-width: 100%")
+  content.innerHTML = results.join("-");
+  createModal(content);
+};
 
 function createTicketCard(ticket) {
   const bankDetails = ticket.details ? JSON.parse(ticket.details) : {};
@@ -52,7 +143,11 @@ function createTicketCard(ticket) {
               <details style="margin-top: 0.6em; font-size: 14px">
                 <summary style="color: dodgerblue">Bank Info</summary>
                 <p class="d-flex cols" style="background-color: dodgerblue; color: white; padding: 10px;border-radius: 5px;">
-                  <span>Bank Code: ${bankNameTable[bankDetails?.bankCode] || bankDetails?.bankCode || '--'}</span>
+                  <span>Bank Code: ${
+                    bankNameTable[bankDetails?.bankCode] ||
+                    bankDetails?.bankCode ||
+                    "--"
+                  }</span>
                   <span>Account Number: ${bankDetails?.accountNumber}</span>
                   <span>Account Name: ${bankDetails?.accountName}</span>
                 </p>
@@ -118,6 +213,20 @@ function createTicketCard(ticket) {
             <span class="ticket-label">Total Win Amount:</span>
             <span class="ticket-value">${ticket.totalWinAmount || "–"}</span>
           </p>
+          ${
+            !!ticket.unclaimedWinning
+              ? `
+              <details style="margin-top: 0.6em; font-size: 14px">
+                <summary style="color: dodgerblue">Bank Info</summary>
+                <p class="d-flex cols" style="background-color: dodgerblue; color: white; padding: 10px;border-radius: 5px;">
+                  <span>Unclaimed DPS Winning: ${
+                    ticket.unclaimedWinning || "--"
+                  }</span>
+                </p>
+              </details>
+              `
+              : ""
+          }
           <p class="d-flex rows align-items-center" style="justify-content:space-between">
             <span class="ticket-label">Status:</span>
             <span class="ticket-value">
@@ -144,7 +253,7 @@ function createTicketCard(ticket) {
           }
           ${
             !!ticket.Gameresult
-              ? `<div class="d-flex bg-orange" style="flex-direction: column; border-radius: 8px; padding: 10px; color: white">
+              ? `<div class="d-flex bg-orange" style="flex-direction: column; border-radius: 8px; padding: 10px; color: white" onclick="showResults('${ticket.Gameresult?.results}', '${ticket.Game?.Lottery?.category}')">
                   <div class="fw-700" style="line-height: 1.5">Results:</div>
                   <div>${ticket.Gameresult?.results}</div>
                 </div>`
@@ -192,7 +301,7 @@ async function deleteTicket(ticketId) {
   try {
     const result = await fetchAPI({
       url: apiUrl,
-      method: "delete"
+      method: "delete",
     });
 
     // const result = await response.json();
