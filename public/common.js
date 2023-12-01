@@ -186,6 +186,7 @@ const globals = {
     "3w-by-1m": () => generateRandomNumber(4, 20),
     "3w-by-1m-swap": () => generateRandomNumber(4, 20),
     "2w-by-3m": () => generateRandomNumber(5, 20),
+    "3w-by-2m": () => generateRandomNumber(5, 20),
     "3w-by-2m-swap": () => generateRandomNumber(5, 20),
     fnd: 5,
     "banker-against-all": () => generateRandomNumber(1, 20),
@@ -238,7 +239,7 @@ const errorHandler = (error = {}, byBot = false) => {
 
 function generateRandomNumber(min = 0, max = 1) {
   const a = Math.round(Math.random() * (max - min)) + min;
-  console.log(a);
+  // console.log(a);
   return a;
 }
 
