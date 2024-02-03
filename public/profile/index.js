@@ -87,6 +87,7 @@ function viewUserProfile() {
   const limitElement = document.querySelector("#user-daily-limit");
   const multiplierElement = document.querySelector("#user-multiplier");
   const refCodeElement = document.querySelector("#user-ref-code");
+  const commissionEarningTypeElement = document.querySelector("#user-earn-type");
 
   const editBtn = document.querySelector("#edit-profile-btn");
 
@@ -149,6 +150,7 @@ function viewUserProfile() {
           limitElement.innerHTML = data?.dailyLimit || "-- --";
           multiplierElement.innerHTML = data?.multiplier || "-- --";
           refCodeElement.innerHTML = data?.referralCode || "-- --";
+          commissionEarningTypeElement.innerHTML = data?.commissionEarningType || "-- --";
 
           downlinesContainer.innerHTML = data?.downlines
             ?.map((downline) => {

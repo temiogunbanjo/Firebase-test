@@ -6,16 +6,7 @@ const getEnvironmentNamespace = () => {
   return globals.environment;
 };
 
-const socketUrl = `${
-  globals[globals.environment].searchBaseUrl
-}/${getEnvironmentNamespace()}`;
 const jwtToken = window.localStorage.getItem("token");
-
-const socket = io(socketUrl, {
-  auth: {
-    token: jwtToken,
-  },
-});
 
 const createPageResponse = (message) => {
   if (document.readyState === "complete") {
@@ -44,6 +35,16 @@ const createInfoResponse = (connected = true, message = null) => {
     pageContent.appendChild(response);
   }
 };
+
+const socketUrl = `${
+  globals[globals.environment].searchBaseUrl
+}/${getEnvironmentNamespace()}`;
+
+const socket = io(socketUrl, {
+  auth: {
+    token: jwtToken,
+  },
+});
 
 socket.on("connect", () => {
   createInfoResponse(true);
@@ -75,6 +76,8 @@ socket.on("NEW_GAME_RESULT", (data) => {
   }
 });
 
+socket.on("PING_CLIENT", (res) => {});
+
 socket.on("disconnect", (reason) => {
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
@@ -82,7 +85,6 @@ socket.on("disconnect", (reason) => {
   }
   createInfoResponse(false);
 });
-
 
 document.addEventListener("DOMContentLoaded", () => {
   setPageIndex(13, false);
@@ -93,5 +95,24 @@ document.addEventListener("DOMContentLoaded", () => {
   queryString.split("&").forEach((each) => {
     const [key, value] = each.split("=");
     queryParams[key] = value;
+  });
+
+  const pingBtn = document.querySelector("#ping-btn");
+  pingBtn.addEventListener("click", () => {
+    // IMPLEMENTATION
+    const url = `${
+      globals[globals.environment].apiBaseUrl
+    }/user/update-activity-status`;
+
+    const payload = {
+      activityStatus: "online",
+    };
+
+    const headers = {
+      authorization: `Bearer ${jwtToken}`,
+      "x-api-key": `${globals[globals.environment].apiKey}`,
+    };
+
+    socket.emit("PING_SERVER", url, "put", payload, headers);
   });
 });

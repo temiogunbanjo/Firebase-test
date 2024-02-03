@@ -83,7 +83,7 @@ const updateUI = () => {
   updateSelectionArea();
 };
 
-function populateGameArea(game) {
+function populateEventArea(event) {
   const ballContainer = document.getElementById("ball-container");
   const gameTitle = document.getElementById("game-name");
   const poolBarSection = document.getElementById("pool-bar-section");
@@ -93,15 +93,15 @@ function populateGameArea(game) {
   const overSelectionMenu = document.getElementById("over-type-selector");
   const underSelectionMenu = document.getElementById("under-type-selector");
 
-  const { name, lotteryId, gameId, currentPoolAmount, totalFundPool } = game;
-  const { gameCount, category } = game.Lottery;
+  const { name, lotteryId, gameId, currentPoolAmount, totalFundPool } = event;
+  const { gameCount, category } = event.Lottery;
   let {
     betOptions = "[]",
     boosterOptions = "[]",
     resultOptions = "[]",
     overOptions = "[]",
     underOptions = "[]",
-  } = game.Lottery;
+  } = event.Lottery;
 
   betOptions = JSON.parse(betOptions);
   boosterOptions = JSON.parse(boosterOptions);
@@ -219,7 +219,8 @@ function populateGameArea(game) {
   overOptions.forEach((each) => {
     const name = typeof each === "object" ? each?.name : each;
     const value = typeof each === "object" ? each?.value : each;
-    const formattedNamePrefix = name.split(' ')?.[1]?.replace(/[)(]/gi, '') || '';
+    const formattedNamePrefix =
+      name.split(" ")?.[1]?.replace(/[)(]/gi, "") || "";
 
     const option = document.createElement("option");
     option.setAttribute("value", value);
@@ -233,7 +234,8 @@ function populateGameArea(game) {
   underOptions.forEach((each) => {
     const name = typeof each === "object" ? each?.name : each;
     const value = typeof each === "object" ? each?.value : each;
-    const formattedNamePrefix = name.split(' ')?.[1]?.replace(/[)(]/gi, '') || '';
+    const formattedNamePrefix =
+      name.split(" ")?.[1]?.replace(/[)(]/gi, "") || "";
 
     const option = document.createElement("option");
     option.setAttribute("value", value);
@@ -244,10 +246,10 @@ function populateGameArea(game) {
   });
 }
 
-function fetchGameData(gameId) {
+function fetchEventData(eventId) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-game/${gameId}`;
+  }/game/fetch-event/${eventId}`;
 
   fetchAPI({
     url: apiUrl,
@@ -259,9 +261,9 @@ function fetchGameData(gameId) {
 
         if (result && result.data) {
           const { data } = result?.data;
-          globals.ticket.gameId = data.gameId;
+          globals.ticket.eventId = data.eventId;
           globals.ticket.lotteryId = data.lotteryId;
-          populateGameArea(data);
+          populateEventArea(data);
         }
       } catch (error) {
         errorHandler(error);
@@ -324,7 +326,7 @@ function createTicket(ticket, byBot = false) {
 
           // globals.ticket.gameId = data.gameId;
           // globals.ticket.lotteryId = data.lotteryId;
-          // populateGameArea(data);
+          // populateEventArea(data);
         }
       } catch (error) {
         errorHandler(error);
@@ -341,9 +343,7 @@ function createTicket(ticket, byBot = false) {
 }
 
 function saveTicket(ticket, byBot = false) {
-  const apiUrl = `${
-    globals[globals.environment].apiBaseUrl
-  }/game/save-ticket`;
+  const apiUrl = `${globals[globals.environment].apiBaseUrl}/game/save-ticket`;
 
   const body = {
     gameId: ticket.gameId,
@@ -384,7 +384,9 @@ function saveTicket(ticket, byBot = false) {
             updateUI();
 
             if (!byBot) {
-              alert(`Ticket saved succesfully.Use booking code: ${data.bookingCode}`);
+              alert(
+                `Ticket saved succesfully.Use booking code: ${data.bookingCode}`
+              );
             } else {
               console.log("Ticket saved succesfully");
             }
@@ -458,15 +460,14 @@ function start() {
 
   const queryString = window.location.search.replace("?", "");
   if (!globals.token || !queryString) {
-    window.location.replace("/");
+    window.location.replace("/sports");
   } else {
     const queryParams = getQueryParams(queryString);
-    console.log({ query: queryParams });
 
-    if (queryParams.gameId) {
-      fetchGameData(queryParams.gameId);
+    if (queryParams.eventId) {
+      fetchEventData(queryParams.eventId);
     } else {
-      alert("No game ID");
+      alert("No event ID");
     }
   }
 

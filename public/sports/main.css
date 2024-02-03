@@ -18,23 +18,43 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,800;1,400;1,600;1,800&display=swap");
 
 * {
-  /* color: goldenrod; */
   box-sizing: border-box;
 }
 
 html,
 body {
+  --primary-color: green;
+  --primary-color-light: rgb(128, 248, 128);
   padding: 0;
   margin: 0;
   font-family: Nunito, Montserrat, Roboto, "Helvetica", sans-serif;
 }
+
+header {
+  /* min-height: 300px; */
+  background-color: var(--primary-color);
+  color: white;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h3 {
+  background: url("../firebase-logo.png") no-repeat;
+  background-size: 40px;
+  padding-left: 50px;
+  display: inline-block;
+  /* color: white; */
+}
+
 a {
   text-decoration: none;
 }
+
 li a {
   text-decoration: underline;
   color: #0288d1;
 }
+
 .mdl-grid {
   max-width: 1024px;
   margin: auto;
@@ -42,10 +62,12 @@ li a {
 .mdl-layout__header-row {
   padding: 0;
 }
+
 .quickstart-user-details-container {
   margin-top: 20px;
   line-height: 25px;
 }
+
 #quickstart-sign-in-status {
   font-weight: bold;
 }
@@ -57,19 +79,12 @@ code {
   white-space: pre-wrap;
   word-break: break-all;
 }
-header h3 {
-  background: url("./firebase-logo.png") no-repeat;
-  background-size: 40px;
-  padding-left: 50px;
-  display: inline-block;
-  /* color: white; */
-}
 
 .input-error {
   border: 1px solid red !important;
 }
 
-#notice{
+#notice {
   /* margin-top: 5px; */
   /* margin-bottom: 5px; */
   border-radius: 5px;
@@ -83,14 +98,6 @@ header h3 {
   display: none;
 }
 
-.advertisement {
-  background-image: url(./istockphoto-1411399462-612x612.jpeg);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: left;
-  flex-wrap: wrap;
-}
-
 .toggle-switch {
   appearance: none;
   width: 40px;
@@ -98,11 +105,10 @@ header h3 {
   background-color: white;
   border-radius: 5vh;
   position: relative;
-
 }
 
-.toggle-switch::after{
-  content: '';
+.toggle-switch::after {
+  content: "";
   position: absolute;
   width: 21px;
   height: 21px;
@@ -120,7 +126,7 @@ header h3 {
   background-color: rgba(78, 195, 78, 0.9);
 }
 
-.toggle-switch:checked::after{
+.toggle-switch:checked::after {
   left: calc(100% - 21px);
   /* background-image: radial-gradient(rgba(0, 0, 0, 0) 65%, rgba(0, 0, 0, 0.2)); */
   box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.15);
@@ -183,11 +189,6 @@ header h3 {
 
 .cols {
   flex-direction: column;
-}
-
-.center {
-  align-items: center;
-  justify-content: center;
 }
 
 .align-items-center {
@@ -284,14 +285,12 @@ header h3 {
   font-weight: 700;
 }
 
-header {
-  /* min-height: 300px; */
-  background-color: dodgerblue;
-  color: white;
-}
-
 button {
   cursor: pointer;
+}
+
+button[disabled] {
+  cursor: not-allowed;
 }
 
 section#navigation {
@@ -309,7 +308,7 @@ section#navigation ul {
   font-weight: 600;
 } */
 
-section#navigation ul li a{
+section#navigation ul li a {
   text-decoration: none;
   color: black;
   display: block;
@@ -318,13 +317,13 @@ section#navigation ul li a{
 }
 
 section#navigation ul li a.active {
-  background-color: dodgerblue;
+  background-color: var(--primary-color);
   color: white;
 }
 
-section#navigation ul li a:hover{
-  background-color: red;
-  color: white;
+section#navigation ul li a:hover {
+  background-color: var(--primary-color-light);
+  color: black;
 }
 
 #navigation-content {
@@ -338,13 +337,16 @@ section#navigation ul li a:hover{
   display: none !important;
 }
 
-summary#token-controls {
-  background-color: dodgerblue;
+summary {
+  background-color: white;
   color: white;
   padding: 0.5rem;
 }
 
-form input, form select {
+form input,
+form select,
+.custom-select,
+form textarea {
   background-color: #f3f3f5;
   border: none;
   padding: 1rem;
@@ -363,23 +365,14 @@ form button[type="submit"],
   border: none;
 }
 
-.custom-button:disabled {
-  opacity: 0.3;
-  cursor: no-drop;
-}
-
 .custom-button.danger {
   background-color: red;
 }
 
-.custom-button.orange {
-  background-color: orange;
-}
-
 .custom-button.outlined {
-  border: 2px solid dodgerblue;
+  border: 2px solid var(--primary-color);
   background-color: transparent;
-  color: dodgerblue;
+  color: var(--primary-color);
 }
 
 form input[type="radio"] + label {
@@ -389,7 +382,7 @@ form input[type="radio"] + label {
 
 .response-pane {
   min-height: 100px;
-  max-height: 400px;
+  max-height: 600px;
   padding: 20px;
   border-radius: 5px;
   background-color: #223;
@@ -626,6 +619,7 @@ dialog[open] {
   max-width: 600px;
 }
 
+
 @keyframes fading-waves {
   from {
     transform: scale(0.9);
@@ -635,37 +629,5 @@ dialog[open] {
   to {
     transform: scale(1.5);
     opacity: 0;
-  }
-}
-
-/* For all mobile users only */
-@media only screen and (max-width:799px){
-  main {
-    flex-direction: column !important;
-  }
-
-  section#navigation {
-    width: 100%;
-    max-width: unset;
-  }
-
-  section#navigation ul {
-    display: flex;
-    flex-direction: row !important;
-    list-style-type: none;
-    align-items: stretch;
-    overflow: auto;
-    padding: 0;
-    /* border: 1px solid red; */
-  }
-
-  section#navigation ul li a{
-    text-align: center;
-    background-color: #eee;
-    margin: 0 5px;
-    white-space: nowrap;
-    border-radius: 10px;
-    overflow-x: hidden;
-    height: 100%;
   }
 }

@@ -140,13 +140,22 @@ limitations under the License.
                 placeholder="Confirm Password"
                 required
               />
+
               <select name="role" id="user-role">
                 <option value="">-- select role --</option>
                 <option value="player">Player</option>
+                <option value="virtualagent">Virtual Agent</option>
+                <option value="influencer">Influencer</option>
                 <option value="principalagent">Principal Agent</option>
                 <option value="superagent">Super Agent</option>
                 <option value="ordinaryagent">Ordinary Agent</option>
                 <option value="cashier">Cashier</option>
+              </select>
+
+              <select name="commissionEarningType" id="commissionEarningType">
+                <option value="">-- select commission earning style --</option>
+                <option value="stake-based">Based on Stake</option>
+                <option value="winning-based">Based on Winnings</option>
               </select>
 
               <input

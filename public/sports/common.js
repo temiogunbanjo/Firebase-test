@@ -283,23 +283,9 @@ const createMenu = async (drawerElement) => {
   const menus = [
     {
       index: 0,
-      link: "/",
+      link: "/sports",
       name: "Authentication",
       id: "auth-tab",
-      visible: true,
-    },
-    {
-      index: 1,
-      link: "/profile",
-      name: "My Profile",
-      id: "profile-tab",
-      visible: true,
-    },
-    {
-      index: 2,
-      link: "/token",
-      name: "Token Management",
-      id: "token-management-tab",
       visible: true,
     },
     {
@@ -307,16 +293,6 @@ const createMenu = async (drawerElement) => {
       link: "/withdrawal",
       name: "Withdrawals",
       id: "withdraw-tab",
-      visible: true,
-    },
-    {
-      index: 4,
-      link:
-        globals.user?.isAgent === false || !!globals.user?.adminId
-          ? "/transfer-funds"
-          : "/#",
-      name: "Transfers",
-      id: "transfer-tab",
       visible: true,
     },
     {
@@ -328,45 +304,31 @@ const createMenu = async (drawerElement) => {
     },
     {
       index: 6,
-      link: "/games",
-      name: "Games",
+      link: "/sports/leagues",
+      name: "Leagues",
       id: "view-games-tab",
       visible: true,
     },
     {
       index: 7,
-      link: "/tickets",
+      link: "/sports/tickets",
       name: "Tickets",
       id: "view-tickets-tab",
       visible: true,
     },
-    {
-      index: 8,
-      link: "/booked-tickets",
-      name: "Booked Tickets",
-      id: "view-tickets-tab",
-      visible: true,
-    },
+    // {
+    //   index: 8,
+    //   link: "/booked-tickets",
+    //   name: "Booked Tickets",
+    //   id: "view-tickets-tab",
+    //   visible: true,
+    // },
     {
       index: 9,
-      link: "/results",
+      link: "/sports/results",
       name: "Game Results",
       id: "view-results-tab",
       visible: true,
-    },
-    {
-      index: 10,
-      link: "/reports",
-      name: "My Reports",
-      id: "view-reports-tab",
-      visible: globals.user?.isAgent === true || !!globals.user?.adminId,
-    },
-    {
-      index: 11,
-      link: "/overdraft",
-      name: "Manage Overdrafts",
-      id: "overdraft-tab",
-      visible: globals.user?.isAgent === true || !!globals.user?.adminId,
     },
     {
       index: 12,
@@ -381,13 +343,6 @@ const createMenu = async (drawerElement) => {
       name: "Test Web Hook",
       id: "extra-tab",
       visible: true,
-    },
-    {
-      index: 14,
-      link: "/sports",
-      name: "Sports",
-      id: "sport-tab",
-      visible: globals.environment === 'western',
     },
   ];
 
@@ -1060,73 +1015,73 @@ function formatTimeWithTimeZone(timeString) {
 }
 
 // When the user loads page
-// window.addEventListener("load", () => {
-//   document.title = "Ready";
+window.addEventListener("load", () => {
+  document.title = "Ready";
 
-//   if (globals.user) {
-//     const apiUrl = `${
-//       globals[globals.environment].apiBaseUrl
-//     }/user/update-activity-status`;
+  if (globals.user) {
+    const apiUrl = `${
+      globals[globals.environment].apiBaseUrl
+    }/user/update-activity-status`;
 
-//     fetchAPI({
-//       url: apiUrl,
-//       method: "PUT",
-//       data: {
-//         activityStatus: "online",
-//       },
-//     }).then((result) => {
-//       console.log(JSON.stringify(result));
-//     });
-//   }
-// });
+    fetchAPI({
+      url: apiUrl,
+      method: "PUT",
+      data: {
+        activityStatus: "online",
+      },
+    }).then((result) => {
+      console.log(JSON.stringify(result));
+    });
+  }
+});
 
 // when the user loses focus
-// window.addEventListener("blur", () => {
-//   document.title = "Breakup";
+window.addEventListener("blur", () => {
+  document.title = "Breakup";
 
-//   if (globals.user) {
-//     const startTime = Date.now();
+  if (globals.user) {
+    const startTime = Date.now();
 
-//     const a = setTimeout(() => {
-//       if (Date.now() - startTime > 3000) {
-//         const apiUrl = `${
-//           globals[globals.environment].apiBaseUrl
-//         }/user/update-activity-status`;
+    const a = setTimeout(() => {
+      if (Date.now() - startTime > 3000) {
+        const apiUrl = `${
+          globals[globals.environment].apiBaseUrl
+        }/user/update-activity-status`;
 
-//         fetchAPI({
-//           url: apiUrl,
-//           method: "PUT",
-//           data: {
-//             activityStatus: "offline",
-//           },
-//         }).then((result) => {
-//           console.log(JSON.stringify(result));
-//         });
-//       }
-//     }, 3000);
-//   }
-// });
+        fetchAPI({
+          url: apiUrl,
+          method: "PUT",
+          data: {
+            activityStatus: "offline",
+          },
+        }).then((result) => {
+          console.log(JSON.stringify(result));
+        });
+      }
+    }, 3000);
+  }
+});
 
 // when the user's focus is back to your tab (website) again
-// window.addEventListener("focus", () => {
-//   document.title = "Patch Up";
+window.addEventListener("focus", () => {
+  document.title = "Patch Up";
 
-//   if (globals.user) {
-//     const apiUrl = `${
-//       globals[globals.environment].apiBaseUrl
-//     }/user/update-activity-status`;
+  if (globals.user) {
+    const apiUrl = `${
+      globals[globals.environment].apiBaseUrl
+    }/user/update-activity-status`;
 
-//     fetchAPI({
-//       url: apiUrl,
-//       method: "PUT",
-//       data: {
-//         activityStatus: "online",
-//       },
-//     }).then((result) => {
-//       console.log(JSON.stringify(result));
-//     });
-//   }
-// });
+    fetchAPI({
+      url: apiUrl,
+      method: "PUT",
+      data: {
+        activityStatus: "online",
+      },
+    }).then((result) => {
+      console.log(JSON.stringify(result));
+    });
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   globals.user = JSON.parse(sessionStorage.getItem("user"));

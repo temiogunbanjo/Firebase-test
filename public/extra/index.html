@@ -27,7 +27,7 @@ limitations under the License.
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
     <link rel="stylesheet" href="../main.css" />
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="index.css" />
     <link rel="manifest" href="../manifest.json" />
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="../common.js"></script>
@@ -44,15 +44,59 @@ limitations under the License.
     <main class="d-flex rows">
       <!-- Container for the Table of content -->
       <section id="navigation" class="w-30">
-        <ul>
-        </ul>
+        <ul></ul>
       </section>
 
-      <section id="navigation-content" style="flex-grow: 1">
+      <section id="navigation-content" class="d-flex cols" style="flex-grow: 1">
+        <aside
+          class="d-flex rows align-items-center advertisement"
+          style="
+            justify-content: space-between;
+            background-color: #222;
+            padding: 2rem 3rem 2rem 2rem;
+            color: white;
+            position: relative;
+          "
+        >
+          <span
+            style="
+              position: absolute;
+              top: 0;
+              right: 0;
+              color: dodgerblue;
+              font-size: 12px;
+              padding: 3px 5px;
+              background-color: rgba(255, 255, 255, 0.1);
+            "
+            >Advertisement</span
+          >
+          <div class="d-flex cols">
+            <h2
+              style="
+                margin-top: 0.5rem;
+                margin-bottom: 0.5rem;
+                letter-spacing: 2px;
+              "
+            >
+              PING THE SERVER
+            </h2>
+            <span style="color: crimson; font-size: 12px"
+              >A new feature for your experience blah blah blah...</span
+            >
+          </div>
+
+          <div class="d-flex cols align-items-center" style="margin: 1.5rem 0">
+            <!-- <label
+              for="autoplay-switch"
+              style="font-size: 13px; margin-right: 5px"
+            >
+              Turn on Auto-Play?
+            </label> -->
+            <button id="ping-btn" class="btn custom-button">Ping</button>
+          </div>
+        </aside>
         <div id="notice" class="hide"></div>
-        <div id="view-extra-tab-content" class="navigation-content">
-          
-        </div>
+        <div id="view-extra-tab-content" class="navigation-content"></div>
       </section>
     </main>
   </body>
