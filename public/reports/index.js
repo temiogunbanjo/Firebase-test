@@ -5,7 +5,7 @@ function viewReports() {
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/agent/fetch-sales-report?interval=weekly`;
+  }/user/fetch-virtual-agent-sales-report?interval=weekly`;
 
   fetchAPI({
     url: apiUrl,

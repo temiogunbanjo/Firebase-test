@@ -13,41 +13,53 @@ section#navigation {
     min-width: 200px;
 }
 
-#ball-container {
+#event-container {
   flex-wrap: wrap;
   padding: 10px;
   padding-left: 0;
+  max-height: 700px;
+  overflow-y: auto;
 }
 
-#ball-container + aside {
+#event-container + aside {
   border-left: 2px solid black;
 }
 
-.ball {
+#event-container .event {
   cursor: pointer;
+  margin: 6px;
+  border-radius: 8px;
+  flex-grow: 1;
+  /* border: 1px solid #d0d0d0; */
+  background-color: white;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+#event-container .event button{
+  border: none;
   margin: 2px;
-  width: 45px;
-  height: 45px;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border-radius: 5px;
   background-image: radial-gradient(
     rgba(0, 0, 0, 0.05) 30%,
     rgba(0, 0, 0, 0.2)
   );
-  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-#ball-container .ball {
-  margin: 4px;
-}
-
-.ball:hover {
-  background-color: rgb(22, 78, 176);
+#event-container .event button:hover{
   transform: scale(1.1);
+  background-color: rgb(22, 78, 176);
+  color: white;
   box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.2);
 }
 
-.ball.selected {
-    background-color: maroon;
+#event-container .event button.selected{
+  color: white;
+  background-color: maroon;
 }
 
 #selection-area {

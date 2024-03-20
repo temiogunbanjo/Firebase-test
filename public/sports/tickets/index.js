@@ -132,7 +132,7 @@ function createTicketCard(ticket) {
           <p>
             <span class="ticket-label">Product Info:</span>
             <span class="ticket-value" style="text-transform: capitalize;">${
-              ticket.Product?.title
+              ticket.Product?.title || ""
             } (${ticket.Product?.platform})</span>
           </p>
           <p>
@@ -172,9 +172,8 @@ function createTicketCard(ticket) {
 
               return `
                   <div class="ticket-slip ${slipWinStatusClass}" style="line-height: 1.3">
-                    ${slip.betType} / ${slip.Event.title} / ${
-                slip.resultType
-              } – N${parseFloat(slip.amount).toFixed(2)}
+                    ${slip.betType} / ${slip.Event.title}
+               – N${parseFloat(slip.amount).toFixed(2)}
                     <br/>
                     (${slip.linesCount} lines) => ${slip.status}
                     ${
@@ -238,12 +237,7 @@ function createTicketCard(ticket) {
           ${
             ticket.status === "ongoing"
               ? `<div class="d-flex" style="flex-direction: row;">
-                  <button
-                    disabled="true"
-                    class="w-auto flex-grow" onclick="createInstantResult(${ticket.ticketId})"
-                    style="background-color: dodgerblue; color: white; border: none;padding: 14px;border-radius: 5px; margin-right: 1px">
-                    Create Instant Result
-                  </button>
+                  
                   <button
                     class="w-auto flex-grow" onclick="deleteTicket(${ticket.ticketId})"
                     style="background-color: red; color: white; border: none;padding: 14px;border-radius: 5px; margin-left: 1px">

@@ -359,7 +359,10 @@ const createMenu = async (drawerElement) => {
       link: "/reports",
       name: "My Reports",
       id: "view-reports-tab",
-      visible: globals.user?.isAgent === true || !!globals.user?.adminId,
+      visible:
+        globals.user?.isAgent === true ||
+        !!globals.user?.adminId ||
+        globals.user?.role === "virtualagent",
     },
     {
       index: 11,
@@ -385,10 +388,17 @@ const createMenu = async (drawerElement) => {
     {
       index: 14,
       link: "/sports",
-      name: "Sports",
+      name: "Sports Platform",
       id: "sport-tab",
-      visible: globals.environment === 'western',
+      visible: globals.environment === "western",
     },
+    // {
+    //   index: 15,
+    //   link: "/sports",
+    //   name: "Sports",
+    //   id: "sport-tab",
+    //   visible: globals.environment === 'western',
+    // },
   ];
 
   // try {

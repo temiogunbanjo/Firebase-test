@@ -259,6 +259,49 @@ function createQuery(queryParams = {}) {
   return queryString;
 }
 
+const deepMerge = (param1, param2) => {
+  // console.log("param1", param1, "param2", param2);
+  const eitherParamIsNull = [param1, param2].includes(null);
+  if (
+    (typeof param1 !== typeof param2 && !eitherParamIsNull) ||
+    Array.isArray(param1) !== Array.isArray(param2)
+  ) {
+    throw new Error(
+      `Cannot deep merge different data types: ${typeof param1} & ${typeof param2}`
+    );
+  }
+
+  if (eitherParamIsNull) {
+    return param1 === null ? param2 || param1 : param1 || param2;
+  }
+
+  // If its object type
+  if (typeof param1 === "object" && !Array.isArray(param1)) {
+    const shallowMerge = { ...param1, ...param2 };
+    const keyList = Object.keys(shallowMerge);
+    const final = {};
+
+    keyList.forEach((key) => {
+      if (!(key in param1)) {
+        final[key] = param2[key];
+      } else if (!(key in param2)) {
+        final[key] = param1[key];
+      } else {
+        final[key] = deepMerge(param1[key], param2[key]);
+      }
+    });
+
+    return final;
+  }
+
+  // If its array type
+  if (typeof param1 === "object" && Array.isArray(param1)) {
+    return param1.concat(param2);
+  }
+
+  return param2;
+};
+
 function getQueryParams(queryString = window.location.search.replace("?", "")) {
   const queryParams = {};
   queryString.split("&").forEach((each) => {

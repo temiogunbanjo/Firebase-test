@@ -199,6 +199,10 @@ code {
   align-items: flex-start;
 }
 
+.align-items-end {
+  align-items: flex-end;
+}
+
 .space-between {
   justify-content: space-between;
 }

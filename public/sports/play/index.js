@@ -62,9 +62,9 @@ const updateSelectionArea = () => {
   const createTicketButton = document.getElementById("create-ticket-button");
   const saveTicketButton = document.getElementById("save-ticket-button");
 
-  selectionsContainer.innerHTML = `${Object.keys(globals.currentSelections)
-    .map((selection) => {
-      return `<span class="ball circle bg-orange" style="color: white">${selection}</span>`;
+  selectionsContainer.innerHTML = `${Object.entries(globals.currentSelections)
+    .map(([eventId, { betType }]) => {
+      return `<span class="ball circle bg-orange" style="color: white">${betType}</span>`;
     })
     .join("")}`;
 
@@ -83,8 +83,8 @@ const updateUI = () => {
   updateSelectionArea();
 };
 
-function populateEventArea(event) {
-  const ballContainer = document.getElementById("ball-container");
+function populateEventArea(events) {
+  const ballContainer = document.getElementById("event-container");
   const gameTitle = document.getElementById("game-name");
   const poolBarSection = document.getElementById("pool-bar-section");
   const betTypeSelectionMenu = document.getElementById("bet-type-selector");
@@ -93,76 +93,142 @@ function populateEventArea(event) {
   const overSelectionMenu = document.getElementById("over-type-selector");
   const underSelectionMenu = document.getElementById("under-type-selector");
 
-  const { name, lotteryId, gameId, currentPoolAmount, totalFundPool } = event;
-  const { gameCount, category } = event.Lottery;
-  let {
-    betOptions = "[]",
-    boosterOptions = "[]",
-    resultOptions = "[]",
-    overOptions = "[]",
-    underOptions = "[]",
-  } = event.Lottery;
+  // const { gameCount, category } = events.Lottery;
+  // let {
+  //   betOptions = "[]",
+  //   boosterOptions = "[]",
+  //   resultOptions = "[]",
+  //   overOptions = "[]",
+  //   underOptions = "[]",
+  // } = event.Lottery;
 
-  betOptions = JSON.parse(betOptions);
-  boosterOptions = JSON.parse(boosterOptions);
-  resultOptions = JSON.parse(resultOptions);
-  overOptions = JSON.parse(overOptions);
-  underOptions = JSON.parse(underOptions);
+  // betOptions = JSON.parse(betOptions);
+  // boosterOptions = JSON.parse(boosterOptions);
+  // resultOptions = JSON.parse(resultOptions);
+  // overOptions = JSON.parse(overOptions);
+  // underOptions = JSON.parse(underOptions);
 
   // SAVE GAME INFO
-  GameOptions.lotteryId = lotteryId;
-  GameOptions.gameId = gameId;
-  GameOptions.betOptions = betOptions.filter((each) => each !== "");
-  GameOptions.boosterOptions = boosterOptions.filter((each) => each !== "");
-  GameOptions.resultOptions = resultOptions.filter((each) => each !== "");
-  GameOptions.overOptions = overOptions.filter((each) => each !== "");
-  GameOptions.underOptions = underOptions.filter((each) => each !== "");
-  GameOptions.gameCount = gameCount;
+  // GameOptions.lotteryId = lotteryId;
+  // GameOptions.gameId = gameId;
+  // GameOptions.betOptions = betOptions.filter((each) => each !== "");
+  // GameOptions.boosterOptions = boosterOptions.filter((each) => each !== "");
+  // GameOptions.resultOptions = resultOptions.filter((each) => each !== "");
+  // GameOptions.overOptions = overOptions.filter((each) => each !== "");
+  // GameOptions.underOptions = underOptions.filter((each) => each !== "");
+  // GameOptions.gameCount = gameCount;
 
-  const poolProgressPercent = totalFundPool
-    ? (Number(currentPoolAmount) / Number(totalFundPool)) * 100
-    : null;
+  // const poolProgressPercent = totalFundPool
+  //   ? (Number(currentPoolAmount) / Number(totalFundPool)) * 100
+  //   : null;
 
-  gameTitle.innerHTML = `<span>Game: ${name}</span> <span class="status-indicator">${category}</span>`;
-  poolBarSection.innerHTML =
-    poolProgressPercent !== null && poolProgressPercent >= 0
-      ? `<progress value='${poolProgressPercent}' max="100" style="width: 96%; margin: 0 auto; display: block">
-  ${poolProgressPercent}%
-</progress>`
-      : "";
+  //   gameTitle.innerHTML = `<span>Game: ${name}</span> <span class="status-indicator">${category}</span>`;
+  //   poolBarSection.innerHTML =
+  //     poolProgressPercent !== null && poolProgressPercent >= 0
+  //       ? `<progress value='${poolProgressPercent}' max="100" style="width: 96%; margin: 0 auto; display: block">
+  //   ${poolProgressPercent}%
+  // </progress>`
+  //       : "";
 
-  const balls = [];
-  for (let i = 1; i <= gameCount; i++) {
-    balls.push(i);
-  }
+  // const balls = [];
+  // for (let i = 1; i <= gameCount; i++) {
+  //   balls.push(i);
+  // }
 
-  ballContainer.innerHTML = "";
+  // ballContainer.innerHTML = "";
   betTypeSelectionMenu.innerHTML = "";
   boosterSelectionMenu.innerHTML = "";
   resultTypeSelectionMenu.innerHTML = "";
   overSelectionMenu.innerHTML = "";
   underSelectionMenu.innerHTML = "";
 
-  balls.forEach((each) => {
-    const aBallElement = document.createElement("SPAN");
-    aBallElement.classList.add("ball", "circle", "bg-blue");
-    aBallElement.style.color = "white";
-    aBallElement.setAttribute("data-value", each);
-    aBallElement.textContent = each;
+  events.forEach((each) => {
+    let { EventOptions } = each;
+    EventOptions = deepMerge(EventOptions[0], EventOptions[1] || {});
 
-    aBallElement.addEventListener("click", (ev) => {
-      const ballNumber = ev.currentTarget.getAttribute("data-value");
-      if (!globals.currentSelections[ballNumber]) {
-        ev.currentTarget.classList.add("selected");
-        globals.currentSelections[ballNumber] = ballNumber;
-      } else {
-        ev.currentTarget.classList.remove("selected");
-        delete globals.currentSelections[ballNumber];
+    const aBallElement = document.createElement("DIV");
+    const titleWrapElement = document.createElement("DIV");
+    const titleElement = document.createElement("h3");
+    const timeContainer = document.createElement("span");
+    const leagueNameElement = document.createElement("DIV");
+    const optionsContainer = document.createElement("DIV");
+
+    titleElement.textContent = `${each?.HomeTeam?.alias?.toUpperCase()} vs ${each?.AwayTeam?.alias?.toUpperCase()}`;
+    leagueNameElement.textContent = `${each?.HomeTeam?.League?.name}`;
+    timeContainer.textContent = `Starts on ${new Date(
+      each?.eventDate
+    ).toLocaleString()}`;
+
+    aBallElement.classList.add("event");
+    titleWrapElement.classList.add(
+      "d-flex",
+      "rows",
+      "space-between",
+      "align-items-center"
+    );
+    timeContainer.classList.add("status-indicator");
+    timeContainer.setAttribute("data-status", "none");
+    timeContainer.style.fontSize = "14px";
+    aBallElement.style.color = "black";
+    titleElement.style.marginBottom = "0px";
+    titleElement.style.marginTop = "0px";
+    titleElement.style.marginRight = "10px";
+    titleWrapElement.style.paddingTop = "1em";
+    leagueNameElement.style.margin = "5px 0 10px";
+    leagueNameElement.style.fontSize = "14px";
+    aBallElement.style.padding = "20px";
+
+    Object.entries(EventOptions).forEach(([key, value]) => {
+      // console.log(key, value);
+      const isValidKey = ![
+        "id",
+        "eventOptionId",
+        "eventId",
+        "category",
+        "status",
+        "deleted",
+        "createdAt",
+        "updatedAt",
+      ].includes(key);
+
+      if (isValidKey && value) {
+        const optionBtn = document.createElement("button");
+        optionBtn.setAttribute("data-event", each.eventId);
+        optionBtn.setAttribute("data-key", key);
+        optionBtn.setAttribute("data-value", value);
+        optionBtn.textContent = key;
+
+        optionBtn.addEventListener("click", (ev) => {
+          const eventId = ev.currentTarget.getAttribute("data-event");
+          const betType = ev.currentTarget.getAttribute("data-key");
+          // const betTypeValue = ev.currentTarget.getAttribute("data-value");
+
+          if (!globals.currentSelections[eventId]) {
+            ev.currentTarget.classList.add("selected");
+            globals.currentSelections[eventId] = {
+              betType,
+            };
+          } else {
+            document
+              .querySelectorAll(`button[data-event="${eventId}"]`)
+              .forEach((el) => el.classList.remove("selected"));
+            ev.currentTarget.classList.remove("selected");
+            delete globals.currentSelections[eventId];
+          }
+
+          console.log(globals.currentSelections);
+          updateSelectionArea();
+        });
+
+        optionsContainer.appendChild(optionBtn);
       }
-
-      // console.log(globals.currentSelections);
-      updateSelectionArea();
     });
+
+    titleWrapElement.appendChild(titleElement);
+    titleWrapElement.appendChild(timeContainer);
+    aBallElement.appendChild(titleWrapElement);
+    aBallElement.appendChild(leagueNameElement);
+    aBallElement.appendChild(optionsContainer);
 
     ballContainer.appendChild(aBallElement);
   });
@@ -179,77 +245,77 @@ function populateEventArea(event) {
   // });
   // debugger;
 
-  betOptions.unshift("");
-  betOptions.forEach((each, index) => {
-    const option = document.createElement("option");
-    option.setAttribute("value", each.name);
-    option.textContent = each.name;
-    if (index === 1) {
-      option.setAttribute("selected", true);
-    }
+  // betOptions.unshift("");
+  // betOptions.forEach((each, index) => {
+  //   const option = document.createElement("option");
+  //   option.setAttribute("value", each.name);
+  //   option.textContent = each.name;
+  //   if (index === 1) {
+  //     option.setAttribute("selected", true);
+  //   }
 
-    betTypeSelectionMenu.appendChild(option);
-  });
+  //   betTypeSelectionMenu.appendChild(option);
+  // });
 
-  boosterOptions.unshift("");
-  boosterOptions.forEach((each, index) => {
-    const option = document.createElement("option");
-    option.setAttribute("value", each);
-    option.textContent = each;
-    if (index === 1) {
-      option.setAttribute("selected", true);
-    }
+  // boosterOptions.unshift("");
+  // boosterOptions.forEach((each, index) => {
+  //   const option = document.createElement("option");
+  //   option.setAttribute("value", each);
+  //   option.textContent = each;
+  //   if (index === 1) {
+  //     option.setAttribute("selected", true);
+  //   }
 
-    boosterSelectionMenu.appendChild(option);
-  });
+  //   boosterSelectionMenu.appendChild(option);
+  // });
 
-  resultOptions.unshift("");
-  resultOptions.forEach((each, index) => {
-    const option = document.createElement("option");
-    option.setAttribute("value", each);
-    option.textContent = each;
-    if (index === 1) {
-      option.setAttribute("selected", true);
-    }
+  // resultOptions.unshift("");
+  // resultOptions.forEach((each, index) => {
+  //   const option = document.createElement("option");
+  //   option.setAttribute("value", each);
+  //   option.textContent = each;
+  //   if (index === 1) {
+  //     option.setAttribute("selected", true);
+  //   }
 
-    resultTypeSelectionMenu.appendChild(option);
-  });
+  //   resultTypeSelectionMenu.appendChild(option);
+  // });
 
-  overOptions.unshift("");
-  overOptions.forEach((each) => {
-    const name = typeof each === "object" ? each?.name : each;
-    const value = typeof each === "object" ? each?.value : each;
-    const formattedNamePrefix =
-      name.split(" ")?.[1]?.replace(/[)(]/gi, "") || "";
+  // overOptions.unshift("");
+  // overOptions.forEach((each) => {
+  //   const name = typeof each === "object" ? each?.name : each;
+  //   const value = typeof each === "object" ? each?.value : each;
+  //   const formattedNamePrefix =
+  //     name.split(" ")?.[1]?.replace(/[)(]/gi, "") || "";
 
-    const option = document.createElement("option");
-    option.setAttribute("value", value);
-    option.setAttribute("data-prefix", formattedNamePrefix);
-    option.textContent = name;
+  //   const option = document.createElement("option");
+  //   option.setAttribute("value", value);
+  //   option.setAttribute("data-prefix", formattedNamePrefix);
+  //   option.textContent = name;
 
-    overSelectionMenu.appendChild(option);
-  });
+  //   overSelectionMenu.appendChild(option);
+  // });
 
-  underOptions.unshift("");
-  underOptions.forEach((each) => {
-    const name = typeof each === "object" ? each?.name : each;
-    const value = typeof each === "object" ? each?.value : each;
-    const formattedNamePrefix =
-      name.split(" ")?.[1]?.replace(/[)(]/gi, "") || "";
+  // underOptions.unshift("");
+  // underOptions.forEach((each) => {
+  //   const name = typeof each === "object" ? each?.name : each;
+  //   const value = typeof each === "object" ? each?.value : each;
+  //   const formattedNamePrefix =
+  //     name.split(" ")?.[1]?.replace(/[)(]/gi, "") || "";
 
-    const option = document.createElement("option");
-    option.setAttribute("value", value);
-    option.setAttribute("data-prefix", formattedNamePrefix);
-    option.textContent = name;
+  //   const option = document.createElement("option");
+  //   option.setAttribute("value", value);
+  //   option.setAttribute("data-prefix", formattedNamePrefix);
+  //   option.textContent = name;
 
-    underSelectionMenu.appendChild(option);
-  });
+  //   underSelectionMenu.appendChild(option);
+  // });
 }
 
-function fetchEventData(eventId) {
+function fetchEvents() {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-event/${eventId}`;
+  }/game/fetch-events?timeline=upcoming&eventType=real-sport&order=eventDate:DESC`;
 
   fetchAPI({
     url: apiUrl,
@@ -261,8 +327,9 @@ function fetchEventData(eventId) {
 
         if (result && result.data) {
           const { data } = result?.data;
-          globals.ticket.eventId = data.eventId;
-          globals.ticket.lotteryId = data.lotteryId;
+          console.log(data);
+          // globals.ticket.eventId = data.eventId;
+          // globals.ticket.lotteryId = data.lotteryId;
           populateEventArea(data);
         }
       } catch (error) {
@@ -280,15 +347,16 @@ function fetchEventData(eventId) {
 function createTicket(ticket, byBot = false) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/create-ticket`;
+  }/ticket/create-ticket`;
 
   const body = {
-    gameId: ticket.gameId,
+    productId: ticket.productId,
     totalStakedAmount: ticket.totalStakedAmount,
     winningRedemptionMethod: ticket.winningRedemptionMethod || "wallet",
     sourceWallet: ticket.sourceWallet,
     bookingCode: ticket.bookingCode,
     betSlips: JSON.stringify(ticket.betSlips),
+    paymentConfigs: JSON.stringify(ticket.paymentConfigs),
   };
 
   console.log({ cre: body });
@@ -313,8 +381,7 @@ function createTicket(ticket, byBot = false) {
           console.log({ createTicketResponse: data, ticket: globals.ticket });
           if (data?.ticketId) {
             globals.ticket = {
-              gameId: globals.ticket.gameId,
-              lotteryId: globals.ticket.lotteryId,
+              productId: globals.ticket.productId,
               betSlips: [],
             };
             updateUI();
@@ -405,6 +472,7 @@ function saveTicket(ticket, byBot = false) {
 }
 
 function fetchPotentialWinning(ticket) {
+  const amountInput = document.getElementById("amount-input");
   const totalPotValueElement = document.getElementById("total-potential-value");
   const totalStkValueElement = document.getElementById(
     "total-staked-amount-value"
@@ -412,13 +480,16 @@ function fetchPotentialWinning(ticket) {
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/ticket/get-potential-winning`;
+  }/ticket/fetch-potential-winning`;
 
-  const body = JSON.stringify({
-    lotteryId: ticket.lotteryId,
+  const body = {
+    totalStakedAmount: Number(amountInput.value),
+    eventCount: ticket.eventCount,
     betSlips: JSON.stringify(ticket.betSlips),
-  });
+  };
   console.log(body);
+
+  totalStkValueElement.textContent = amountInput.value;
 
   fetchAPI({
     url: apiUrl,
@@ -432,13 +503,13 @@ function fetchPotentialWinning(ticket) {
         if (result && result.data) {
           const { data } = result?.data;
 
-          totalPotValueElement.textContent = data.totalPotentialWinning;
-          totalStkValueElement.textContent = data.totalStakedAmount;
+          const paymentConfigs = JSON.parse(data.paymentConfigs);
+          totalPotValueElement.textContent = paymentConfigs?.[0]?.potentialWinAmount;
 
-          globals.ticket.betSlips = JSON.parse(data.betSlips);
-          globals.ticket.totalStakedAmount = data.totalStakedAmount;
+          globals.ticket.paymentConfigs = paymentConfigs;
+          globals.ticket.totalStakedAmount = body.totalStakedAmount;
 
-          console.log({ potentialWinningData: data, ticket: globals.ticket });
+          console.log({ ticket: globals.ticket });
         } else {
           errorHandler(result);
         }
@@ -458,17 +529,16 @@ function start() {
   const mainBalanceElement = document.querySelector("#wallet-balance");
   // const commissionBalanceElement = document.querySelector("#commission-balance");
 
-  const queryString = window.location.search.replace("?", "");
-  if (!globals.token || !queryString) {
-    window.location.replace("/sports");
+  // const queryString = window.location.search.replace("?", "");
+  if (!globals.token) {
+    window.location.replace("/sports/tickets");
   } else {
-    const queryParams = getQueryParams(queryString);
-
-    if (queryParams.eventId) {
-      fetchEventData(queryParams.eventId);
-    } else {
-      alert("No event ID");
-    }
+    //   const queryParams = getQueryParams(queryString);
+    //   if (queryParams.eventId) {
+    fetchEvents();
+    //   } else {
+    //     alert("No event ID");
+    //   }
   }
 
   fetchUserBalance(mainBalanceElement, "main");
@@ -514,47 +584,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   addSlipButton.addEventListener("click", (ev) => {
     if (
-      (validateInputs([betTypeSelectionMenu, amountInput]) &&
-        Object.keys(globals.currentSelections).length > 0) ||
-      validateInputs([overSelectionMenu, amountInput]) ||
-      validateInputs([underSelectionMenu, amountInput])
+      validateInputs([amountInput]) &&
+      Object.keys(globals.currentSelections).length > 0
     ) {
-      const slip = {
-        amount: amountInput.value,
-        selections: Object.keys(globals.currentSelections).join("-"),
-        betType:
-          overSelectionMenu.value !== "" || underSelectionMenu.value !== ""
-            ? ""
-            : betTypeSelectionMenu.value,
-        booster: boosterSelectionMenu.value,
-        resultType: resultTypeSelectionMenu.value,
-        overUnder: (() => {
-          console.log(overSelectionMenu);
-          if (overSelectionMenu.value !== "") {
-            return {
-              over: overSelectionMenu.value,
-            };
-          } else if (underSelectionMenu.value !== "") {
-            return {
-              under: underSelectionMenu.value,
-            };
-          } else {
-            return null;
-          }
-        })(),
-      };
+      const slips = Object.entries(globals.currentSelections).map(
+        ([eventId, { betType }]) => ({
+          amount: amountInput.value,
+          eventId,
+          betType,
+        })
+      );
 
-      globals.ticket.betSlips.push(slip);
+      console.log("slopppp", slips);
 
+      globals.ticket.betSlips = globals.ticket.betSlips.concat(slips);
+      globals.ticket.eventCount = globals.ticket.betSlips.length;
       // reset Options
       globals.currentSelections = {};
-      document.querySelectorAll("#ball-container .ball").forEach((ball) => {
-        ball.classList.toggle("selected", false);
-      });
+      document
+        .querySelectorAll("#event-container .selected")
+        .forEach((ball) => {
+          ball.classList.toggle("selected", false);
+        });
+
+      fetchPotentialWinning(globals.ticket);
+      // console.log("glogggg", globals.ticket);
     }
 
-    fetchPotentialWinning(globals.ticket);
-    console.log(globals.ticket);
     updateUI();
   });
 
