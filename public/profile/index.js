@@ -109,12 +109,6 @@ function viewUserProfile() {
   fetchAPI({
     url: apiUrl,
     method: "get",
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-      authorization: `Bearer ${globals.token}`,
-      mode: "no-cors",
-      "x-api-key": globals[globals.environment].apiKey,
-    },
   })
     .then(async (result) => {
       try {

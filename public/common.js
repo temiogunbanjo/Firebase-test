@@ -5,7 +5,7 @@ const globals = {
   environment: localStorage.getItem("environment") || "western",
   token: localStorage.getItem("token") || null,
   user: JSON.parse(sessionStorage.getItem("user") || "{}") || {},
-  dataSourceTimezone: "UTC-1", // use UTC when switching to remote
+  dataSourceTimezone: "UTC", // use UTC when switching to remote
   notificationOptions: {
     dir: "auto",
   },
@@ -43,6 +43,13 @@ const globals = {
     searchBaseUrl: "http://localhost:3005",
     // searchBaseUrl: "https://engine.gaim.tech",
     apiKey: "USR.JHWeFa-DNDlJf-Hh8On3-Xpaj3s-BVSDdO-n6",
+  },
+  smyl: {
+    // apiBaseUrl: "https://api.590lotto.com/api/v1",
+    apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
+    searchBaseUrl: "http://localhost:3005",
+    // searchBaseUrl: "https://engine.gaim.tech",
+    apiKey: "USR.ELw3Yv-z6elXq-Hnr3ZI-AcCTEd-tEt5DQ-WM",
   },
   ticket: {
     sourceWallet: "mainWallet",
@@ -989,6 +996,13 @@ function fetchUserBalance(containerElement, type = "main") {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
   }/user/fetch-authenticated-user`;
+
+  const typeUrlMap = {
+    main: apiUrl,
+    bonus: apiUrl,
+    commission: apiUrl,
+    winning: apiUrl,
+  }
 
   fetchAPI({
     url: apiUrl,

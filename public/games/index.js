@@ -1,3 +1,4 @@
+// ffffgf
 const createGameCard = (categoryObject, category) => {
   return `<div class="game-category-container" style="width: 100%">
     <h3 class="game-category-head">${category}</h3>
@@ -118,14 +119,15 @@ function viewGamesHandler(ev) {
 
   // containerElement.innerHTML = "Fetching tickets...";
   const d = new Date();
-  const currentTime = `${
-    d.getHours() < 10 ? "0" + d.getHours() : d.getHours()
-  }:${d.getMinutes()}:${d.getSeconds()}`;
+  // const currentTime = `${
+  //   d.getHours() < 10 ? "0" + d.getHours() : d.getHours()
+  // }:${d.getMinutes()}:${d.getSeconds()}`;
+  const currentTime = `00:00:00`;
   const currentWeekDay = d.getDay();
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-current-game?page=1&limit=100&currentWeekDay=${currentWeekDay}&endTime=${currentTime}&includeRecurring=true&order=recurring:DESC,recurringInterval:ASC,endTime:ASC`;
+  }/game/fetch-current-game?page=1&limit=100&currentWeekDay=${currentWeekDay}&startTime=${currentTime}&endTime=23:59:59&includeRecurring=true&order=recurring:DESC,recurringInterval:ASC,endTime:ASC`;
 
   // console.log(currentTime);
   fetchAPI({

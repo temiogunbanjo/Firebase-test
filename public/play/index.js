@@ -412,10 +412,10 @@ function fetchPotentialWinning(ticket) {
     globals[globals.environment].apiBaseUrl
   }/game/ticket/get-potential-winning`;
 
-  const body = JSON.stringify({
+  const body = {
     lotteryId: ticket.lotteryId,
     betSlips: JSON.stringify(ticket.betSlips),
-  });
+  };
   console.log(body);
 
   fetchAPI({
