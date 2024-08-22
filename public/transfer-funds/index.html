@@ -42,8 +42,7 @@ limitations under the License.
     <main class="d-flex rows">
       <!-- Container for the Table of content -->
       <section id="navigation" class="w-30">
-        <ul>
-        </ul>
+        <ul></ul>
       </section>
 
       <section id="navigation-content" style="flex-grow: 1">
@@ -56,9 +55,12 @@ limitations under the License.
             style="margin-top: 1rem"
           >
             <div class="d-flex cols" style="width: 50%; max-width: 500px">
-              <h2 style="margin-bottom: 3px;">Transfer Form</h2>
-              <h5 style="margin-top: 3px; align-items: center;" class="d-flex rows">
-                <span style="margin-right: 6px;">Main Balance: </span>
+              <h2 style="margin-bottom: 3px">Transfer Form</h2>
+              <h5
+                style="margin-top: 3px; align-items: center"
+                class="d-flex rows"
+              >
+                <span style="margin-right: 6px">Main Balance: </span>
                 <span id="transfer-balance" class="status-indicator">0.00</span>
               </h5>
 
@@ -82,6 +84,28 @@ limitations under the License.
                   min="1"
                   value="1"
                 />
+
+                <!-- <div class="d-flex rows" style="width: 100%">
+                  <input
+                    type="radio"
+                    name="wallet"
+                    placeholder="Receipient ID"
+                  />
+
+                  <input
+                    type="text"
+                    name="transactionPin"
+                    placeholder="Transaction Pin"
+                  />
+
+                  <input
+                    type="number"
+                    name="amount"
+                    placeholder="Amount to transfer"
+                    min="1"
+                    value="1"
+                  />
+                </div> -->
                 <button type="submit">Do Transfer</button>
               </div>
             </div>

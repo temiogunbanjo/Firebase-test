@@ -214,5 +214,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   withdrawalForm.addEventListener("submit", withdrawalHandler);
+
   viewWithdrawalRequestHandler({ page: 1, limit: 10 });
+
+  setInterval(() => {
+    viewWithdrawalRequestHandler({ page: 1, limit: 10 });
+  }, 0.2 * 60 * 1000);
 });

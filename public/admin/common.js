@@ -24,7 +24,7 @@ const globals = {
     // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
     apiBaseUrl: "http://localhost:3000/api/v1",
     searchBaseUrl: "https://white-engine.gaim.tech",
-    apiKey: "ADM.Ngu4rC-VMenpv-m251tw-rYC8Om-ryx89j-c4",
+    apiKey: "ADM.3R5rwY-o8MiQz-A8GwwW-bri0sH-UCxayX-",
   },
   mbg: {
     // apiBaseUrl: "https://merrybet-api.gaim.tech/api/v1",
@@ -172,6 +172,12 @@ const createMenu = (drawerElement) => {
     {
       link: "/admin/aggregated-commissions",
       name: "Commissions Management",
+      id: "commissions-tab",
+      visible: true,
+    },
+    {
+      link: "/admin/prize-claims",
+      name: "Prize Claims",
       id: "commissions-tab",
       visible: true,
     }

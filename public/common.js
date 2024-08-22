@@ -2,10 +2,10 @@
 const globals = {
   autoPlayBots: [],
   currentPageIndex: 0,
-  environment: localStorage.getItem("environment") || "western",
-  token: localStorage.getItem("token") || null,
-  user: JSON.parse(sessionStorage.getItem("user") || "{}") || {},
-  dataSourceTimezone: "UTC", // use UTC when switching to remote
+  environment: localStorage.getItem("environment") ?? "western",
+  token: localStorage.getItem("token") ?? null,
+  user: JSON.parse(sessionStorage.getItem("user") ?? "{}") ?? {},
+  dataSourceTimezone: "UTC-1", // use UTC when switching to remote
   notificationOptions: {
     dir: "auto",
   },
@@ -48,6 +48,13 @@ const globals = {
     // apiBaseUrl: "https://api.590lotto.com/api/v1",
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
     searchBaseUrl: "http://localhost:3005",
+    // searchBaseUrl: "https://engine.gaim.tech",
+    apiKey: "USR.ELw3Yv-z6elXq-Hnr3ZI-AcCTEd-tEt5DQ-WM",
+  },
+  payble: {
+    // apiBaseUrl: "https://api.590lotto.com/api/v1",
+    apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
+    searchBaseUrl: "http://localhost:5001",
     // searchBaseUrl: "https://engine.gaim.tech",
     apiKey: "USR.ELw3Yv-z6elXq-Hnr3ZI-AcCTEd-tEt5DQ-WM",
   },
@@ -209,6 +216,7 @@ const globals = {
     "2-against": () => generateRandomNumber(2, 20),
     "3-against": () => generateRandomNumber(3, 20),
     "4-against": () => generateRandomNumber(4, 20),
+    "perm-against": () => generateRandomNumber(2, 20),
     "1-no-draw": 1,
     "2-no-draw": 2,
     "3-no-draw": 3,
@@ -220,6 +228,7 @@ const globals = {
     "9-no-draw": 9,
     "10-no-draw": 10,
     "11-no-draw": 11,
+    "12-no-draw": 12,
     "all-1": 1,
     "all-2": 2,
     "all-3": 3,
@@ -239,7 +248,7 @@ const globals = {
 const errorHandler = (error = {}, byBot = false) => {
   console.info("Errrrr");
   console.error(error);
-  const message = error.responsemessage || error.message;
+  const message = error.responsemessage ?? error.message;
   if (!byBot) alert(message);
   else console.error(message);
 };
@@ -595,6 +604,7 @@ async function autoPlayer(
     const Patterns = {
       x_by_y_bet_type_pattern: /^(\d-by-\d)/gi,
       w_by_m_bet_type_pattern: /^(\dw-by-\dm)/gi,
+      perm_against_bet_type_pattern: /^perm-against$/gi,
     };
 
     // PICK RANDOM NUMBER OF SLIPS TO GENERATE
@@ -624,7 +634,7 @@ async function autoPlayer(
         typeof globals.BET_TYPE_MINIMUM_SELECTION[betType?.name] === "function"
           ? globals.BET_TYPE_MINIMUM_SELECTION[betType?.name]()
           : globals.BET_TYPE_MINIMUM_SELECTION[betType?.name];
-      requiredSelections = requiredSelections || 0;
+      requiredSelections = requiredSelections ?? 0;
 
       // ADD RANDOM NUMBERS TO SELECTIONS SET
       for (let j = 0; selections.size < requiredSelections; j++) {
@@ -638,11 +648,18 @@ async function autoPlayer(
 
       // CONVERT SELECTIONS ARRAY IN JOIN STRING BASED ON IF BET TYPE IS SET A/B OR NOT
       if (
-        !betType?.name.match(Patterns.w_by_m_bet_type_pattern) &&
-        !betType?.name.match(Patterns.x_by_y_bet_type_pattern)
+        betType?.name.match(Patterns.perm_against_bet_type_pattern) !== null
       ) {
-        newArraySelection = newArraySelection.join("-");
-      } else {
+        const halfLength = Math.floor(newArraySelection.length / 2);
+
+        const setA = newArraySelection.slice(0, halfLength);
+        const setB = newArraySelection.slice(halfLength);
+
+        newArraySelection = `${setA.join("-")}/${setB.join("-")}`;
+      } else if (
+        betType?.name.match(Patterns.w_by_m_bet_type_pattern) !== null ||
+        betType?.name.match(Patterns.x_by_y_bet_type_pattern) !== null
+      ) {
         let strippedBetype = betType?.name.replace("-swap", "");
         strippedBetype = strippedBetype.replace(/w|m/gi, "");
         const [setACount, setBCount] = strippedBetype.split("-by-");
@@ -652,12 +669,14 @@ async function autoPlayer(
         const setB = newArraySelection.slice(parseInt(setACount, 10));
 
         newArraySelection = `${setA.join("-")}/${setB.join("-")}`;
+      } else {
+        newArraySelection = newArraySelection.join("-");
       }
 
       const finalSlip = {
-        betType: betType?.name || "",
-        booster: booster || "",
-        resultType: resultType || "",
+        betType: betType?.name ?? "",
+        booster: booster ?? "",
+        resultType: resultType ?? "",
         amount: amount / numberOfSlips,
         selections: newArraySelection,
       };
@@ -675,14 +694,16 @@ async function autoPlayer(
 
     console.log(selectedWRM, indexOfWRM);
 
+    const chosenSourceWallet = document.querySelector(
+      "#play-tab-content input[name='sourceWallet']:checked"
+    )?.value;
+    console.log(chosenSourceWallet);
+
     const finalTicket = {
       gameId: botGameOptions.gameId,
       lotteryId: botGameOptions.lotteryId,
       winningRedemptionMethod: selectedWRM,
-      sourceWallet:
-        document.querySelector(
-          "#play-tab-content input[name='sourceWallet']:checked"
-        )?.value || "mainWallet",
+      sourceWallet: chosenSourceWallet ?? "mainWallet",
       betSlips,
     };
 
@@ -809,14 +830,14 @@ async function autoPlayer(
     }, 10000);
   }
 
-  numberOfPlayers = numberOfPlayers || prompt("Enter number of players:");
-  amountPerTicket = amountPerTicket || prompt("Enter amount per ticket:");
+  numberOfPlayers = numberOfPlayers ?? prompt("Enter number of players:");
+  amountPerTicket = amountPerTicket ?? prompt("Enter amount per ticket:");
 
-  numberOfPlayers = numberOfPlayers || 1;
-  amountPerTicket = amountPerTicket || 10;
+  numberOfPlayers = numberOfPlayers ?? 1;
+  amountPerTicket = amountPerTicket ?? 10;
 
-  numberOfPlayers = parseInt(numberOfPlayers);
-  amountPerTicket = parseInt(amountPerTicket);
+  numberOfPlayers = parseInt(numberOfPlayers, 10);
+  amountPerTicket = parseInt(amountPerTicket, 10);
 
   const MIN_INTERVAL_SECONDS = 25;
   const MAX_INTERVAL_SECONDS = 60;
@@ -827,19 +848,21 @@ async function autoPlayer(
   for (let i = 1; i <= numberOfPlayers; i++) {
     console.log(`Creating robot ${i}`);
     // INTERVAL TO CREATE EACH TICKET
+    const chosenSourceWallet = document.querySelector(
+      "#play-tab-content input[name='sourceWallet']:checked"
+    )?.value;
+
+    console.log(chosenSourceWallet);
     const botProps = {
-      sourceWallet:
-        document.querySelector(
-          "#play-tab-content input[name='sourceWallet']:checked"
-        )?.value || "mainWallet",
-      botId: globals.autoPlayBots[i - 1]?.botId || i,
+      sourceWallet: chosenSourceWallet ?? "mainWallet",
+      botId: globals.autoPlayBots[i - 1]?.botId ?? i,
       amountPerTicket:
-        globals.autoPlayBots[i - 1]?.amountPerTicket || amountPerTicket,
-      tickets: globals.autoPlayBots[i - 1]?.tickets || [],
+        globals.autoPlayBots[i - 1]?.amountPerTicket ?? amountPerTicket,
+      tickets: globals.autoPlayBots[i - 1]?.tickets ?? [],
       analytics: {
-        restart: globals.autoPlayBots[i - 1]?.analytics?.restart || 0,
-        success: globals.autoPlayBots[i - 1]?.analytics?.success || 0,
-        failed: globals.autoPlayBots[i - 1]?.analytics?.failed || 0,
+        restart: globals.autoPlayBots[i - 1]?.analytics?.restart ?? 0,
+        success: globals.autoPlayBots[i - 1]?.analytics?.success ?? 0,
+        failed: globals.autoPlayBots[i - 1]?.analytics?.failed ?? 0,
         get successRate() {
           return (this.success / this.restart) * 100;
         },
@@ -847,7 +870,7 @@ async function autoPlayer(
           return ((this.restart - this.success) / this.restart) * 100;
         },
       },
-      GameOptions: globals.autoPlayBots[i - 1]?.GameOptions || GameOptions,
+      GameOptions: globals.autoPlayBots[i - 1]?.GameOptions ?? GameOptions,
     };
 
     let botEl = document.querySelector(`#bot-${i}`);
@@ -1002,7 +1025,7 @@ function fetchUserBalance(containerElement, type = "main") {
     bonus: apiUrl,
     commission: apiUrl,
     winning: apiUrl,
-  }
+  };
 
   fetchAPI({
     url: apiUrl,
@@ -1043,7 +1066,7 @@ function fetchUserBalance(containerElement, type = "main") {
               break;
           }
 
-          containerElement.innerHTML = balance || "--";
+          containerElement.innerHTML = balance ?? "--";
         }
       } catch (error) {
         console.log(error);
