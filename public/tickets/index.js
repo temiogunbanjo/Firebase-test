@@ -201,6 +201,11 @@ function createTicketCard(ticket) {
                         ? `<br/>winningCombo: ${slip.winningCombo}`
                         : ""
                     }
+                    ${
+                      slip.raffle
+                        ? `<br/>Code: ${slip.raffle?.code}`
+                        : ""
+                    }
                   </div>
                 `;
               })
@@ -256,6 +261,7 @@ function createTicketCard(ticket) {
               ? `<div class="d-flex bg-orange" style="flex-direction: column; border-radius: 8px; padding: 10px; color: white" onclick="showResults('${ticket.Gameresult?.results}', '${ticket.Game?.Lottery?.category}')">
                   <div class="fw-700" style="line-height: 1.5">Results:</div>
                   <div>${ticket.Gameresult?.results}</div>
+                  <div class="fw-600" style="line-height: 1.5; font-size: 14px">Raffle Draw: ${ticket.Gameresult?.raffle}</div>
                 </div>`
               : ""
           }

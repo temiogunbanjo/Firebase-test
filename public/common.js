@@ -51,6 +51,13 @@ const globals = {
     // searchBaseUrl: "https://engine.gaim.tech",
     apiKey: "USR.ELw3Yv-z6elXq-Hnr3ZI-AcCTEd-tEt5DQ-WM",
   },
+  ygl: {
+    // apiBaseUrl: "https://api.590lotto.com/api/v1",
+    apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
+    searchBaseUrl: "http://localhost:3005",
+    // searchBaseUrl: "https://engine.gaim.tech",
+    apiKey: "USR.20EDJr-YsWCGe-IRfOOO-66LyjV-OlRfzP-n9",
+  },
   payble: {
     // apiBaseUrl: "https://api.590lotto.com/api/v1",
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,

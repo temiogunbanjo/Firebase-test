@@ -32,6 +32,20 @@ const globals = {
     searchBaseUrl: "https://merry.gaim.tech",
     apiKey: "ADM.JHWeFa-DNDlJf-Hh8On3-Xpaj3s-BVSDdO-n6",
   },
+  smyl: {
+    // apiBaseUrl: "https://api.590lotto.com/api/v1",
+    apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
+    searchBaseUrl: "http://localhost:3005",
+    // searchBaseUrl: "https://engine.gaim.tech",
+    apiKey: "USR.ELw3Yv-z6elXq-Hnr3ZI-AcCTEd-tEt5DQ-WM",
+  },
+  ygl: {
+    // apiBaseUrl: "https://api.590lotto.com/api/v1",
+    apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
+    searchBaseUrl: "http://localhost:3005",
+    // searchBaseUrl: "https://engine.gaim.tech",
+    apiKey: "ADM.Vtbjvb-IOvdOB-1NaCeJ-CdrH3u-5VS3nA-b4",
+  },
   ticket: {
     sourceWallet: "mainWallet",
     betSlips: [],

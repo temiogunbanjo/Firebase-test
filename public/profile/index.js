@@ -60,7 +60,7 @@ const updateUserProfile = (ev) => {
     });
 };
 
-function viewUserProfile() {
+function viewUserProfile(isRefresh = false) {
   // ev.preventDefault();
   const updateForm = document.querySelector("#more-info-form");
   const avatarElement = document.querySelector("#user-avatar");
@@ -84,24 +84,25 @@ function viewUserProfile() {
   const acNumberInputElement = document.querySelector(
     "#user-account-number-input"
   );
-  const limitElement = document.querySelector("#user-daily-limit");
-  const multiplierElement = document.querySelector("#user-multiplier");
   const refCodeElement = document.querySelector("#user-ref-code");
-  const commissionEarningTypeElement = document.querySelector("#user-earn-type");
+  const commissionEarningTypeElement =
+    document.querySelector("#user-earn-type");
+
+  const downlinesContainer = document.querySelector("#downlines-container");
 
   const editBtn = document.querySelector("#edit-profile-btn");
 
-  editBtn.addEventListener("click", (ev) => {
-    document.querySelector("#more-info").classList.toggle("hide", true);
-    updateForm.classList.toggle("hide", false);
-    editBtn.classList.toggle("hide", true);
-  });
-
-  updateForm.addEventListener("submit", updateUserProfile);
-
-  const downlinesContainer = document.querySelector("#downlines-container");
-  downlinesContainer.innerHTML = "Fetching downlines...";
-
+  if (!isRefresh) {
+    editBtn.addEventListener("click", (ev) => {
+      document.querySelector("#more-info").classList.toggle("hide", true);
+      updateForm.classList.toggle("hide", false);
+      editBtn.classList.toggle("hide", true);
+    });
+  
+    updateForm.addEventListener("submit", updateUserProfile);
+    downlinesContainer.innerHTML = "Fetching downlines...";
+  }
+  
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
   }/user/fetch-authenticated-user`;
@@ -121,30 +122,40 @@ function viewUserProfile() {
 
           avatarElement.src = data?.avatarUrl;
           fullnameElement.innerHTML = data?.firstname + " " + data?.lastname;
-          firstnameInputElement.value = data?.firstname;
-          lastnameInputElement.value = data?.lastname;
           roleElement.innerHTML = data?.role;
           statusElement.innerHTML = data?.status ? "Active" : "Suspended";
           statusElement.setAttribute(
             "data-status",
             data?.status ? "won" : "lost"
           );
-          userIdElement.innerHTML = data?.userId || "-- --";
-          userIdInputElement.value = data?.userId;
-          mobileElement.innerHTML = data?.phone || "-- --";
-          mobileInputElement.value = data?.phone;
-          bankElement.innerHTML = data?.bankName || "-- --";
-          bankInputElement.value = data?.bankName;
-          emailElement.innerHTML = data?.email || "-- --";
-          emailInputElement.value = data?.email;
-          accountNumberElement.innerHTML = data?.accountNumber || "-- --";
+          commissionEarningTypeElement.innerHTML =
+            data?.commissionEarningType ?? "-- --";
+          accountNumberElement.innerHTML = data?.accountNumber ?? "-- --";
+          accountNameElement.innerHTML = data?.accountName ?? "-- --";
+          refCodeElement.innerHTML = data?.referralCode ?? "-- --";
+          userIdElement.innerHTML = data?.userId ?? "-- --";
+          bankElement.innerHTML = data?.bankName ?? "-- --";
+          mobileElement.innerHTML = data?.phone ?? "-- --";
+          emailElement.innerHTML = data?.email ?? "-- --";
+          document.querySelector("#user-daily-limit").innerHTML =
+            data?.dailyLimit ?? "-- --";
+          document.querySelector("#redeemed-total").innerHTML =
+            data?.agentAgg?.redeemedTotal ?? "-- --";
+          document.querySelector("#user-multiplier").innerHTML =
+            data?.multiplier ?? "-- --";
+          document.querySelector("#remittance").innerHTML =
+            data?.agentAgg?.remmittance ?? "-- --";
+          document.querySelector("#portfolio").innerHTML =
+            data?.agentAgg?.portfolio ?? "-- --";
+
           acNumberInputElement.value = data?.accountNumber;
-          accountNameElement.innerHTML = data?.accountName || "-- --";
+          firstnameInputElement.value = data?.firstname;
           acNameInputElement.value = data?.accountName;
-          limitElement.innerHTML = data?.dailyLimit || "-- --";
-          multiplierElement.innerHTML = data?.multiplier || "-- --";
-          refCodeElement.innerHTML = data?.referralCode || "-- --";
-          commissionEarningTypeElement.innerHTML = data?.commissionEarningType || "-- --";
+          lastnameInputElement.value = data?.lastname;
+          userIdInputElement.value = data?.userId;
+          bankInputElement.value = data?.bankName;
+          mobileInputElement.value = data?.phone;
+          emailInputElement.value = data?.email;
 
           downlinesContainer.innerHTML = data?.downlines
             ?.map((downline) => {
@@ -183,6 +194,13 @@ const fetchAllData = () => {
   fetchUserBalance(mainBalanceElement, "main");
   fetchUserBalance(commissionBalanceElement, "commission");
   fetchUserBalance(winningBalanceElement, "winning");
+
+  setInterval(() => {
+    viewUserProfile(true);
+    fetchUserBalance(mainBalanceElement, "main");
+    fetchUserBalance(commissionBalanceElement, "commission");
+    fetchUserBalance(winningBalanceElement, "winning");
+  }, 45000)
 };
 
 document.addEventListener("DOMContentLoaded", () => {

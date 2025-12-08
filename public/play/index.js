@@ -514,7 +514,7 @@ document.addEventListener("DOMContentLoaded", () => {
   addSlipButton.addEventListener("click", (ev) => {
     if (
       (validateInputs([betTypeSelectionMenu, amountInput]) &&
-        Object.keys(globals.currentSelections).length > 0) ||
+        Object.keys(globals.currentSelections).length > -1) ||
       validateInputs([overSelectionMenu, amountInput]) ||
       validateInputs([underSelectionMenu, amountInput])
     ) {

@@ -12,8 +12,10 @@ const createGameCard = (categoryObject, category) => {
 
           const startTime = formatTimeWithTimeZone(game.startTime);
           const endTime = formatTimeWithTimeZone(game.endTime);
+          const startDate = game.startDate;
+          const endDate = game.endDate;
 
-          const gamePlayStatus = (() => {
+          const getStatusFromGameTime = () => {
             const [startHour, startMinute, startSeconds] = startTime.split(":");
             const [endHour, endMinute, endSeconds] = endTime.split(":");
 
@@ -31,7 +33,7 @@ const createGameCard = (categoryObject, category) => {
 
             const currentTimeMS = Date.now();
 
-            // console.log(startTimeMS, endTimeMS);
+            console.log(startTimeMS, endTimeMS);
 
             if (currentTimeMS >= startTimeMS && currentTimeMS < endTimeMS) {
               return "active";
@@ -42,7 +44,31 @@ const createGameCard = (categoryObject, category) => {
             }
 
             return "upcoming";
-          })();
+          };
+
+          const getStatusFromGameDateime = () => {
+            const startTimeMS = new Date(startDate).getTime();
+            const endTimeMS = new Date(endDate).getTime();
+
+            const currentTimeMS = Date.now();
+
+            console.log(startTimeMS, endTimeMS);
+
+            if (currentTimeMS >= startTimeMS && currentTimeMS < endTimeMS) {
+              return "active";
+            }
+
+            if (currentTimeMS > startTimeMS && currentTimeMS <= endTimeMS) {
+              return "ended";
+            }
+
+            return "upcoming";
+          };
+
+          const gamePlayStatus =
+            game.startDate && game.endDate
+              ? getStatusFromGameDateime()
+              : getStatusFromGameTime();
           // console.log({
           //   poolProgressPercent,
           //   poolProgressPercentRaw:
@@ -69,7 +95,9 @@ const createGameCard = (categoryObject, category) => {
             </div>
             <div class="d-flex rows align-items-center" style="margin-bottom: 1em;">
               <small class="status-indicator" style="font-weight: 600">
-                ${startTime} - ${endTime}
+                ${
+                  startDate?.replace(/T|(\.\d{3}Z)/g, " ")?.trim() ?? startTime
+                } - ${endDate?.replace(/T|(\.\d{3}Z)/g, " ")?.trim() ?? endTime}
               </small>
             </div>
             
@@ -119,15 +147,20 @@ function viewGamesHandler(ev) {
 
   // containerElement.innerHTML = "Fetching tickets...";
   const d = new Date();
-  // const currentTime = `${
-  //   d.getHours() < 10 ? "0" + d.getHours() : d.getHours()
-  // }:${d.getMinutes()}:${d.getSeconds()}`;
-  const currentTime = `00:00:00`;
-  const currentWeekDay = d.getDay();
+  // d.setHours(0, 0, 0, 0);
+
+  const d2 = new Date();
+  d2.setHours(23, 59, 59, 999);
+
+  const currentWeekDay = new Date().getDay();
+
+  // let timeString = `&gameStartDate=${d.toISOString()}&gameEndDate=${d2.toISOString()}`;
+  let timeString = `&gameStartDate=${d.toISOString()}`;
+  // console.log(timeString);
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
-  }/game/fetch-current-game?page=1&limit=100&currentWeekDay=${currentWeekDay}&startTime=${currentTime}&endTime=23:59:59&includeRecurring=true&order=recurring:DESC,recurringInterval:ASC,endTime:ASC`;
+  }/game/fetch-current-game?page=1&limit=1000&currentWeekDay=${currentWeekDay}${timeString}&includeRecurring=true&order=recurring:DESC,recurringInterval:ASC,endTime:ASC`;
 
   // console.log(currentTime);
   fetchAPI({
