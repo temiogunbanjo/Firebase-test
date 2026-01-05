@@ -66,6 +66,7 @@ function loginHandler(ev) {
     // mode: "no-cors",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
+      "x-api-key": globals[globals.environment].apiKey,
       // mode: "no-cors",
     },
   })

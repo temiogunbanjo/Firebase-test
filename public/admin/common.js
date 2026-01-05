@@ -24,7 +24,7 @@ const globals = {
     // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
     apiBaseUrl: "http://localhost:3000/api/v1",
     searchBaseUrl: "https://white-engine.gaim.tech",
-    apiKey: "ADM.3R5rwY-o8MiQz-A8GwwW-bri0sH-UCxayX-",
+    apiKey: "ADM.rYWXPU-GGqkOg-hxerQo-kauOBt-FnWNNq-ps",
   },
   mbg: {
     // apiBaseUrl: "https://merrybet-api.gaim.tech/api/v1",

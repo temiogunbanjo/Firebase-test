@@ -155,8 +155,9 @@ function viewGamesHandler(ev) {
   const currentWeekDay = new Date().getDay();
 
   // let timeString = `&gameStartDate=${d.toISOString()}&gameEndDate=${d2.toISOString()}`;
-  let timeString = `&gameStartDate=${d.toISOString()}`;
-  // console.log(timeString);
+  let timeString = `&startTime=${d.toLocaleTimeString()}&endTime=${d2.toLocaleTimeString()}`;
+  // let timeString = `&gameStartDate=${d.toISOString()}`;
+  console.log(timeString);
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl

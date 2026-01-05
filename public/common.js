@@ -21,14 +21,14 @@ const globals = {
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
     searchBaseUrl: "http://localhost:3005",
     // searchBaseUrl: "https://engine.gaim.tech",
-    apiKey: "USR.cyU01p-PF1ktQ-hwhGal-2eJemM-H7Fch5-br",
+    apiKey: "USR.2TNWaD-ei5ULl-1eVTII-TpMMY2-IUqbku-rR",
   },
   western: {
     // apiBaseUrl: "https://western-api.gaim.tech/api/v1",
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
     searchBaseUrl: "http://localhost:3005",
     // searchBaseUrl: "https://engine.gaim.tech",
-    apiKey: "USR.Ngu4rC-VMenpv-m251tw-rYC8Om-ryx89j-c4",
+    apiKey: "USR.qZw3nd-2PJl5C-lbhZNn-Bp1c54-VZqV7T-g4",
   },
   western_test: {
     // apiBaseUrl: "https://lottery-api.gamepro.tech/api/v1",
@@ -49,7 +49,7 @@ const globals = {
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
     searchBaseUrl: "http://localhost:3005",
     // searchBaseUrl: "https://engine.gaim.tech",
-    apiKey: "USR.ELw3Yv-z6elXq-Hnr3ZI-AcCTEd-tEt5DQ-WM",
+    apiKey: "USR.34oZ5u-SGtUr3-TfjX31-2z66I2-7iUHhy-mU",
   },
   ygl: {
     // apiBaseUrl: "https://api.590lotto.com/api/v1",
