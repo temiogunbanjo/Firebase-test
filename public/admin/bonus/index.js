@@ -189,6 +189,67 @@ function viewBonusHandler(options = { page: 1, limit: 50 }) {
     });
 }
 
+function listGamesHandler(options = { page: 1, limit: 50 }) {
+  // ev.preventDefault();
+  const containerElement = document.querySelector("#gameType");
+  containerElement.innerHTML = "";
+
+  const loadingOption = document.createElement("option", {});
+  loadingOption.setAttribute("id", "loading-game-option");
+  loadingOption.setAttribute("value", "");
+  loadingOption.textContent = "Loading...";
+
+  containerElement.appendChild(loadingOption);
+
+  if (!options) {
+    options = {
+      page: 1,
+      limit: 50,
+    };
+  }
+
+  const apiUrl = `${
+    globals[globals.environment].apiBaseUrl
+  }/game/fetch-games?page=${options.page}&limit=${options.limit}`;
+
+  fetchAPI({
+    url: apiUrl,
+    method: "GET",
+  })
+    .then(async (result) => {
+      try {
+        // const { status } = result;
+        if (result && result.data) {
+          const { data } = result?.data;
+          console.log(data);
+
+          if (data) {
+            data.forEach((g) => {
+              const childOption = document.createElement("option");
+              childOption.setAttribute("id", g.gameId);
+              childOption.setAttribute("value", g.gameId);
+              childOption.textContent = g.name;
+              containerElement.appendChild(childOption);
+            });
+          }
+          // containerElement.innerHTML = data
+          //   .map((bonus) => createBonusCard(bonus))
+          //   .join("");
+        }
+      } catch (error) {
+        console.log(error);
+        const { responsemessage, status } = error;
+        updateResponsePane(containerElement, responsemessage, status);
+      } finally {
+        loadingOption.parentNode.removeChild(loadingOption);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      updateResponsePane(containerElement, error, "error");
+    });
+}
+
 function deleteBonus(bonusId) {
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
@@ -231,21 +292,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const bonusForm = document.querySelector("#bonus-form");
   bonusForm.addEventListener("submit", createBonusFormHandler);
 
+  listGamesHandler();
   fetchAllData();
 
   setInterval(() => {
     fetchAllData();
   }, 0.5 * 60 * 1000);
 
-  const apiUrl = `${
-    globals[globals.environment].apiBaseUrl
-  }/validate-user`;
+  // const apiUrl = `${
+  //   globals[globals.environment].apiBaseUrl
+  // }/validate-user`;
 
-  fetchAPI({
-    url: apiUrl,
-    method: "POST",
-    data: {
-      UserId: "0123456789"
-    }
-  })
+  // fetchAPI({
+  //   url: apiUrl,
+  //   method: "POST",
+  //   data: {
+  //     UserId: "0123456789"
+  //   }
+  // })
 });

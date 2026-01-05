@@ -37,7 +37,7 @@ const globals = {
     apiBaseUrl: `http://${window.location.hostname}:3000/api/v1`,
     searchBaseUrl: "http://localhost:3005",
     // searchBaseUrl: "https://engine.gaim.tech",
-    apiKey: "USR.ELw3Yv-z6elXq-Hnr3ZI-AcCTEd-tEt5DQ-WM",
+    apiKey: "ADM.aV8zdZ-e5ZGYo-e1fu29-fpcUYq-Lvoxyn-Jz",
   },
   ygl: {
     // apiBaseUrl: "https://api.590lotto.com/api/v1",

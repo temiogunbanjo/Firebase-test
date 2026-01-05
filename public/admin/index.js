@@ -1,7 +1,8 @@
 function fetchAndSaveAdmin(adminId) {
   console.log(globals[globals.environment]);
   const responseElement = document.querySelector("#login-form .response");
-  responseElement.innerHTML = responseElement.innerHTML + "<br>Fetching admin...";
+  responseElement.innerHTML =
+    responseElement.innerHTML + "<br>Fetching admin...";
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
@@ -43,7 +44,6 @@ function fetchAndSaveAdmin(adminId) {
     });
 }
 
-
 function loginHandler(ev) {
   ev.preventDefault();
   const responseElement = document.querySelector("#login-form .response");
@@ -66,6 +66,7 @@ function loginHandler(ev) {
     // mode: "no-cors",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
+      "x-api-key": globals[globals.environment].apiKey,
       // mode: "no-cors",
     },
   })
