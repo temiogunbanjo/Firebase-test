@@ -156,8 +156,9 @@ function viewGamesHandler(ev) {
 
   // let timeString = `&gameStartDate=${d.toISOString()}&gameEndDate=${d2.toISOString()}`;
   let timeString = `&startTime=${d.toLocaleTimeString()}&endTime=${d2.toLocaleTimeString()}`;
+  // let timeString = ``;
   // let timeString = `&gameStartDate=${d.toISOString()}`;
-  console.log(timeString);
+  // console.log(timeString);
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl

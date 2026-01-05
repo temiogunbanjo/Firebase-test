@@ -1,7 +1,8 @@
 function fetchAndSaveAdmin(adminId) {
   console.log(globals[globals.environment]);
   const responseElement = document.querySelector("#login-form .response");
-  responseElement.innerHTML = responseElement.innerHTML + "<br>Fetching admin...";
+  responseElement.innerHTML =
+    responseElement.innerHTML + "<br>Fetching admin...";
 
   const apiUrl = `${
     globals[globals.environment].apiBaseUrl
@@ -42,7 +43,6 @@ function fetchAndSaveAdmin(adminId) {
         responseElement.innerHTML + "<br>User fetching failed!";
     });
 }
-
 
 function loginHandler(ev) {
   ev.preventDefault();
